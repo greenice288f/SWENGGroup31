@@ -1,6 +1,10 @@
 from roboflow import Roboflow
+#if you get an error of Roboflow missing
+#use pip install Roboflow, if pip is missing, welp then download pip, through pwsh
+
 rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
+#currently we model 3 is the best we have
 model = project.version(3).model
 
 # infer on a local image
