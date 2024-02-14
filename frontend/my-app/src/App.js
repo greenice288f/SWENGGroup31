@@ -18,15 +18,20 @@ function App() {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          'flex-wrap': 'wrap'
         }}>
           <img
             alt="not found"
-            width={"250px"}
+            width={"800px"}
             src={URL.createObjectURL(uploadedImage)}
           />
-          <br />
-          <button onClick={() => setUploadedImage(null)}>Remove</button>
+          <div style={{'flex-basis': '100%', height: '20px'}} />
+          <button
+            onClick={() => setUploadedImage(null)}
+          >
+            Remove
+          </button>
         </div>
       )}
       <br />
