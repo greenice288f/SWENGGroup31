@@ -6,10 +6,20 @@ function App() {
 
   return (
     <div>
-      <h1>Upload an image to test cigarette detection</h1>
+      <h1 style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+      }}>
+        Upload an image to test cigarette detection
+      </h1>
 
       {uploadedImage && (
-        <div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
           <img
             alt="not found"
             width={"250px"}
@@ -19,18 +29,21 @@ function App() {
           <button onClick={() => setUploadedImage(null)}>Remove</button>
         </div>
       )}
-
       <br />
-      <br />
-      
-      <input
-        type="file"
-        name="myImage"
-        onChange={(event) => {
-          console.log(event.target.files[0]);
-          setUploadedImage(event.target.files[0]);
-        }}
-      />
+      <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+      }}>
+        <input
+          type="file"
+          name="myImage"
+          onChange={(event) => {
+            console.log(event.target.files[0]);
+            setUploadedImage(event.target.files[0]);
+          }}
+        />
+      </div>
     </div>
   );
 }
