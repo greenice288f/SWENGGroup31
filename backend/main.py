@@ -40,11 +40,9 @@ save_button.click()
 next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[2]')))
 next_button.click()
 
-
-# keyword = "oliviarodrigo"
-# searchbox.send_keys(keyword)
+driver.get('https://www.instagram.com/' +'snoopdogg' +'/') # will have to change to username supplied by the user
 
 time.sleep(1000)
 
 
-# driver.quit()
+driver.quit()
