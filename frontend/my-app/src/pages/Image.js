@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 
 function Image () {
     
@@ -87,6 +88,18 @@ function Image () {
                 }}
                 />
                 <button onClick={handleUpload}>Upload</button>
+            </div>
+            <div>
+              <ul>
+                  <li>
+                      <Link to="/">Home</Link></li>
+                  <li>
+                      <Link to="/sentimental">Sentimental Analysis</Link>
+                  </li>
+                  <li>
+                      <Link to="/image">Image Analysis</Link>
+                  </li>
+              </ul>
             </div>
         </div>
     );
