@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 
-function App() {
+function Image() {
   const [uploadedImage, setUploadedImage] = useState();
   const [newPics, setPics] = useState("");
   //0 upload, 1 result, 2 loading
@@ -127,10 +127,10 @@ function App() {
                   <li>
                       <Link to="/image">Image Analysis</Link>
                   </li>
-            </ul>
+              </ul>
+            </div>
         </div>
-    </div>
-  );
+    );
 }
 
-export default App;
+export default Image;
