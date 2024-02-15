@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 function Sentimental() {
     const [inputtedText, setInputtedText] = useState();
     
-    return ( <>
-    <div style={{display: 'inline-block', textAlign: "center", width: "100%"}}>
-        <label>Sentimental Analysis</label>
-        <InputForm inputFunction={setInputtedText}/>
-        <button>Submit</button> 
-        <br/><label>{inputtedText}</label>
-    </div>
-    
+    return ( 
+    <>
+        <div style={{display: 'inline-block', textAlign: "center", width: "100%"}}>
+            <label>Sentimental Analysis</label>
+            <InputForm inputFunction={setInputtedText}/>
+            <button>Submit</button> 
+            <br/><label>{inputtedText}</label>
+        </div>
     </>
     );
 }
