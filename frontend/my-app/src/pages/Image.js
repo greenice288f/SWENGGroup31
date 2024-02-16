@@ -127,6 +127,7 @@ function App() {
                   <li>
                       <Link to="/image">Image Analysis</Link>
                   </li>
+<<<<<<< HEAD
             </ul>
         </div>
     </div>
@@ -134,3 +135,12 @@ function App() {
 }
 
 export default App;
+=======
+              </ul>
+            </div>
+        </div>
+    );
+}
+
+export default Image;
+>>>>>>> 74f2a6f27f835ef5ed48433004e31b25d78efa39
