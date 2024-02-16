@@ -21,10 +21,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd frontend/myapp
+        cd frontend/my-app
         npm ci
 
     - name: Test build
       run: |
-        cd frontend/myapp
+        cd frontend/my-app
         npm run test-build
