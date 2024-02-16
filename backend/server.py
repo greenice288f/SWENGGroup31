@@ -4,7 +4,6 @@ from PIL import Image
 import base64
 from roboflow import Roboflow
 import cv2
-import base64
 
 rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
@@ -21,30 +20,18 @@ def base64_to_image(base64_data, output_filename):
     except Exception as e:
         print(f"Error decoding base64 image: {str(e)}")
 
-@app.route('/xd')
-def asd():
-    #print(model.predict("155135c1-7f8d-49b3-9a91-2db7572842ae.jpg", confidence=40, overlap=30).json())
-    data = {
-        'message': 'Hello from server'
-    }
-    return jsonify(data)
-
-
-@app.route('/sokaigeljenorbitron')
-def hello_world():
-    data = {
-        'message': 'Hello from server'
-    }
-    return jsonify(data)
-
 
 @app.route('/upload', methods=['POST'])
 def upload_image():
     todo_data = request.get_json()
-    print(type(todo_data['lmao']))
     base64_to_image(todo_data['lmao'], 'output.jpg')
     answer=model.predict("output.jpg", confidence=40, overlap=30).json()
-
-    return jsonify(answer),201
+    model.predict("output.jpg", confidence=40, overlap=30).save("answer.jpg")
+    with open("answer.jpg", "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    with open('encoded_string.txt', 'w') as file:
+        file.write(encoded_string)
+    print('sending reply all done')
+    return jsonify({'data':answer,'image':encoded_string}),201
 if __name__ == '__main__':
     app.run(debug=True)
