@@ -48,6 +48,9 @@ def test_build():
 
 def epic_comment():
     print("epic comment")
+
+def epicer_comment():
+    print("epicer comment")
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--build-test', action='store_true')
