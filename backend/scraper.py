@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
+from selenium.webdriver.common.keys import Keys
 import time
 import platform
 
@@ -17,18 +18,20 @@ def get_webdriver():
         return webdriver.Chrome(service=Service("chromedriver.exe"))
 
 
-# Waits for an HTML element to become clickable, then attepts to click it.
-# The element is located using the provided XPath expression
-def wait_and_click(xpath):
-    element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath)))
-
-    # Retry up to 5 times, if ElementClickInterceptedException happens
+# Click on the provided element. Retry 5 times, in case of ElementClickInterceptedException
+def click_on(element):
     for _ in range(5):
         try:
             element.click()
             return
         except ElementClickInterceptedException:
             time.sleep(1)
+
+
+# Waits for an HTML element to become clickable, then attepts to click it.
+# The element is located using the provided XPath expression
+def wait_and_click(xpath):
+    click_on(WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, xpath))))
 
 
 # Scrolls to the bottom of a page with infinite loading
@@ -38,17 +41,21 @@ def scroll_to_the_very_bottom(driver: webdriver.Chrome):
     last_height = driver.execute_script("return document.body.scrollHeight")
 
     while True:
-        # Scroll down to bottom
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
         # Wait for new content to load
-        time.sleep(10) # I have slow WiFi, that's why 10 seconds
+        for _ in range(20):
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(0.5)
 
         # Calculate new scroll height and compare with last scroll height
         new_height = driver.execute_script("return document.body.scrollHeight")
         if new_height == last_height:
             break
         last_height = new_height
+
+
+# Scroll the window so that the element is viewable
+def scroll_element_into_view(driver: webdriver.Chrome, element):
+    webdriver.ActionChains(driver).move_to_element(element).perform()
 
 
 # Logs into Instagram with the provided username and password
@@ -81,31 +88,42 @@ def instagram_login(driver: webdriver.Chrome, username, password):
     wait_and_click('/html[contains(., "Turn on Notifications")]//button[contains(text(), "Not Now")]')
 
 
+# Get all posts from the view of the currently opened profile, return a list of HTML elements.
 def instagram_get_posts(driver: webdriver.Chrome):
     post_xpath = '//a[starts-with(@href, "/p/") or starts-with(@href, "/reel/")]'
     try:
+        # Wait until the page loads and first posts show up
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, post_xpath)))
     except TimeoutException:
+        # If no posts showed up, the user probably does not have any posts (or any public posts)
         return []
-    
+
     scroll_to_the_very_bottom(driver)
     return driver.find_elements(By.XPATH, post_xpath)
 
 
+def instagram_scrape_post(driver: webdriver.Chrome, post):
+    scroll_element_into_view(driver, post)
+    click_on(post)
+
+    time.sleep(10)
+
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+
+
 def instagram_scrape_user(driver: webdriver.Chrome, username):
-    driver.get(f'https://www.instagram.com/{username}/')
+    driver.get(f'https://www.instagram.com/{username}')
 
     posts = instagram_get_posts(driver)
 
-    print(len(posts))
     for post in posts:
-        print(post.get_attribute('href'))
+        instagram_scrape_post(driver, post)
 
 
 driver = get_webdriver()
 instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-instagram_scrape_user(driver, 'snoopdogg') # will have to change to username supplied by the user
+instagram_scrape_user(driver, 'levganja') # will have to change to username supplied by the user
 
 time.sleep(1000)
 
