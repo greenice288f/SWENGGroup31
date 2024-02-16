@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
   const [newPics, setPics] = useState("");
-  const [togglePics, setToggle]= useState(true)
+  //0 upload, 1 result, 2 loading
+  const [imageWindow, setImageWindow]= useState(0)
 
 
   function convertImageToBase64(file) {
@@ -20,6 +21,7 @@ function App() {
     });
   }
   const handleUpload =
+  
     async () => {
     try{
       const base64Image = await convertImageToBase64(uploadedImage);
@@ -38,7 +40,7 @@ function App() {
       
         //const binaryData = base64ToBinary(data.image);
         setPics(data.image)
-        setToggle(false)
+        setImageWindow(1)
         //createImageFromBinary(binaryData);
         console.log('done')
         
@@ -58,7 +60,7 @@ function App() {
       }}>
         Upload an image to test cigarette detection
       </h1>
-      {togglePics ? <>{uploadedImage && (
+      {imageWindow===0 ? <>{uploadedImage && (
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -72,7 +74,7 @@ function App() {
             src={URL.createObjectURL(uploadedImage)}
           />
         </div>
-      )}</> :
+      )}</> : (imageWindow===1) ?
        <>
        {uploadedImage && (
         <div style={{
@@ -88,6 +90,9 @@ function App() {
           />
         </div>
       )}
+       </> : <>
+       megoolllleeeeek
+       am csak varjal 
        </>}
        <div style={{ 'flex-basis': '100%', height: '20px' }} />
       <br />
@@ -96,18 +101,18 @@ function App() {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-      <button onClick={() => { setUploadedImage(null); setToggle(true); }}>Remove</button>
+      <button onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
 
         <input
           type="file"
           name="myImage"
           onChange={(event) => {
-            setToggle(true)
+            setImageWindow(0)
             console.log(event.target.files[0]);
             setUploadedImage(event.target.files[0]);
           }}
         />
-        <button onClick={handleUpload}>Upload</button>
+        <button onClick={() => { setImageWindow(2); handleUpload()}}>Upload</button>
       </div>
     </div>
   );
