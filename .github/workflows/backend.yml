@@ -1,0 +1,27 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Start server
+        run: python backend/server.py --test
+      - name: Run tests
+        run: pytest backend/tests.py
+
+      - name: Deploy to production
+        # Replace with your backend deployment commands
+        run: |
+          # dont need it yet
