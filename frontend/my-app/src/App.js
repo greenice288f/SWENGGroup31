@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from './Image';
+import Main from './Main';
 import {
     BrowserRouter as Router,
     Routes,
@@ -10,6 +11,7 @@ function App() {
   return (
     <Router>
         <Routes>
+            <Route path="/" element={<Main />} />
             <Route path="/image" element={<Image />} />
         </Routes>
     </Router>
