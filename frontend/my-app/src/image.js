@@ -90,10 +90,9 @@ function App() {
           />
         </div>
       )}
-       </> : <>
-       megoolllleeeeek
-       am csak varjal 
-       </>}
+        </> : <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            Loading ...
+        </div>}
        <div style={{ 'flex-basis': '100%', height: '20px' }} />
       <br />
       <div style={{
