@@ -29,6 +29,7 @@ function Sentimental() {
                 {outputText}
             </div>
         </div>
+        {/* temp links */}
         <div>
             <ul>
                   <li>

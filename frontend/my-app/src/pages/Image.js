@@ -115,6 +115,20 @@ function App() {
         />
         <button onClick={() => { setImageWindow(2); handleUpload()}}>Upload</button>
       </div>
+      {/* temp links */}
+      <div>
+            <ul>
+                  <li>
+                      <Link to="/">Home</Link>
+                  </li>
+                  <li>
+                      <Link to="/sentimental">Sentimental Analysis</Link>
+                  </li>
+                  <li>
+                      <Link to="/image">Image Analysis</Link>
+                  </li>
+            </ul>
+        </div>
     </div>
   );
 }
