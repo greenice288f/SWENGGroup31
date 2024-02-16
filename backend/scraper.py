@@ -31,8 +31,28 @@ def wait_and_click(xpath):
             time.sleep(1)
 
 
+# Scrolls to the bottom of a page with infinite loading
+# Courtesy of https://stackoverflow.com/a/27760083
+def scroll_to_the_very_bottom(driver: webdriver.Chrome):
+    # Get scroll height
+    last_height = driver.execute_script("return document.body.scrollHeight")
+
+    while True:
+        # Scroll down to bottom
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        # Wait for new content to load
+        time.sleep(10) # I have slow WiFi, that's why 10 seconds
+
+        # Calculate new scroll height and compare with last scroll height
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
+
+
 # Logs into Instagram with the provided username and password
-def instagram_login(driver, username, password):
+def instagram_login(driver: webdriver.Chrome, username, password):
     # Open Instagram login page
     driver.get("https://www.instagram.com/")
 
@@ -46,10 +66,10 @@ def instagram_login(driver, username, password):
         pass  # If the overlay doesn't appear, move on
 
     # Find username and password fields and enter credentials
-    username = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.NAME, "username")))
-    password = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.NAME, "password")))
-    username.send_keys(username)
-    password.send_keys(password)
+    username_field = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.NAME, "username")))
+    password_field = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.NAME, "password")))
+    username_field.send_keys(username)
+    password_field.send_keys(password)
 
     # Click on the login button
     wait_and_click('//button[@type="submit"]')
@@ -61,10 +81,31 @@ def instagram_login(driver, username, password):
     wait_and_click('/html[contains(., "Turn on Notifications")]//button[contains(text(), "Not Now")]')
 
 
+def instagram_get_posts(driver: webdriver.Chrome):
+    post_xpath = '//a[starts-with(@href, "/p/") or starts-with(@href, "/reel/")]'
+    try:
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, post_xpath)))
+    except TimeoutException:
+        return []
+    
+    scroll_to_the_very_bottom(driver)
+    return driver.find_elements(By.XPATH, post_xpath)
+
+
+def instagram_scrape_user(driver: webdriver.Chrome, username):
+    driver.get(f'https://www.instagram.com/{username}/')
+
+    posts = instagram_get_posts(driver)
+
+    print(len(posts))
+    for post in posts:
+        print(post.get_attribute('href'))
+
+
 driver = get_webdriver()
 instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-driver.get('https://www.instagram.com/' +'snoopdogg' +'/') # will have to change to username supplied by the user
+instagram_scrape_user(driver, 'snoopdogg') # will have to change to username supplied by the user
 
 time.sleep(1000)
 
