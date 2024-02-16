@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
+  const [newPics, setPics] = useState("");
+  const [togglePics, setToggle]= useState(true)
 
 
   function convertImageToBase64(file) {
@@ -21,10 +23,9 @@ function App() {
     async () => {
     try{
       const base64Image = await convertImageToBase64(uploadedImage);
-      console.log('Base64 image:', base64Image);
-      const image = { 
+      const image = {
         lmao: base64Image
-       };
+      };
       const response = await fetch("http://127.0.0.1:5000/upload", {
       method: "POST",
       headers: {
@@ -34,7 +35,13 @@ function App() {
       })
       if (response.ok) {
         const data = await response.json(); // Parse the response data
-        console.log(data)
+      
+        //const binaryData = base64ToBinary(data.image);
+        setPics(data.image)
+        setToggle(false)
+        //createImageFromBinary(binaryData);
+        console.log('done')
+        
       }
     }catch (error) {
       console.error('Error fetching data:', error);
@@ -51,8 +58,23 @@ function App() {
       }}>
         Upload an image to test cigarette detection
       </h1>
+      {togglePics ? <>{uploadedImage && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          'flex-wrap': 'wrap'
+        }}>
 
-      {uploadedImage && (
+          <img
+            alt="not found"
+            width={"800px"}
+            src={URL.createObjectURL(uploadedImage)}
+          />
+        </div>
+      )}</> :
+       <>
+       {uploadedImage && (
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -62,26 +84,25 @@ function App() {
           <img
             alt="not found"
             width={"800px"}
-            src={URL.createObjectURL(uploadedImage)}
+            src={"data:image/png;base64," + newPics}
           />
-          <div style={{ 'flex-basis': '100%', height: '20px' }} />
-          <button
-            onClick={() => setUploadedImage(null)}
-          >
-            Remove
-          </button>
         </div>
       )}
+       </>}
+       <div style={{ 'flex-basis': '100%', height: '20px' }} />
       <br />
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
+      <button onClick={() => { setUploadedImage(null); setToggle(true); }}>Remove</button>
+
         <input
           type="file"
           name="myImage"
           onChange={(event) => {
+            setToggle(true)
             console.log(event.target.files[0]);
             setUploadedImage(event.target.files[0]);
           }}
