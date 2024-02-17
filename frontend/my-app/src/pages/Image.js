@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
@@ -113,6 +114,15 @@ function App() {
           }}
         />
         <button onClick={() => { setImageWindow(2); handleUpload()}}>Upload</button>
+      </div>
+      <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            'flex-wrap': 'wrap',
+            'padding-top': '20px'
+        }}>
+            <Link to='/'>BACK</Link>
       </div>
     </div>
   );
