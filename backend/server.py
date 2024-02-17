@@ -1,3 +1,4 @@
+import argparse
 from flask import Flask, jsonify,request
 from flask_cors import CORS  # Comment out for deployment
 from PIL import Image
@@ -20,7 +21,6 @@ def base64_to_image(base64_data, output_filename):
     except Exception as e:
         print(f"Error decoding base64 image: {str(e)}")
 
-
 @app.route('/upload', methods=['POST'])
 def upload_image():
     todo_data = request.get_json()
@@ -33,5 +33,30 @@ def upload_image():
         file.write(encoded_string)
     print('sending reply all done')
     return jsonify({'data':answer,'image':encoded_string}),201
+
+def test_build():
+    try:
+        app.test_client().get('/')
+        print("Build successful.")
+        return True
+    except Exception as e:
+        print(f"Build failed: {str(e)}")
+        return False
+#epic comment
+#also epic comment
+#this is an epic comment
+
+def epic_comment():
+    print("epic comment")
 if __name__ == '__main__':
-    app.run(debug=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--build-test', action='store_true')
+    args = parser.parse_args()
+
+    if args.build_test:
+        if test_build():
+            exit(0)
+        else:
+            exit(1)
+    else:
+        app.run(debug=True)

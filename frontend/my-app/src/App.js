@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from './pages/Image';
 import Sentimental from './pages/Sentimental';
 import Main from './pages/Main';
