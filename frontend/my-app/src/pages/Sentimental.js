@@ -30,18 +30,14 @@ function Sentimental() {
             </div>
         </div>
         {/* temp links */}
-        <div>
-            <ul>
-                  <li>
-                      <Link to="/">Home</Link>
-                  </li>
-                  <li>
-                      <Link to="/sentimental">Sentimental Analysis</Link>
-                  </li>
-                  <li>
-                      <Link to="/image">Image Analysis</Link>
-                  </li>
-            </ul>
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            'flex-wrap': 'wrap',
+            'padding-top': '20px'
+        }}>
+            <Link to='/'>BACK</Link>
         </div>
     </>
     );
