@@ -1,6 +1,7 @@
 import React from 'react';
-import Image from './Image';
-import Main from './Main';
+import Image from './pages/Image';
+import Sentimental from './pages/Sentimental';
+import Main from './pages/Main';
 import {
     BrowserRouter as Router,
     Routes,
@@ -13,6 +14,7 @@ function App() {
         <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/image" element={<Image />} />
+            <Route path="/sentimental" element={<Sentimental />} />
         </Routes>
     </Router>
   );
