@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 import time
 import platform
@@ -82,7 +82,7 @@ def instagram_get_posts(driver: webdriver.Chrome):
         # If no post showed up, the user probably does not have any posts (or any public posts)
         return
 
-    all_posts = set()
+    exclude = ''
 
     while True:
         any_new = False
@@ -90,11 +90,13 @@ def instagram_get_posts(driver: webdriver.Chrome):
         for _ in range(10):
             scroll_to_the_bottom(driver)
 
-            for link in driver.find_elements(By.XPATH, '//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]'):
-                if link.get_attribute('href') not in all_posts:
-                    any_new = True
-                    all_posts.add(link.get_attribute('href'))
-                    yield link
+            try:
+                link = driver.find_element(By.XPATH, f'//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"{exclude}]')
+                exclude += f''' and @href != "{link.get_attribute('href')}"'''
+                any_new = True
+                yield link
+            except NoSuchElementException:
+                pass
 
             time.sleep(0.5)
 
@@ -103,23 +105,11 @@ def instagram_get_posts(driver: webdriver.Chrome):
 
 
 # Get all comments from the currently opened post
-def instagram_scrape_post_comments(driver: webdriver.Chrome):
-    root = wait_for_element(driver, By.XPATH, '//div[@role="dialog"]//div[@role="dialog"]//article//div[@role="presentation"]/div/div/ul')
-
-    # The comment by the author of the post
-    author_comment = root.find_element(By.XPATH, './div[1]')
-    comments = [{
-        'user': author_comment.find_element(By.XPATH, './/h2//a').text,
-        'text': author_comment.find_element(By.XPATH, './/h1').text,
-    }]
-
-    # Other people's comments
-    elements = root.find_elements(By.XPATH, './div[3]/div/div/div')
-    for element in elements:
-        user = element.find_element(By.XPATH, './/h3//a').text
-        text = element.find_element(By.XPATH, './/span[../../h3]').text
-        comments.append({'user': user, 'text': text})
-    return comments
+def instagram_scrape_post_comments(driver: webdriver.Chrome) -> str:
+    try:
+        return wait_for_element(driver, By.XPATH, '//div[@role="dialog"]//div[@role="dialog"]//article//div[@role="presentation"]/div/div/ul').text
+    except:
+        return ''
 
 
 # Get all comments from the currently opened post
@@ -146,8 +136,8 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
         comments, images = instagram_scrape_post(driver)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-        print(comments)
-        print(images)
+        print('Comments: ', comments)
+        print('Images: ', images)
 
 
 def main():
