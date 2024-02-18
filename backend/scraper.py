@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,7 +20,7 @@ def get_webdriver():
 
 
 # Click on the provided element. Retry 5 times, in case of ElementClickInterceptedException
-def click_on(element):
+def click_on(element: WebElement):
     for _ in range(5):
         try:
             element.click()
@@ -28,34 +29,20 @@ def click_on(element):
             time.sleep(1)
 
 
+# Waits until an element is fully loaded
+def wait_for_element(driver: webdriver.Chrome, by, key) -> WebElement:
+    return WebDriverWait(driver, 15).until(EC.element_to_be_clickable((by, key)))
+
+
 # Waits for an HTML element to become clickable, then attepts to click it.
 # The element is located using the provided XPath expression
-def wait_and_click(xpath):
-    click_on(WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, xpath))))
+def wait_and_click(driver: webdriver.Chrome, xpath):
+    click_on(wait_for_element(driver, By.XPATH, xpath))
 
 
-# Scrolls to the bottom of a page with infinite loading
-# Courtesy of https://stackoverflow.com/a/27760083
-def scroll_to_the_very_bottom(driver: webdriver.Chrome):
-    # Get scroll height
-    last_height = driver.execute_script("return document.body.scrollHeight")
-
-    while True:
-        # Wait for new content to load
-        for _ in range(20):
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(0.5)
-
-        # Calculate new scroll height and compare with last scroll height
-        new_height = driver.execute_script("return document.body.scrollHeight")
-        if new_height == last_height:
-            break
-        last_height = new_height
-
-
-# Scroll the window so that the element is viewable
-def scroll_element_into_view(driver: webdriver.Chrome, element):
-    webdriver.ActionChains(driver).move_to_element(element).perform()
+# Scrolls to the bottom of the current page
+def scroll_to_the_bottom(driver: webdriver.Chrome):
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 
 # Logs into Instagram with the provided username and password
@@ -64,7 +51,7 @@ def instagram_login(driver: webdriver.Chrome, username, password):
     driver.get("https://www.instagram.com/")
 
     # Get rid of the cookies prompt
-    wait_and_click('//button[contains(text(), "Allow all cookies")]')
+    wait_and_click(driver, '//button[contains(text(), "Allow all cookies")]')
 
     # Wait for the overlay to disappear
     try:
@@ -73,59 +60,105 @@ def instagram_login(driver: webdriver.Chrome, username, password):
         pass  # If the overlay doesn't appear, move on
 
     # Find username and password fields and enter credentials
-    username_field = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.NAME, "username")))
-    password_field = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.NAME, "password")))
-    username_field.send_keys(username)
-    password_field.send_keys(password)
+    wait_for_element(driver, By.NAME, "username").send_keys(username)
+    wait_for_element(driver, By.NAME, "password").send_keys(password)
 
     # Click on the login button
-    wait_and_click('//button[@type="submit"]')
+    wait_and_click(driver, '//button[@type="submit"]')
 
     # Then Instagram asks to save the login details
-    wait_and_click('//button[contains(text(), "Save info")]')
+    wait_and_click(driver, '//button[contains(text(), "Save info")]')
 
     # Then click that we don't need notifications
-    wait_and_click('/html[contains(., "Turn on Notifications")]//button[contains(text(), "Not Now")]')
+    wait_and_click(driver, '/html[contains(., "Turn on Notifications")]//button[contains(text(), "Not Now")]')
 
 
-# Get all posts from the view of the currently opened profile, return a list of HTML elements.
+# Get all posts from the view of the currently opened profile, return a generator of HTML elements.
 def instagram_get_posts(driver: webdriver.Chrome):
-    post_xpath = '//a[starts-with(@href, "/p/") or starts-with(@href, "/reel/")]'
     try:
         # Wait until the page loads and first posts show up
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, post_xpath)))
+        wait_for_element(driver, By.XPATH, '//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]')
     except TimeoutException:
-        # If no posts showed up, the user probably does not have any posts (or any public posts)
-        return []
+        # If no post showed up, the user probably does not have any posts (or any public posts)
+        return
 
-    scroll_to_the_very_bottom(driver)
-    return driver.find_elements(By.XPATH, post_xpath)
+    all_posts = set()
+
+    while True:
+        any_new = False
+
+        for _ in range(10):
+            scroll_to_the_bottom(driver)
+
+            for link in driver.find_elements(By.XPATH, '//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]'):
+                if link.get_attribute('href') not in all_posts:
+                    any_new = True
+                    all_posts.add(link.get_attribute('href'))
+                    yield link
+
+            time.sleep(0.5)
+
+        if not any_new:
+            return
 
 
-def instagram_scrape_post(driver: webdriver.Chrome, post):
-    scroll_element_into_view(driver, post)
-    click_on(post)
+# Get all comments from the currently opened post
+def instagram_scrape_post_comments(driver: webdriver.Chrome):
+    root = wait_for_element(driver, By.XPATH, '//div[@role="dialog"]//div[@role="dialog"]//article//div[@role="presentation"]/div/div/ul')
 
-    time.sleep(10)
+    # The comment by the author of the post
+    author_comment = root.find_element(By.XPATH, './div[1]')
+    comments = [{
+        'user': author_comment.find_element(By.XPATH, './/h2//a').text,
+        'text': author_comment.find_element(By.XPATH, './/h1').text,
+    }]
 
-    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    # Other people's comments
+    elements = root.find_elements(By.XPATH, './div[3]/div/div/div')
+    for element in elements:
+        user = element.find_element(By.XPATH, './/h3//a').text
+        text = element.find_element(By.XPATH, './/span[../../h3]').text
+        comments.append({'user': user, 'text': text})
+    return comments
 
 
-def instagram_scrape_user(driver: webdriver.Chrome, username):
+# Get all comments from the currently opened post
+def instagram_scrape_post_images(driver: webdriver.Chrome):
+    # To do
+    return []
+
+
+# Get all comments and images from the currently opened post
+def instagram_scrape_post(driver: webdriver.Chrome):
+    comments = instagram_scrape_post_comments(driver)
+    images = instagram_scrape_post_images(driver)
+    return comments, images
+
+
+# Scrape all comments and images from all posts of the given user
+def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     driver.get(f'https://www.instagram.com/{username}')
 
     posts = instagram_get_posts(driver)
 
     for post in posts:
-        instagram_scrape_post(driver, post)
+        post.click()
+        comments, images = instagram_scrape_post(driver)
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+
+        print(comments)
+        print(images)
 
 
-driver = get_webdriver()
-instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
+def main():
+    driver = get_webdriver()
+    instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-instagram_scrape_user(driver, 'levganja') # will have to change to username supplied by the user
+    instagram_scrape_user(driver, 'levganja') # will have to change to username supplied by the user
 
-time.sleep(1000)
+    time.sleep(1000)
 
+    driver.quit()
 
-driver.quit()
+if __name__ == '__main__':
+    main()
