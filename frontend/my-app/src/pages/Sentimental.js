@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
+import Header from '../components/Header';
+
 
 function Sentimental() {
     const [inputtedText, setInputtedText] = useState();
@@ -12,11 +14,13 @@ function Sentimental() {
 
     return ( 
     <>
+        <Header></Header>
         <div 
         style={{
         display: 'inline-block', 
         textAlign: "center", 
-        width: "100%"
+        width: "100%",
+        paddingTop: "40px"
         }}>
             <h1>
                 Sentimental Analysis
@@ -37,7 +41,6 @@ function Sentimental() {
             'flex-wrap': 'wrap',
             'padding-top': '20px'
         }}>
-            <Link to='/'>BACK</Link>
         </div>
     </>
     );

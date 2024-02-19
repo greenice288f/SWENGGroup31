@@ -10,11 +10,16 @@ export default function Header(){
             {/* row 1 */}
             <div className='row'>
               <div className='button-group-1'>
-                <a type='button' className='Placeholder' href="https://example.com">
-                  Button placeholder
+                <a type='button' className='headerlink' href="/">
+                  Main
+                </a>
+                <a type='button' className='headerlink' href="/sentimental">
+                  Sentimental Analysis
+                </a>
+                <a type='button' className='headerlink' href="/image">
+                  Image Analysis
                 </a>
               </div>
-
             </div>
             <hr/>
           </div>

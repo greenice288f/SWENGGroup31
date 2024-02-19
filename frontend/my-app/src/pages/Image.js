@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Header from '../components/Header';
 import { Link } from 'react-router-dom';
 
 function App() {
@@ -53,78 +54,83 @@ function App() {
 
 
   return (
-    <div>
-      <h1 style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        Upload an image to test cigarette detection
-      </h1>
-      {imageWindow===0 ? <>{uploadedImage && (
+    <>
+      <Header></Header>
+      <div>
+        {/* i don't know why but not using this div puts a big gap between 
+            the header and header text... temporary? maybe? */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          'flex-wrap': 'wrap'
+          paddingTop: '40px' /* header */
         }}>
-
-          <img
-            alt="not found"
-            width={"800px"}
-            src={URL.createObjectURL(uploadedImage)}
-          />
+          <h1>Upload an image to test cigarette detection</h1>
         </div>
-      )}</> : (imageWindow===1) ?
-       <>
-       {uploadedImage && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          'flex-wrap': 'wrap'
-        }}>
-          <img
-            alt="not found"
-            width={"800px"}
-            src={"data:image/png;base64," + newPics}
-          />
-        </div>
-      )}
-       </> : <>
-       megoolllleeeeek
-       am csak varjal 
-       </>}
-       <div style={{ 'flex-basis': '100%', height: '20px' }} />
-      <br />
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-      <button onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
-
-        <input
-          type="file"
-          name="myImage"
-          onChange={(event) => {
-            setImageWindow(0)
-            console.log(event.target.files[0]);
-            setUploadedImage(event.target.files[0]);
-          }}
-        />
-        <button onClick={() => { setImageWindow(2); handleUpload()}}>Upload</button>
-      </div>
-      <div style={{
+        {imageWindow===0 ? <>{uploadedImage && (
+          <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            'flex-wrap': 'wrap',
-            'padding-top': '20px'
+            'flex-wrap': 'wrap'
+          }}>
+
+            <img
+              alt="not found"
+              width={"800px"}
+              src={URL.createObjectURL(uploadedImage)}
+            />
+          </div>
+        )}</> : (imageWindow===1) ?
+        <>
+        {uploadedImage && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            'flex-wrap': 'wrap'
+          }}>
+            <img
+              alt="not found"
+              width={"800px"}
+              src={"data:image/png;base64," + newPics}
+            />
+          </div>
+        )}
+        </> : <>
+        megoolllleeeeek
+        am csak varjal 
+        </>}
+        <div style={{ 'flex-basis': '100%', height: '20px' }} />
+        <br />
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
-            <Link to='/'>BACK</Link>
+        <button onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
+
+          <input
+            type="file"
+            name="myImage"
+            onChange={(event) => {
+              setImageWindow(0)
+              console.log(event.target.files[0]);
+              setUploadedImage(event.target.files[0]);
+            }}
+          />
+          <button onClick={() => { setImageWindow(2); handleUpload()}}>Upload</button>
+        </div>
+        <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              'flex-wrap': 'wrap',
+              'padding-top': '20px'
+          }}>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
