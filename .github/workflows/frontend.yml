@@ -27,4 +27,5 @@ jobs:
     - name: Test build
       run: |
         cd frontend/my-app
-        npm run test-build
+        npm test
+        npm build
