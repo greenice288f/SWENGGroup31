@@ -5,9 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common import exceptions
-from selenium.webdriver.common.keys import Keys
 import time
 import platform
+import re
 
 
 # Create a Chrome WebDriver instance
@@ -16,7 +16,7 @@ def get_webdriver():
         # On Linux, install the driver with your regular package manager
         return webdriver.Chrome()
     else:
-        return webdriver.Chrome(service=Service("chromedriver.exe"))
+        return webdriver.Chrome(service=Service('chromedriver.exe'))
 
 
 # Click on the provided element. Retry 5 times, in case of ElementClickInterceptedException
@@ -42,26 +42,26 @@ def wait_and_click(driver: webdriver.Chrome, xpath):
 
 # Scrolls to the bottom of the current page
 def scroll_to_the_bottom(driver: webdriver.Chrome):
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
 
 
 # Logs into Instagram with the provided username and password
 def instagram_login(driver: webdriver.Chrome, username, password):
     # Open Instagram login page
-    driver.get("https://www.instagram.com/")
+    driver.get('https://www.instagram.com/')
 
     # Get rid of the cookies prompt
     wait_and_click(driver, '//button[contains(text(), "Allow all cookies")]')
 
     # Wait for the overlay to disappear
     try:
-        WebDriverWait(driver, 5).until(EC.invisibility_of_element_located((By.CLASS_NAME, "RnEpo")))
+        WebDriverWait(driver, 5).until(EC.invisibility_of_element_located((By.CLASS_NAME, 'RnEpo')))
     except exceptions.TimeoutException:
         pass  # If the overlay doesn't appear, move on
 
     # Find username and password fields and enter credentials
-    wait_for_element(driver, By.NAME, "username").send_keys(username)
-    wait_for_element(driver, By.NAME, "password").send_keys(password)
+    wait_for_element(driver, By.NAME, 'username').send_keys(username)
+    wait_for_element(driver, By.NAME, 'password').send_keys(password)
 
     # Click on the login button
     wait_and_click(driver, '//button[@type="submit"]')
@@ -90,10 +90,11 @@ def instagram_get_posts(driver: webdriver.Chrome) -> list[str]:
         for _ in range(10):
             scroll_to_the_bottom(driver)
 
-            for link in driver.find_elements(By.XPATH, f'//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]'):
+            for el in driver.find_elements(By.XPATH, f'//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]'):
                 try:
-                    if link.get_attribute('href') not in visited:
-                        visited.add(f'https://www.instagram.com/{link.get_attribute("href")}')
+                    link = el.get_attribute("href")
+                    if link not in visited:
+                        visited.add(link)
                         any_new = True
                 except:
                     pass
@@ -104,25 +105,36 @@ def instagram_get_posts(driver: webdriver.Chrome) -> list[str]:
             return list(visited)
 
 
-# Get all comments from the currently opened post
-def instagram_scrape_post_comments(driver: webdriver.Chrome) -> str:
+# Get all comments from the post with the given url
+def instagram_scrape_post_comments(driver: webdriver.Chrome, url: str) -> list[str]:
+    driver.get(url)
+    section = wait_for_element(driver, By.XPATH, '//section/main/div/div/div/div[2]/div/div[2]/div')
+    comments = []
     try:
-        text = wait_for_element(driver, By.XPATH, '//div[@role="dialog"]//div[@role="dialog"]//article//div[@role="presentation"]/div/div/ul').text
-        return text
+        author, others = section.find_elements(By.XPATH, './div')
+        comments.append(author.find_element(By.XPATH, './div/div[2]/div/span/div/span').text)
     except:
-        return ''
+        others = section.find_element(By.XPATH, './div')
+
+    try:
+        for other in others.find_elements(By.XPATH, './div'):
+            comments.append(other.find_element(By.XPATH, './div/div/div[2]/div[1]/div[1]/div/div[2]/span').text)
+    except exceptions.NoSuchElementException:
+        pass # This happens when there are no comments from other users
+    return comments
 
 
-# Get all comments from the currently opened post
-def instagram_scrape_post_images(driver: webdriver.Chrome):
+# Get all comments from the post with the given url
+def instagram_scrape_post_images(driver: webdriver.Chrome, url: str) -> list:
+    driver.get(url)
     # To do
     return []
 
 
-# Get all comments and images from the currently opened post
-def instagram_scrape_post(driver: webdriver.Chrome):
-    comments = instagram_scrape_post_comments(driver)
-    images = instagram_scrape_post_images(driver)
+# Get all comments and images from the post with the given url
+def instagram_scrape_post(driver: webdriver.Chrome, url: str):
+    comments = instagram_scrape_post_comments(driver, url)
+    images = instagram_scrape_post_images(driver, url)
     return comments, images
 
 
@@ -133,8 +145,8 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     posts = instagram_get_posts(driver)
 
     for post in posts:
-        driver.get(post)
-        comments, images = instagram_scrape_post(driver)
+        print('Post: ', post)
+        comments, images = instagram_scrape_post(driver, post)
 
         print('Comments: ', comments)
         print('Images: ', images)
@@ -145,8 +157,6 @@ def main():
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
     instagram_scrape_user(driver, 'levganja') # will have to change to username supplied by the user
-
-    time.sleep(1000)
 
     driver.quit()
 
