@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, NoSuchElementException
+from selenium.common import exceptions
 from selenium.webdriver.common.keys import Keys
 import time
 import platform
@@ -25,7 +25,7 @@ def click_on(element: WebElement):
         try:
             element.click()
             return
-        except ElementClickInterceptedException:
+        except exceptions.ElementClickInterceptedException:
             time.sleep(1)
 
 
@@ -56,7 +56,7 @@ def instagram_login(driver: webdriver.Chrome, username, password):
     # Wait for the overlay to disappear
     try:
         WebDriverWait(driver, 5).until(EC.invisibility_of_element_located((By.CLASS_NAME, "RnEpo")))
-    except TimeoutException:
+    except exceptions.TimeoutException:
         pass  # If the overlay doesn't appear, move on
 
     # Find username and password fields and enter credentials
@@ -78,7 +78,7 @@ def instagram_get_posts(driver: webdriver.Chrome):
     try:
         # Wait until the page loads and first posts show up
         wait_for_element(driver, By.XPATH, '//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]')
-    except TimeoutException:
+    except exceptions.TimeoutException:
         # If no post showed up, the user probably does not have any posts (or any public posts)
         return
 
@@ -95,7 +95,7 @@ def instagram_get_posts(driver: webdriver.Chrome):
                 exclude += f''' and @href != "{link.get_attribute('href')}"'''
                 any_new = True
                 yield link
-            except NoSuchElementException:
+            except:
                 pass
 
             time.sleep(0.5)
@@ -107,7 +107,8 @@ def instagram_get_posts(driver: webdriver.Chrome):
 # Get all comments from the currently opened post
 def instagram_scrape_post_comments(driver: webdriver.Chrome) -> str:
     try:
-        return wait_for_element(driver, By.XPATH, '//div[@role="dialog"]//div[@role="dialog"]//article//div[@role="presentation"]/div/div/ul').text
+        text = wait_for_element(driver, By.XPATH, '//div[@role="dialog"]//div[@role="dialog"]//article//div[@role="presentation"]/div/div/ul').text
+        return text
     except:
         return ''
 
