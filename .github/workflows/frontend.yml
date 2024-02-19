@@ -28,4 +28,4 @@ jobs:
       run: |
         cd frontend/my-app
         # npm test ; we don't seem to actually have any tests so i'll remove this for now
-        npm build
+        npm run build
