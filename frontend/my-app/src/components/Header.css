@@ -1,0 +1,11 @@
+.container {
+    color: white;
+    background-color: rgb(167, 167, 255);
+    border-radius: 0px;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
