@@ -62,8 +62,7 @@ function App() {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          paddingTop: '40px' /* header */
+          justifyContent: 'center'
         }}>
           <h1>Upload an image to test cigarette detection</h1>
         </div>

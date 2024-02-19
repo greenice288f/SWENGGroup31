@@ -20,7 +20,6 @@ function Sentimental() {
         display: 'inline-block', 
         textAlign: "center", 
         width: "100%",
-        paddingTop: "40px"
         }}>
             <h1>
                 Sentimental Analysis

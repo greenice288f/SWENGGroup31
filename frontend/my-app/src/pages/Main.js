@@ -11,7 +11,6 @@ function Main () {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingTop: '40px' /* header */
             }}>
                 <h1>Welcome!</h1>
             </div>
