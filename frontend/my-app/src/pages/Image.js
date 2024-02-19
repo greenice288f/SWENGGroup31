@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
-import { Link } from 'react-router-dom';
 
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
