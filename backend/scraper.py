@@ -73,16 +73,16 @@ def instagram_login(driver: webdriver.Chrome, username, password):
     wait_and_click(driver, '/html[contains(., "Turn on Notifications")]//button[contains(text(), "Not Now")]')
 
 
-# Get all posts from the view of the currently opened profile, return a generator of HTML elements.
-def instagram_get_posts(driver: webdriver.Chrome):
+# Get all posts from the view of the currently opened profile, return a list of URLs.
+def instagram_get_posts(driver: webdriver.Chrome) -> list[str]:
     try:
         # Wait until the page loads and first posts show up
         wait_for_element(driver, By.XPATH, '//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]')
     except exceptions.TimeoutException:
         # If no post showed up, the user probably does not have any posts (or any public posts)
-        return
+        return []
 
-    exclude = ''
+    visited = set()
 
     while True:
         any_new = False
@@ -90,18 +90,18 @@ def instagram_get_posts(driver: webdriver.Chrome):
         for _ in range(10):
             scroll_to_the_bottom(driver)
 
-            try:
-                link = driver.find_element(By.XPATH, f'//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"{exclude}]')
-                exclude += f''' and @href != "{link.get_attribute('href')}"'''
-                any_new = True
-                yield link
-            except:
-                pass
+            for link in driver.find_elements(By.XPATH, f'//a[(contains(@href, "/p/") or contains(@href, "/reel/")) and @role = "link"]'):
+                try:
+                    if link.get_attribute('href') not in visited:
+                        visited.add(f'https://www.instagram.com/{link.get_attribute("href")}')
+                        any_new = True
+                except:
+                    pass
 
             time.sleep(0.5)
 
         if not any_new:
-            return
+            return list(visited)
 
 
 # Get all comments from the currently opened post
@@ -133,9 +133,8 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     posts = instagram_get_posts(driver)
 
     for post in posts:
-        post.click()
+        driver.get(post)
         comments, images = instagram_scrape_post(driver)
-        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
         print('Comments: ', comments)
         print('Images: ', images)
