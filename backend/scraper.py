@@ -106,7 +106,7 @@ def instagram_get_posts(driver: webdriver.Chrome) -> list[str]:
 
 
 # Get all comments from the post with the given url
-def instagram_scrape_post_comments(driver: webdriver.Chrome, url: str) -> list[str]:
+def instagram_scrape_comments(driver: webdriver.Chrome, url: str) -> list[str]:
     driver.get(url)
     section = wait_for_element(driver, By.XPATH, '//section/main/div/div/div/div[2]/div/div[2]/div')
     comments = []
@@ -124,18 +124,11 @@ def instagram_scrape_post_comments(driver: webdriver.Chrome, url: str) -> list[s
     return comments
 
 
-# Get all comments from the post with the given url
-def instagram_scrape_post_images(driver: webdriver.Chrome, url: str) -> list:
+# Get all images from the post with the given url
+def instagram_scrape_images(driver: webdriver.Chrome, url: str) -> list:
     driver.get(url)
-    # To do
+    # TODO: actually scrape the images
     return []
-
-
-# Get all comments and images from the post with the given url
-def instagram_scrape_post(driver: webdriver.Chrome, url: str):
-    comments = instagram_scrape_post_comments(driver, url)
-    images = instagram_scrape_post_images(driver, url)
-    return comments, images
 
 
 # Scrape all comments and images from all posts of the given user
@@ -143,20 +136,20 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     driver.get(f'https://www.instagram.com/{username}')
 
     posts = instagram_get_posts(driver)
+    comments = []
+    images = []
 
     for post in posts:
-        print('Post: ', post)
-        comments, images = instagram_scrape_post(driver, post)
-
-        print('Comments: ', comments)
-        print('Images: ', images)
+        comments.extend(instagram_scrape_comments(driver, post))
+        images.extend(instagram_scrape_images(driver, post))
+    return comments, images
 
 
 def main():
     driver = get_webdriver()
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-    instagram_scrape_user(driver, 'levganja') # will have to change to username supplied by the user
+    print(instagram_scrape_user(driver, 'levganja')) # will have to change to username supplied by the user
 
     driver.quit()
 
