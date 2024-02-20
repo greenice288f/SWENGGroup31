@@ -26,7 +26,7 @@ def upload_image():
     todo_data = request.get_json()
     base64_to_image(todo_data['lmao'], 'output.jpg')
     answer=model.predict("output.jpg", confidence=40, overlap=30).json()
-    model.predict("output.jpg", confidence=40, overlap=30).save("answer.jpg")
+    model.predict("output.jpg", confidence=30, overlap=30).save("answer.jpg")
     with open("answer.jpg", "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode()
     with open('encoded_string.txt', 'w') as file:
