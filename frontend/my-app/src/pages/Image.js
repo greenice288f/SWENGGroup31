@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
-import { Link } from 'react-router-dom';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
   const [newPics, setPics] = useState("");
   //0 upload, 1 result, 2 loading
-  const [imageWindow, setImageWindow]= useState(0)
+  const [imageWindow, setImageWindow] = useState(0)
 
 
   function convertImageToBase64(file) {
@@ -23,34 +23,34 @@ function App() {
     });
   }
   const handleUpload =
-  
+
     async () => {
-    try{
-      const base64Image = await convertImageToBase64(uploadedImage);
-      const image = {
-        lmao: base64Image
-      };
-      const response = await fetch("http://127.0.0.1:5000/upload", {
-      method: "POST",
-      headers: {
-      'Content-Type' : 'application/json',
-      },
-      body: JSON.stringify(image)
-      })
-      if (response.ok) {
-        const data = await response.json(); // Parse the response data
-      
-        //const binaryData = base64ToBinary(data.image);
-        setPics(data.image)
-        setImageWindow(1)
-        //createImageFromBinary(binaryData);
-        console.log('done')
-        
+      try {
+        const base64Image = await convertImageToBase64(uploadedImage);
+        const image = {
+          lmao: base64Image
+        };
+        const response = await fetch("http://127.0.0.1:5000/upload", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(image)
+        })
+        if (response.ok) {
+          const data = await response.json(); // Parse the response data
+
+          //const binaryData = base64ToBinary(data.image);
+          setPics(data.image)
+          setImageWindow(1)
+          //createImageFromBinary(binaryData);
+          console.log('done')
+
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-    }catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+    };
 
 
   return (
@@ -66,7 +66,7 @@ function App() {
         }}>
           <h1>Upload an image to test cigarette detection</h1>
         </div>
-        {imageWindow===0 ? <>{uploadedImage && (
+        {imageWindow === 0 ? <>{uploadedImage && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -80,26 +80,25 @@ function App() {
               src={URL.createObjectURL(uploadedImage)}
             />
           </div>
-        )}</> : (imageWindow===1) ?
-        <>
-        {uploadedImage && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            'flex-wrap': 'wrap'
-          }}>
-            <img
-              alt="not found"
-              width={"800px"}
-              src={"data:image/png;base64," + newPics}
-            />
-          </div>
-        )}
-        </> : <>
-        megoolllleeeeek
-        am csak varjal 
-        </>}
+        )}</> : (imageWindow === 1) ?
+          <>
+            {uploadedImage && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                'flex-wrap': 'wrap'
+              }}>
+                <img
+                  alt="not found"
+                  width={"800px"}
+                  src={"data:image/png;base64," + newPics}
+                />
+              </div>
+            )}
+          </> : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <LoadingSpinner />
+          </div>}
         <div style={{ 'flex-basis': '100%', height: '20px' }} />
         <br />
         <div style={{
@@ -107,7 +106,7 @@ function App() {
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-        <button onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
+          <button onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
 
           <input
             type="file"
@@ -118,15 +117,15 @@ function App() {
               setUploadedImage(event.target.files[0]);
             }}
           />
-          <button onClick={() => { setImageWindow(2); handleUpload()}}>Upload</button>
+          <button onClick={() => { setImageWindow(2); handleUpload() }}>Upload</button>
         </div>
         <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              'flex-wrap': 'wrap',
-              'padding-top': '20px'
-          }}>
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          'flex-wrap': 'wrap',
+          'padding-top': '20px'
+        }}>
         </div>
       </div>
     </>
