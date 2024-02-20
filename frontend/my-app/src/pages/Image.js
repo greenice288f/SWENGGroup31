@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
-import LoadingSpinner from '../components/LoadingSpinner';
 
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
@@ -96,13 +95,10 @@ function App() {
             />
           </div>
         )}
-        </> : <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <LoadingSpinner></LoadingSpinner>
-        </div>}
+        </> : <>
+        megoolllleeeeek
+        am csak varjal 
+        </>}
         <div style={{ 'flex-basis': '100%', height: '20px' }} />
         <br />
         <div style={{
