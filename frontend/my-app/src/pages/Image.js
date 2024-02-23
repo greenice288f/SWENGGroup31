@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import LoadingSpinner from '../components/LoadingSpinner';
-
+import '../components/stylez.css';
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
   const [newPics, setPics] = useState("");
@@ -57,78 +57,71 @@ function App() {
     <>
       <Header></Header>
       <div>
-        {/* i don't know why but not using this div puts a big gap between 
-            the header and header text... temporary? maybe? */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <h1>Upload an image to test cigarette detection</h1>
-        </div>
-        {imageWindow === 0 ? <>{uploadedImage && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            'flex-wrap': 'wrap'
-          }}>
+      <section class="about-us">
+    
+    <div class="row">
+        <div class="about-col">
+    <h1 >Upload an image to test cigarette detection</h1>
+    </div>
+    </div>
 
-            <img
-              alt="not found"
-              width={"800px"}
-              src={URL.createObjectURL(uploadedImage)}
-            />
-          </div>
-        )}</> : (imageWindow === 1) ?
-          <>
-            {uploadedImage && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                'flex-wrap': 'wrap'
-              }}>
-                <img
-                  alt="not found"
-                  width={"800px"}
-                  src={"data:image/png;base64," + newPics}
-                />
-              </div>
-            )}
-          </> : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LoadingSpinner />
-          </div>}
-        <div style={{ 'flex-basis': '100%', height: '20px' }} />
-        <br />
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <button onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
+</section>
 
-          <input
-            type="file"
-            name="myImage"
-            onChange={(event) => {
-              setImageWindow(0)
-              console.log(event.target.files[0]);
-              setUploadedImage(event.target.files[0]);
-            }}
-          />
-          <button onClick={() => { setImageWindow(2); handleUpload() }}>Upload</button>
+  {imageWindow === 0 ? (
+    <>
+      {uploadedImage && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <img alt="not found" width="800px" src={URL.createObjectURL(uploadedImage)} />
         </div>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          'flex-wrap': 'wrap',
-          'padding-top': '20px'
-        }}>
-        </div>
-      </div>
+      )}
     </>
+  ) : imageWindow === 1 ? (
+    <>
+      {uploadedImage && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <img alt="not found" width="800px" src={`data:image/png;base64,${newPics}`} />
+        </div>
+      )}
+    </>
+  ) : (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <LoadingSpinner />
+    </div>
+  )}
+
+ 
+  <br />
+</div>
+
+<section class="about-us">
+    
+    <div class="row">
+        <div class="about-col">
+   
+    <input
+      type="file"
+      name="myImage"
+      class = "addFile"
+      onChange={(event) => {
+        setImageWindow(0);
+        console.log(event.target.files[0]);
+        setUploadedImage(event.target.files[0]);
+      }}
+    />
+    
+ <button class = "remove-btn" onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
+
+    <button class = "submit-btn" onClick={() => { setImageWindow(2); handleUpload(); }}>Upload</button>
+  </div>
+
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', paddingTop: '20px' }}>
+  </div>
+</div>
+
+
+</section>
+
+</>
   );
 }
 
