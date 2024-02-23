@@ -1,0 +1,241 @@
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+}
+.header{
+    min-height: 100vh;
+    width: 100%;
+    background-image: linear-gradient(rgba(4,9,30,0.7), rgba(4,9,30,0.7)),url();
+    background-position: center;
+    background-size: cover;
+    position: relative;
+}
+
+
+nav{
+    display: flex;
+    padding: 2% 6%;
+    justify-content: space-between;
+    align-items: center;
+}
+nav img{
+    width: 200px;
+}
+.navlinks{
+    flex: 1;
+    text-align: right; 
+}
+.navlinks ul li{
+    list-style: none;
+    display: inline-block;
+    padding: 5px 10px;
+    position: relative;
+}
+.navlinks ul li a{
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+}
+.navlinks ul li::after{
+    content: '';
+    width: 0%;
+    height: 2px;
+    background: #f44336;
+    display: block;
+    margin: auto;
+    transition: 0.5s;
+}
+.navlinks ul li:hover::after{
+    width: 100%;
+}
+.textbox{
+    width: 90%;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+}
+.textbox h1{
+    font-size: 62px;
+}
+.textbox{
+    margin: 10px 5 50px;
+    font-size: 14px;
+    color: #fff;
+}
+.find-btn{
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    border: 3px solid black;
+    padding: 12px 34px;
+    font-size: 15px;
+    background: transparent;
+    position: center;
+    cursor: pointer;
+  
+
+}
+.find-btn:hover{
+    border: 4px solid #f44336;
+    background: #f44336;
+    transition: 0.75s;
+}
+/*about us page*/
+.sub-header{
+    height: 20vh;
+    width: 100%;
+    background-image: linear-gradient(rgba(4,9,30,0.7),rgba(4,9,30,0.7)),url(./CigarMan.png);
+    background-position: center;
+    background-size: auto;
+    text-align: center;
+    color: #000000;
+}
+.about-us{
+    width: 80%;
+    margin: auto;
+    padding-top: 80px;
+    padding-bottom: 50px;
+}
+.about-col{
+    flex-basis: 48%;
+    padding: 50px 10px;
+}
+.about-col img{
+    width: 100%;
+}
+.about-col h1{
+    padding-top: 5;
+}
+.about-col p{
+    padding: 15px 0 25px;
+}
+.red-btn{
+    border: 1px solid #f44336;
+    background: transparent;
+    color: #f44336;
+    position: relative;
+}
+.red-btn:hover{
+    color: #fff;
+}
+h2 {
+    display: inline-block;
+    text-decoration: none;
+    color:black;
+    border: 3px solid black;
+    padding: 12px 34px;
+    font-size: 15px;
+   
+    position: relative;
+    cursor: pointer;
+}
+h3{
+    font-size: 20px;
+    text-align: left;
+
+}
+.faq
+ {
+    text-align: left;
+    color: #000000;
+    
+}
+
+.list{
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    border: 3px solid black;
+    padding: 12px 34px;
+    font-size: 15px;
+    background: transparent;
+    position: center;
+    cursor: pointer;}
+
+::placeholder{
+    color:black;
+}
+/* Dropdown Button */
+
+  p{
+      text-align: left;
+  }
+
+.hover-btn 
+   
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+}
+
+.hover-btn {
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+}
+
+.hover-btn:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.hover-btn:active {
+    color: #000
+}
+
+.hover-btn:active:after {
+    background: transparent;
+}
+
+.hover-btn:hover:before {
+    opacity: 1;
+}
+
+.hover-btn:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
