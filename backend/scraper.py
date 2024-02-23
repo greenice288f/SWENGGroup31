@@ -125,10 +125,25 @@ def instagram_scrape_comments(driver: webdriver.Chrome, url: str) -> list[str]:
 
 
 # Get all images from the post with the given url
-def instagram_scrape_images(driver: webdriver.Chrome, url: str) -> list:
+def instagram_scrape_images(driver: webdriver.Chrome, url: str, tag: str) -> list:
     driver.get(url)
     # TODO: actually scrape the images
-    return []
+    images = []
+    try:
+        # Check if the post contains the desired hashtag
+        hashtags = driver.find_elements(By.XPATH, '//a[@class=" xil3i"]')
+        hashtag_texts = [hashtag.text for hashtag in hashtags]
+        if '#' + tag in hashtag_texts:
+            # Find all images
+            image_elements = driver.find_elements(By.XPATH, '//img[@class="FFVAD"]')
+            for image_element in image_elements:
+                # Get URL of each image 
+                image_url = image_element.get_attribute('src')
+                if image_url:
+                    images.append(image_url)
+    except exceptions.NoSuchElementException:
+        print("No images found for the post.")
+    return images
 
 
 # Scrape all comments and images from all posts of the given user
@@ -141,7 +156,7 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
 
     for post in posts:
         comments.extend(instagram_scrape_comments(driver, post))
-        images.extend(instagram_scrape_images(driver, post))
+        images.extend(instagram_scrape_images(driver, post, 'smoking'))
     return comments, images
 
 
