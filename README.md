@@ -3,12 +3,17 @@
 </h2>
 
 <h3>Prerequisites</h3>
-<h6>To run the program, you need to install NPM and Flask.
+<h6>To run the program, you need to install NPM, Flask, and NLTK.
 Download NPM here : https://nodejs.org/en/download
 </h6>
 <h6>
 To download Flask, just run this command in terminal
 <pre>pip install -U Flask</pre>
+</h6>
+
+<h6>
+To download NLTK, just run this command in terminal
+<pre>pip install --user -U nltk</pre>
 </h6>
 
 <h3>Running the program</h3>
