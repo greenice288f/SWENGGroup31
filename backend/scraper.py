@@ -5,6 +5,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common import exceptions
+import requests
+import os
+from bs4 import BeautifulSoup
+import urllib.request
 import time
 import platform
 import re
@@ -127,7 +131,6 @@ def instagram_scrape_comments(driver: webdriver.Chrome, url: str) -> list[str]:
 # Get all images from the post with the given url
 def instagram_scrape_images(driver: webdriver.Chrome, url: str, tag: str) -> list:
     driver.get(url)
-    # TODO: actually scrape the images
     images = []
     try:
         # Check if the post contains the desired hashtag
@@ -153,18 +156,53 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     posts = instagram_get_posts(driver)
     comments = []
     images = []
+    print(posts)
 
     for post in posts:
         comments.extend(instagram_scrape_comments(driver, post))
         images.extend(instagram_scrape_images(driver, post, 'smoking'))
+    
+    download_instagram_posts(posts)
+
     return comments, images
 
+def download_instagram_posts(urls):
+    # Create the downloaded folder if it doesn't exist
+    if not os.path.exists('downloaded'):
+        os.makedirs('downloaded')
+    
+    # Initialize the WebDriver
+    driver = webdriver.Chrome()
+    
+    for url in urls:
+        # Load the Instagram post URL
+        driver.get(url)
+        driver.maximize_window()
+        time.sleep(50)
+        
+        # Extract the page source after the page fully loads
+        page_source = driver.page_source
+        
+        # Parse the HTML content of the page
+        soup = BeautifulSoup(page_source, 'html.parser')
+        
+        # Find the meta tag containing the image URL
+        meta_tag = soup.find('meta', property='og:image')
+        
+        # Extract the content attribute of the meta tag
+        image_url = meta_tag['content']
+        
+        # Download the image and save it in the downloaded folder
+        filename = f'downloaded/downloaded_image_{urls.index(url)}.jpg'
+        urllib.request.urlretrieve(image_url, filename)
+        print(f"Image downloaded successfully from {url}")
+    
 
 def main():
     driver = get_webdriver()
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-    print(instagram_scrape_user(driver, 'levganja')) # will have to change to username supplied by the user
+    print(instagram_scrape_user(driver, '')) # will have to change to username supplied by the user
 
     driver.quit()
 
