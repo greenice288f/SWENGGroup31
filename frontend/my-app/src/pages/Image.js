@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AgreementPopup from '../components/AgreementPopup';
 import '../components/stylez.css';
@@ -122,6 +123,8 @@ function App() {
 
 
 </section>
+
+<Footer></Footer>
 
 </>
   );

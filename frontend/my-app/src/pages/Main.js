@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import AgreementPopup from '../components/AgreementPopup';
 
 function Main () {
@@ -11,10 +12,13 @@ function Main () {
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
+                paddingTop: 130, /* Remove later -> made for demo sake*/
+                paddingBottom: 250, /* Remove later -> made for demo sake*/
                 justifyContent: 'center',
             }}>
                 <h1>Welcome!</h1>
             </div>
+            <Footer></Footer>
         </>
     );
 }
