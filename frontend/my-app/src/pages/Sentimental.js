@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
+import AgreementPopup from '../components/AgreementPopup';
+
 
 
 function Sentimental() {
@@ -14,6 +16,7 @@ function Sentimental() {
     return ( 
     <>
         <Header></Header>
+        <AgreementPopup></AgreementPopup>
         <div 
         style={{
         display: 'inline-block', 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import LoadingSpinner from '../components/LoadingSpinner';
+import AgreementPopup from '../components/AgreementPopup';
 import '../components/stylez.css';
 function App() {
   const [uploadedImage, setUploadedImage] = useState();
@@ -56,6 +57,7 @@ function App() {
   return (
     <>
       <Header></Header>
+      <AgreementPopup></AgreementPopup>
       <div>
       <section class="about-us">
     
