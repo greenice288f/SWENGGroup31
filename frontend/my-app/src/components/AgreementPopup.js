@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactModal from 'react-modal';
+import '../components/AgreementPopup.css';
 
 class AgreementPopup extends React.Component {
     constructor () {
@@ -41,9 +42,9 @@ class AgreementPopup extends React.Component {
         return (
             <ReactModal isOpen={this.state.showModal} shouldCloseOnOverlayClick={false} modal nested>
                     <div className='modal'>
-                        <h1>Privacy Notice</h1>
-                        <p>By using this program, you agree that you are the owner of or have permission to analyze, the data provided.</p>
-                        <button onClick={this.handleCloseModal}>Agree</button>
+                        <h1 className='priv-notice-title'>Privacy Notice</h1>
+                        <p className='priv-notice-text'>By using this program, you agree that you are the owner of or have permission to analyze, the data provided.</p>
+                        <button className='agree' onClick={this.handleCloseModal}>Agree</button>
                     </div>
             </ReactModal>
         )
