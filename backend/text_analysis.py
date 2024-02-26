@@ -38,7 +38,7 @@ def text_analysis (posts):
     #Using the sentiment_analyser function to find the sentiment score of the posts, adding all post with a positive sentiment, i.e >0 to the list of postive sentiment posts
     pos_sentiment_smoking_posts = []
     for index, post in enumerate(processed_smoking_posts):
-        if sentiment_analyser(post) >0:
+        if sentiment_analyser(post) >=0:
             pos_sentiment_smoking_posts.append(smoking_flagged_posts[index])
 
     #Calculating the ratio of postive sentiment smoking related posts to the total amount of posts
@@ -51,10 +51,15 @@ def sentiment_analyser (post):
     #Using NLTKs sentiment analyser to get a sentiment score for the string parameter
     scores = sent_analyser.polarity_scores(post)
     #If score is >0 then return 1 for a postive sentiment, else return 0
+    print (post)
+    print(scores)
+    print("\n")
     if scores['pos'] > 0:
        return 1
-    else:
+    elif scores['neu'] > 0 and scores['neg'] == 0:
         return 0
+    else:
+        return -1
 
 #Function takes a string and a list of smoking related words as a parameter and checks if any of the smoking related words are in the string, returns boolean values True if they are, False if they aren't
 def check_for_smoking_words(post, smoking_words):
@@ -89,17 +94,17 @@ def pre_process_text(post):
 
 #Testing the functions       
 posts = [
-"I really hate smoking so much",  #Smoking Related negative sentiment
-"I love smoking so much", #Smoking related positive sentiment
-"Three cigars", #Smoking related neutral sentiment
-"I had three cigars today", #Smoking related neutral seniment, describing action
-"I had a terrible day today"#Non smoking related negative sentiment
-"I had a lovely day today", #Non smoking related positive sentiment
-"Took the dog for a walk and saw the strangest thing...", #Non smoking related neutral sentiment
-"I love to love lovely things and really hate smoking", #Smoking related, positive sentiment in post negative sentiment about smoking
-"I love to love smoking and really hate lovely things", #Smoking related, positive sentiment about smoking negative sentiment in post
-"I love to hate smoking", #Convoluted post negative sentiment about smoking
-"I hate that I love smoking", #Convoluted post negative sentiment about smoking
+"I really hate smoking so much",  #Smoking Related negative sentiment [Not smoker : Not Returned]
+"I love smoking so much", #Smoking related positive sentiment [Smoker : Returned]*
+"I have Three cigars", #Smoking related neutral sentiment [Unclear : Not Returned]*
+"I smoked three cigars today", #Smoking related neutral seniment, describing action [Smoker : Not Returned]*
+"I had a terrible day today"#Non smoking related negative sentiment [Not smoker : Not Returned]
+"I had a lovely day today", #Non smoking related positive sentiment [Not smoker : Not Returned]
+"Took the dog for a walk and saw the strangest thing...", #Non smoking related neutral sentiment [Not smoker : Not Returned]
+"I love to love lovely things and really hate smoking", #Smoking related, positive sentiment in post negative sentiment about smoking [Not smoker : Returned]
+"I love to love smoking and really hate lovely things", #Smoking related, positive sentiment about smoking negative sentiment in post [Smoker : Returned]*
+"I love to hate smoking", #Convoluted post negative sentiment about smoking [Not smoker : Returned]
+"I hate that I love smoking", #Convoluted post negative sentiment about smoking [Smoker : Returned]*
 ]
 print("\nSmoking Related posts:")
 print(text_analysis(posts))
