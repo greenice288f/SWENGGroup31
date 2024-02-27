@@ -43,32 +43,22 @@ function App() {
           const data = await response.json(); // Parse the response data
 
           //const binaryData = base64ToBinary(data.image);
-          setPics(data.image)
-          console.log(data.data)
-          const newString=JSON.stringify(data.data.predictions)
-          if(newString.length>2){
-            setPics(<>
+          setPics(data.image);
+          console.log(data.data);
+          const newString = JSON.stringify(data.data.predictions);
+          const res = (newString.length > 2) ? "Evidence of smoking detected!" : "No evidence of smoking found...";
+          setPics(
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', 'flex-direction': 'column'}}>
               {uploadedImage && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <img alt="not found" width="800px" src={`data:image/png;base64,`+data.image} />
+                <div>
+                  <img alt="not found" width="500px" src={`data:image/png;base64,` + data.image} />
                 </div>
               )}
-            <>OUF SMOEKER DETECTED ⚠️⚠️⚠️😧😧😧😧</>
-            </>)
-          }else{
-            setPics(<>
-              {uploadedImage && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <img alt="not found" width="800px" src={`data:image/png;base64,`+data.image} />
-                </div>
-              )}
-            <>nah u good bruv 👍👍</>
-            </>)
-          }
-          setImageWindow(1)
-            
+              <div>{res}</div>
+            </div>
+          );
+          setImageWindow(1);
           console.log('done')
-
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -81,69 +71,69 @@ function App() {
       <Header></Header>
       <AgreementPopup></AgreementPopup>
       <div>
+        <section class="about-us">
+
+          <div class="row">
+            <div class="about-col">
+              <h1 >Upload an image to test cigarette detection</h1>
+            </div>
+          </div>
+
+        </section>
+
+        {imageWindow === 0 ? (
+          <>
+            {uploadedImage && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <img alt="not found" width="500px" src={URL.createObjectURL(uploadedImage)} />
+              </div>
+            )}
+          </>
+        ) : imageWindow === 1 ? (
+          <>
+            {newPics}
+          </>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <LoadingSpinner />
+          </div>
+        )}
+
+
+        <br />
+      </div>
+
       <section class="about-us">
-    
-    <div class="row">
-        <div class="about-col">
-    <h1 >Upload an image to test cigarette detection</h1>
-    </div>
-    </div>
 
-</section>
+        <div class="row">
+          <div class="about-col">
 
-  {imageWindow === 0 ? (
-    <>
-      {uploadedImage && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <img alt="not found" width="800px" src={URL.createObjectURL(uploadedImage)} />
+            <input
+              type="file"
+              name="myImage"
+              class="addFile"
+              onChange={(event) => {
+                setImageWindow(0);
+                console.log(event.target.files[0]);
+                setUploadedImage(event.target.files[0]);
+              }}
+            />
+
+            <button class="remove-btn" onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
+
+            <button class="submit-btn" onClick={() => { setImageWindow(2); handleUpload(); }}>Upload</button>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', paddingTop: '20px' }}>
+          </div>
         </div>
-      )}
+
+
+      </section>
+
+      <Footer></Footer>
+
     </>
-  ) : imageWindow === 1 ? (
-    <>
-      {newPics}
-    </>
-  ) : (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <LoadingSpinner />
-    </div>
-  )}
-
- 
-  <br />
-</div>
-
-<section class="about-us">
-    
-    <div class="row">
-        <div class="about-col">
-   
-    <input
-      type="file"
-      name="myImage"
-      class = "addFile"
-      onChange={(event) => {
-        setImageWindow(0);
-        console.log(event.target.files[0]);
-        setUploadedImage(event.target.files[0]);
-      }}
-    />
-    
- <button class = "remove-btn" onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
-
-    <button class = "submit-btn" onClick={() => { setImageWindow(2); handleUpload(); }}>Upload</button>
-  </div>
-
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', paddingTop: '20px' }}>
-  </div>
-</div>
-
-
-</section>
-
-<Footer></Footer>
-
-</>
   );
 }
 
