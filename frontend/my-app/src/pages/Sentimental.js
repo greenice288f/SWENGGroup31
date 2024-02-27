@@ -52,7 +52,7 @@ function Sentimental() {
 function InputForm({inputFunction}) {
     return ( 
         <form>
-            <textarea name="text" style={{width: "80%", height: "70vh" }} onChange={e => inputFunction(e.target.value)}/>
+            <textarea name="text" style={{width: '80%', height: '70vh', padding: '15px'}} onChange={e => inputFunction(e.target.value)}/>
         </form>
     );
 }
