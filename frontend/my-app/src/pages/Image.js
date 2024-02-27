@@ -44,8 +44,29 @@ function App() {
 
           //const binaryData = base64ToBinary(data.image);
           setPics(data.image)
+          console.log(data.data)
+          const newString=JSON.stringify(data.data.predictions)
+          if(newString.length>2){
+            setPics(<>
+              {uploadedImage && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <img alt="not found" width="800px" src={`data:image/png;base64,`+data.image} />
+                </div>
+              )}
+            <>OUF SMOEKER DETECTED ⚠️⚠️⚠️😧😧😧😧</>
+            </>)
+          }else{
+            setPics(<>
+              {uploadedImage && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <img alt="not found" width="800px" src={`data:image/png;base64,`+data.image} />
+                </div>
+              )}
+            <>nah u good bruv 👍👍</>
+            </>)
+          }
           setImageWindow(1)
-          //createImageFromBinary(binaryData);
+            
           console.log('done')
 
         }
@@ -80,11 +101,7 @@ function App() {
     </>
   ) : imageWindow === 1 ? (
     <>
-      {uploadedImage && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <img alt="not found" width="800px" src={`data:image/png;base64,${newPics}`} />
-        </div>
-      )}
+      {newPics}
     </>
   ) : (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
