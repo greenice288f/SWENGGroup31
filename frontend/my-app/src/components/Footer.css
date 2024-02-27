@@ -1,0 +1,71 @@
+.container {
+    color: white;
+    background-color: rgb(27, 28, 28);
+    border-radius: 0px;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.content {
+    margin: 2%;
+}
+
+.button-group-1 a {
+    color: white;
+    font-size: 30px;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+    appearance: auto;
+    background-color: inherit; 
+}
+
+
+
+.x:hover {
+    color: rgb(101 119 134);  
+    cursor: pointer;
+}
+.linkedin:hover {
+    color: rgb(0, 119, 181);  
+    cursor: pointer;
+}
+.facebook:hover {
+    color: rgb(66, 103, 178);  
+    cursor: pointer;
+}
+.youtube:hover {   
+    color: rgb(255, 0, 0); 
+    cursor: pointer;
+}
+
+
+
+.copyright {
+    color: white;
+    margin-right: 160px;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.copyright:hover {
+    cursor: default;
+}
+
+.button-group-2 a {
+    color: white;
+    margin-right: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: auto;
+    background-color: inherit; 
+    border: none;
+    padding-left: 5px;
+}
+
+.button-group-2:hover a {
+    color: white;
+}
