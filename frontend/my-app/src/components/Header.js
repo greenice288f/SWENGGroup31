@@ -1,7 +1,7 @@
 import React from 'react';
 import '../components/Header.css';
 import '../components/stylez.css';
-import logo from './CigarMan.png';
+import logo from './logo.png';
 
 
 function Header() {
@@ -10,7 +10,7 @@ function Header() {
    
       <section className="sub-header">
         <nav>
-          <a href="alt.html"><img src={logo} alt="Cigar Man3" /></a>
+          <a href="/"><img src={logo} alt="Munich Re logo" /></a>
           <div className="navlinks">
             <ul>
               <li><a type='button' className='headerlink' href="/">Main</a></li>

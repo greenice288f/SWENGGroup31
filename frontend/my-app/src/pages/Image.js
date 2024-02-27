@@ -102,12 +102,9 @@ function App() {
 
         <br />
       </div>
-
       <section class="about-us">
-
         <div class="row">
           <div class="about-col">
-
             <input
               type="file"
               name="myImage"
@@ -118,17 +115,13 @@ function App() {
                 setUploadedImage(event.target.files[0]);
               }}
             />
-
             <button class="remove-btn" onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
-
             <button class="submit-btn" onClick={() => { setImageWindow(2); handleUpload(); }}>Upload</button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', paddingTop: '20px' }}>
           </div>
         </div>
-
-
       </section>
 
       <Footer></Footer>

@@ -5,7 +5,7 @@
     font-family: 'Lato', sans-serif;
 }
 .header{
-    min-height: 100vh;
+    min-height: 60vh;
     width: 100%;
     background-image: linear-gradient(rgba(4,9,30,0.7), rgba(4,9,30,0.7));
     background-position: center;
@@ -115,9 +115,9 @@ nav img{
 }
 /*about us page*/
 .sub-header{
-    height: 20vh;
+    height: 12vh;
     width: 100%;
-    background-image: linear-gradient(rgba(4,9,30,0.7),rgba(4,9,30,0.7)),url(./CigarMan.png);
+    background-image: linear-gradient(rgba(133, 133, 143, 0.7),rgba(209, 212, 221, 0.7)),url(./clouds.jpg);
     background-position: center;
     background-size: auto;
     text-align: center;
