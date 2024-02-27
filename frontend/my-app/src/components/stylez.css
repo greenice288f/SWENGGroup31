@@ -42,7 +42,7 @@ nav img{
     content: '';
     width: 0%;
     height: 2px;
-    background: #f44336;
+    background: #1b1a7c;
     display: block;
     margin: auto;
     transition: 0.5s;
@@ -67,7 +67,8 @@ nav img{
     font-size: 14px;
     color: #fff;
 }
-.addFile{ display: inline-block;
+.addFile{
+    display: inline-block;
     text-decoration: none;
     color: black;
     border: 3px solid black;
@@ -75,7 +76,10 @@ nav img{
     font-size: 15px;
     background: transparent;
     position: center;
-    cursor: pointer;}
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px
+}
 
 .submit-btn{
     display: inline-block;
@@ -132,7 +136,7 @@ nav img{
 }
 .about-col{
     flex-basis: 48%;
-    padding: 50px 10px;
+    padding: 30px 10px;
 }
 .about-col img{
     width: 100%;

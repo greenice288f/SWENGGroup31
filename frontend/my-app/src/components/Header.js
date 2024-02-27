@@ -14,7 +14,7 @@ function Header() {
           <div className="navlinks">
             <ul>
               <li><a type='button' className='headerlink' href="/">Main</a></li>
-              <li><a type='button' className='headerlink' href="/sentimental">Sentimental Analysis</a></li>
+              <li><a type='button' className='headerlink' href="/sentiment">Sentiment Analysis</a></li>
               <li><a type='button' className='headerlink' href="/image">Image Analysis</a></li>
             
             </ul>

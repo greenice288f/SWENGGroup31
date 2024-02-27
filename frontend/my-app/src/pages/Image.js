@@ -4,7 +4,9 @@ import Footer from '../components/Footer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AgreementPopup from '../components/AgreementPopup';
 import '../components/stylez.css';
-function App() {
+import Button from '../components/Button';
+
+function Image() {
   const [uploadedImage, setUploadedImage] = useState();
   const [newPics, setPics] = useState("");
   //0 upload, 1 result, 2 loading
@@ -48,7 +50,7 @@ function App() {
           const newString = JSON.stringify(data.data.predictions);
           const res = (newString.length > 2) ? "Evidence of smoking detected!" : "No evidence of smoking found...";
           setPics(
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', 'flex-direction': 'column'}}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', 'flex-direction': 'column' }}>
               {uploadedImage && (
                 <div>
                   <img alt="not found" width="500px" src={`data:image/png;base64,` + data.image} />
@@ -71,15 +73,15 @@ function App() {
       <Header></Header>
       <AgreementPopup></AgreementPopup>
       <div>
-        <section class="about-us">
-
-          <div class="row">
-            <div class="about-col">
-              <h1 >Upload an image to test cigarette detection</h1>
-            </div>
+        <div style={{
+          display: 'inline-block',
+          textAlign: "center",
+          width: "100%",
+        }}>
+          <div class='about-col'>
+            <h1>Upload an image to test cigarette detection</h1>
           </div>
-
-        </section>
+        </div>
 
         {imageWindow === 0 ? (
           <>
@@ -115,19 +117,16 @@ function App() {
                 setUploadedImage(event.target.files[0]);
               }}
             />
-            <button class="remove-btn" onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</button>
-            <button class="submit-btn" onClick={() => { setImageWindow(2); handleUpload(); }}>Upload</button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', paddingTop: '20px' }}>
+            <div style={{'display': 'flex', 'justify-content': 'center'}}>
+              <Button theme='red' onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</Button>
+              <Button onClick={() => { setImageWindow(2); handleUpload(); }}>Upload</Button>
+            </div>
           </div>
         </div>
       </section>
-
-      <Footer></Footer>
-
+      <Footer />
     </>
   );
 }
 
-export default App;
+export default Image;

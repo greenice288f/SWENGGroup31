@@ -11,6 +11,7 @@ function Main () {
             <AgreementPopup></AgreementPopup>
             <div style={{
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 paddingTop: 130, /* Remove later -> made for demo sake*/
                 paddingBottom: 250, /* Remove later -> made for demo sake*/

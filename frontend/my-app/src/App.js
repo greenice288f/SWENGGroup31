@@ -14,7 +14,7 @@ function App() {
         <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/image" element={<Image />} />
-            <Route path="/sentimental" element={<Sentimental />} />
+            <Route path="/sentiment" element={<Sentimental />} />
         </Routes>
     </Router>
   );
