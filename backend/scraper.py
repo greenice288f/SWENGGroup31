@@ -112,19 +112,13 @@ def instagram_get_posts(driver: webdriver.Chrome) -> list[str]:
 # Get all comments from the post with the given url
 def instagram_scrape_comments(driver: webdriver.Chrome, url: str) -> list[str]:
     driver.get(url)
-    section = wait_for_element(driver, By.XPATH, '//section/main/div/div/div/div[2]/div/div[2]/div')
-    comments = []
+    # Comments from other users
+    comments = [e.text for e in driver.find_elements(By.XPATH, '//div[@class="x9f619 xjbqb8w x78zum5 x168nmei x13lgxp2 x5pf9jr xo71vjh x1uhb9sk x1plvlek xryxfnj x1c4vz4f x2lah0s xdt5ytf xqjyukv x1cy8zhl x1oa3qoh x1nhvcw1"]/span[@class="x1lliihq x1plvlek xryxfnj x1n2onr6 x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi x1wdrske x8viiok x18hxmgj"]')]
     try:
-        author, others = section.find_elements(By.XPATH, './div')
-        comments.append(author.find_element(By.XPATH, './div/div[2]/div/span/div/span').text)
-    except:
-        others = section.find_element(By.XPATH, './div')
-
-    try:
-        for other in others.find_elements(By.XPATH, './div'):
-            comments.append(other.find_element(By.XPATH, './div/div/div[2]/div[1]/div[1]/div/div[2]/span').text)
+        # Comment of the post's author
+        comments.append(driver.find_element(By.XPATH, '//span[@class="x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs xt0psk2 x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi x1wdrske x8viiok x18hxmgj"]').text)
     except exceptions.NoSuchElementException:
-        pass # This happens when there are no comments from other users
+        pass # No comment
     return comments
 
 
@@ -156,7 +150,6 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     posts = instagram_get_posts(driver)
     comments = []
     images = []
-    print(posts)
 
     for post in posts:
         comments.extend(instagram_scrape_comments(driver, post))
