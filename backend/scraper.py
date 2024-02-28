@@ -160,42 +160,75 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     return comments, images
 
 def download_instagram_posts(urls):
-    # Create the downloaded folder if it doesn't exist
     if not os.path.exists('downloaded'):
         os.makedirs('downloaded')
-    
-    # Initialize the WebDriver
+
     driver = webdriver.Chrome()
-    
+    wait = WebDriverWait(driver, 10)
+
+
     for url in urls:
-        # Load the Instagram post URL
         driver.get(url)
         driver.maximize_window()
-        time.sleep(50)
         
-        # Extract the page source after the page fully loads
-        page_source = driver.page_source
-        
-        # Parse the HTML content of the page
-        soup = BeautifulSoup(page_source, 'html.parser')
-        
-        # Find the meta tag containing the image URL
-        meta_tag = soup.find('meta', property='og:image')
-        
-        # Extract the content attribute of the meta tag
-        image_url = meta_tag['content']
-        
-        # Download the image and save it in the downloaded folder
-        filename = f'downloaded/downloaded_image_{urls.index(url)}.jpg'
-        urllib.request.urlretrieve(image_url, filename)
-        print(f"Image downloaded successfully from {url}")
-    
+        # Accept cookies on the first page load
+        if url == urls[0]:
+            time.sleep(3)
+            wait_and_click(driver, '//button[contains(text(), "Allow all cookies")]')
+
+        image_urls = set()
+
+        try:
+            post_images = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//img[contains(@src, "https://")]')))
+            for image in post_images:
+                src = image.get_attribute('src')
+                if src not in image_urls and "s150x150" not in src:  # Exclude profile pictures based on a common pattern
+                    image_urls.add(src)
+                    filename = f'downloaded/downloaded_image_{len(image_urls)}_{urls.index(url)}.jpg'
+                    urllib.request.urlretrieve(src, filename)
+                    print(f"Image downloaded successfully from {url}")
+
+            # Navigate through carousel if applicable
+            while True:
+
+                next_button = driver.find_elements(By.XPATH, '/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[1]/div/div[1]/div[2]/div/button')
+                next_button2 = driver.find_elements(By.XPATH, '/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[1]/div/div[1]/div[2]/div/button[2]')
+                
+                if next_button:
+                    next_button[0].click()
+                    WebDriverWait(driver, 10).until(EC.staleness_of(post_images[0]))
+                    post_images = driver.find_elements(By.XPATH, '//img[contains(@src, "https://") and not(contains(@src, "/s150x150/"))]')
+                    for image in post_images:
+                        src = image.get_attribute('src')
+                        if src not in image_urls:  # Check for new images
+                            image_urls.add(src)
+                            filename = f'downloaded/downloaded_image_{len(image_urls)}_{urls.index(url)}.jpg'
+                            urllib.request.urlretrieve(src, filename)
+                            print(f"Image downloaded successfully from {url}")
+                elif next_button2:
+                    next_button2[0].click()
+                    WebDriverWait(driver, 10).until(EC.staleness_of(post_images[0]))
+                    post_images = driver.find_elements(By.XPATH, '//img[contains(@src, "https://") and not(contains(@src, "/s150x150/"))]')
+                    for image in post_images:
+                        src = image.get_attribute('src')
+                        if src not in image_urls:  # Check for new images
+                            image_urls.add(src)
+                            filename = f'downloaded/downloaded_image_{len(image_urls)}_{urls.index(url)}.jpg'
+                            urllib.request.urlretrieve(src, filename)
+                            print(f"Image downloaded successfully from {url}")
+                else:
+                    break  # No more images in the carousel
+
+        except Exception as e:
+            print(f"Error processing {url}: {e}")
+
+    driver.quit()
 
 def main():
     driver = get_webdriver()
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-    print(instagram_scrape_user(driver, 'levganja')) # will have to change to username supplied by the user
+    print(instagram_scrape_user(driver, '')) # will have to change to username supplied by the user
 
     driver.quit()
 
