@@ -5,13 +5,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common import exceptions
-import requests
 import os
 from bs4 import BeautifulSoup
 import urllib.request
 import time
 import platform
-import re
 
 
 # Create a Chrome WebDriver instance
@@ -51,6 +49,7 @@ def scroll_to_the_bottom(driver: webdriver.Chrome):
 
 # Logs into Instagram with the provided username and password
 def instagram_login(driver: webdriver.Chrome, username, password):
+    driver.maximize_window()
     # Open Instagram login page
     driver.get('https://www.instagram.com/')
 
@@ -155,19 +154,15 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
         comments.extend(instagram_scrape_comments(driver, post))
         images.extend(instagram_scrape_images(driver, post, 'smoking'))
     
-    download_instagram_posts(posts)
+    download_instagram_posts(driver, posts)
 
     return comments, images
 
-def download_instagram_posts(urls):
+def download_instagram_posts(driver: webdriver.Chrome, urls: list[str]):
     # Create the downloaded folder if it doesn't exist
-    if not os.path.exists('downloaded'):
-        os.makedirs('downloaded')
+    os.makedirs('downloaded', exist_ok=True)
     
-    # Initialize the WebDriver
-    driver = webdriver.Chrome()
-    
-    for url in urls:
+    for i, url in enumerate(urls):
         # Load the Instagram post URL
         driver.get(url)
         driver.maximize_window()
@@ -186,10 +181,10 @@ def download_instagram_posts(urls):
         image_url = meta_tag['content']
         
         # Download the image and save it in the downloaded folder
-        filename = f'downloaded/downloaded_image_{urls.index(url)}.jpg'
+        filename = f'downloaded/downloaded_image_{i}.jpg'
         urllib.request.urlretrieve(image_url, filename)
         print(f"Image downloaded successfully from {url}")
-    
+
 
 def main():
     driver = get_webdriver()
