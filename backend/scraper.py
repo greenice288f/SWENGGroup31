@@ -5,13 +5,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common import exceptions
-import requests
 import os
 from bs4 import BeautifulSoup
 import urllib.request
 import time
 import platform
-import re
 
 
 # Create a Chrome WebDriver instance
@@ -51,6 +49,7 @@ def scroll_to_the_bottom(driver: webdriver.Chrome):
 
 # Logs into Instagram with the provided username and password
 def instagram_login(driver: webdriver.Chrome, username, password):
+    driver.maximize_window()
     # Open Instagram login page
     driver.get('https://www.instagram.com/')
 
@@ -155,9 +154,10 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
         comments.extend(instagram_scrape_comments(driver, post))
         images.extend(instagram_scrape_images(driver, post, 'smoking'))
     
-    download_instagram_posts(posts)
+    download_instagram_posts(driver, posts)
 
     return comments, images
+
 
 def download_instagram_posts(urls):
     if not os.path.exists('downloaded'):
@@ -166,11 +166,7 @@ def download_instagram_posts(urls):
     driver = webdriver.Chrome()
     wait = WebDriverWait(driver, 10)
 
-
     for url in urls:
-        driver.get(url)
-        driver.maximize_window()
-        
         # Accept cookies on the first page load
         if url == urls[0]:
             time.sleep(3)
