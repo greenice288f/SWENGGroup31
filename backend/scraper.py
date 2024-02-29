@@ -151,21 +151,23 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     comments = []
     images = []
 
-    for post in posts:
-        comments.extend(instagram_scrape_comments(driver, post))
-        images.extend(instagram_scrape_images(driver, post, 'smoking'))
+    # for post in posts:
+    #     comments.extend(instagram_scrape_comments(driver, post))
+    #     images.extend(instagram_scrape_images(driver, post, 'smoking'))
     
     download_instagram_posts(posts)
 
     return comments, images
 
 def download_instagram_posts(urls):
-    if not os.path.exists('downloaded'):
-        os.makedirs('downloaded')
+    if not os.path.exists('download'):
+        os.makedirs('download')
 
     driver = webdriver.Chrome()
     wait = WebDriverWait(driver, 10)
 
+    # Initialize the counter for naming images
+    image_counter = 1
 
     for url in urls:
         driver.get(url)
@@ -184,38 +186,29 @@ def download_instagram_posts(urls):
                 src = image.get_attribute('src')
                 if src not in image_urls and "s150x150" not in src:  # Exclude profile pictures based on a common pattern
                     image_urls.add(src)
-                    filename = f'downloaded/downloaded_image_{len(image_urls)}_{urls.index(url)}.jpg'
+                    # Update filename to use the image_counter for sequential naming
+                    filename = f'download/image{image_counter}.jpg'
                     urllib.request.urlretrieve(src, filename)
                     print(f"Image downloaded successfully from {url}")
+                    image_counter += 1  # Increment the counter for the next image
 
             # Navigate through carousel if applicable
             while True:
-
                 next_button = driver.find_elements(By.XPATH, '/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[1]/div/div[1]/div[2]/div/button')
                 next_button2 = driver.find_elements(By.XPATH, '/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[1]/div/div[1]/div[2]/div/button[2]')
                 
-                if next_button:
-                    next_button[0].click()
+                if next_button or next_button2:
+                    (next_button[0] if next_button else next_button2[0]).click()
                     WebDriverWait(driver, 10).until(EC.staleness_of(post_images[0]))
-                    post_images = driver.find_elements(By.XPATH, '//img[contains(@src, "https://") and not(contains(@src, "/s150x150/"))]')
+                    post_images = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//img[contains(@src, "https://") and not(contains(@src, "/s150x150/"))]')))
                     for image in post_images:
                         src = image.get_attribute('src')
                         if src not in image_urls:  # Check for new images
                             image_urls.add(src)
-                            filename = f'downloaded/downloaded_image_{len(image_urls)}_{urls.index(url)}.jpg'
+                            filename = f'download/image{image_counter}.jpg'
                             urllib.request.urlretrieve(src, filename)
-                            print(f"Image downloaded successfully from {url}")
-                elif next_button2:
-                    next_button2[0].click()
-                    WebDriverWait(driver, 10).until(EC.staleness_of(post_images[0]))
-                    post_images = driver.find_elements(By.XPATH, '//img[contains(@src, "https://") and not(contains(@src, "/s150x150/"))]')
-                    for image in post_images:
-                        src = image.get_attribute('src')
-                        if src not in image_urls:  # Check for new images
-                            image_urls.add(src)
-                            filename = f'downloaded/downloaded_image_{len(image_urls)}_{urls.index(url)}.jpg'
-                            urllib.request.urlretrieve(src, filename)
-                            print(f"Image downloaded successfully from {url}")
+                            print(f"Image download successfully from {url}")
+                            image_counter += 1
                 else:
                     break  # No more images in the carousel
 
@@ -224,11 +217,12 @@ def download_instagram_posts(urls):
 
     driver.quit()
 
+
 def main():
     driver = get_webdriver()
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-    print(instagram_scrape_user(driver, '')) # will have to change to username supplied by the user
+    print(instagram_scrape_user(driver, 'almost_konstantin')) # will have to change to username supplied by the user
 
     driver.quit()
 
