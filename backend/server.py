@@ -5,6 +5,7 @@ from PIL import Image
 import base64
 from roboflow import Roboflow
 import cv2
+import json
 
 rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
@@ -37,8 +38,21 @@ def handle_user_input():
         return jsonify({'error': 'Missing username'}), 400
 
     print(f"Received username: {username}")
-    
-    return jsonify({'message': 'Username received successfully', 'username': username}), 200
+    counter=0
+    tempList=[]
+    for i in range(1,4):
+        file_name="image{0}.jpg".format(i)
+        answer=model.predict(file_name, confidence=40, overlap=30).json()
+        if(len(str(answer['predictions']))>2):
+            print("#@")
+            model.predict("image{0}.jpg".format(i), confidence=30, overlap=30).save("answer{0}.jpg".format(counter))
+            with open("answer{0}.jpg".format(counter), "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode()
+                tempList.append(encoded_string)
+    #with open('encoded_string.txt', 'w') as file:
+    #    file.write(encoded_string)
+    print(len(tempList))
+    return jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList)}), 200
 
 
 @app.route('/upload', methods=['POST'])
