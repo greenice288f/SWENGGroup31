@@ -7,6 +7,7 @@ import {
     Routes,
     Route,
 } from "react-router-dom";
+import Instagram from './pages/Instagram';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Main />} />
             <Route path="/image" element={<Image />} />
             <Route path="/sentiment" element={<Sentimental />} />
+            <Route path="/instagram" element={<Instagram />} />
         </Routes>
     </Router>
   );

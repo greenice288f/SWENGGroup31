@@ -7,8 +7,8 @@ function Main () {
 
     return (
         <>
-            <Header></Header>
-            <AgreementPopup></AgreementPopup>
+            <Header />
+            <AgreementPopup />
             <div style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -19,7 +19,7 @@ function Main () {
             }}>
                 <h1>Welcome!</h1>
             </div>
-            <Footer></Footer>
+            <Footer />
         </>
     );
 }
