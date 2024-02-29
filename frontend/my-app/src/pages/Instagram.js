@@ -7,7 +7,28 @@ import Button from '../components/Button';
 function Instagram() {
 
     const [inputtedText, setInputtedText] = useState();
-
+    const handleUpload =
+    async () => {
+        console.log(inputtedText)
+      try {
+        const image = {
+            username: "xd"
+        };
+        const response = await fetch("http://127.0.0.1:5000/user", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(image)
+        })
+        if (response.ok) {
+          const data = await response.json(); // Parse the response data
+          console.log('done')
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
     return (
         <>
             <Header />
@@ -24,7 +45,7 @@ function Instagram() {
                         <InputForm inputFunction={setInputtedText} />
                     </div>
                     <div>
-                        <Button>Enter</Button>
+                        <Button onClick={() => {handleUpload(); }}>Enter</Button>
                     </div>
                 </div>
             </section>

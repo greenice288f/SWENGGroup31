@@ -23,8 +23,9 @@ def base64_to_image(base64_data, output_filename):
 
 @app.route('/user', methods=['POST'])
 def handle_user_input():
-    # Attempt to get JSON data from the request
+
     input_data = request.get_json()
+    print(input_data)
     if not input_data:
         # If there's no data, or it's not JSON, return an error
         return jsonify({'error': 'No data provided'}), 400
@@ -37,10 +38,6 @@ def handle_user_input():
 
     print(f"Received username: {username}")
     
-    # Here, add your logic to process the username, such as querying a database,
-    # calling an external API, or any other processing based on your application's needs.
-
-    # Return a response to indicate success
     return jsonify({'message': 'Username received successfully', 'username': username}), 200
 
 
