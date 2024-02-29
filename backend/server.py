@@ -5,6 +5,7 @@ from PIL import Image
 import base64
 from roboflow import Roboflow
 import cv2
+import text_analysis
 
 rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
@@ -33,6 +34,17 @@ def upload_image():
         file.write(encoded_string)
     print('sending reply all done')
     return jsonify({'data':answer,'image':encoded_string}),201
+
+@app.route('/analyze', methods=['POST'])
+def analyze_text():
+    input_data = request.get_json()
+    if not input_data:
+        return jsonify({'error': 'No data provided'}), 400
+    comments = input_data['comments']
+    if not comments:
+        return jsonify({'analysis_results': 'No comments provided'}),201
+    return jsonify({'analysis_results': text_analysis(comments)}),201
+
 
 def test_build():
     try:
