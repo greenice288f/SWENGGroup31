@@ -5,7 +5,6 @@ from PIL import Image
 import base64
 from roboflow import Roboflow
 import cv2
-import text_analysis
 
 rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
@@ -22,6 +21,26 @@ def base64_to_image(base64_data, output_filename):
     except Exception as e:
         print(f"Error decoding base64 image: {str(e)}")
 
+@app.route('/user', methods=['POST'])
+def handle_user_input():
+
+    input_data = request.get_json()
+    print(input_data)
+    if not input_data:
+        # If there's no data, or it's not JSON, return an error
+        return jsonify({'error': 'No data provided'}), 400
+
+    # Assuming the key for the input data is 'username', adjust as necessary
+    username = input_data.get('username')
+    if not username:
+        # If the expected key isn't found in the JSON, return an error
+        return jsonify({'error': 'Missing username'}), 400
+
+    print(f"Received username: {username}")
+    
+    return jsonify({'message': 'Username received successfully', 'username': username}), 200
+
+
 @app.route('/upload', methods=['POST'])
 def upload_image():
     todo_data = request.get_json()
@@ -34,17 +53,6 @@ def upload_image():
         file.write(encoded_string)
     print('sending reply all done')
     return jsonify({'data':answer,'image':encoded_string}),201
-
-@app.route('/analyze', methods=['POST'])
-def analyze_text():
-    input_data = request.get_json()
-    if not input_data:
-        return jsonify({'error': 'No data provided'}), 400
-    comments = input_data['comments']
-    if not comments:
-        return jsonify({'analysis_results': 'No comments provided'}),201
-    return jsonify({'analysis_results': text_analysis(comments)}),201
-
 
 def test_build():
     try:
