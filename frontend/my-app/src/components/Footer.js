@@ -1,9 +1,9 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
-import { faXTwitter, faYoutube, faLinkedin, faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons'; 
+import { faXTwitter, faYoutube, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-icons'; 
 import '../components/Footer.css';
-{/* npm install @fortawesome/react-fontawesome*/}
-{/* npm install @fortawesome/free-brands-svg-icons*/}
+/* npm install @fortawesome/react-fontawesome*/
+/* npm install @fortawesome/free-brands-svg-icons*/
 
 export default function Footer(){
 
