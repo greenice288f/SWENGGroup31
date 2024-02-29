@@ -20,7 +20,7 @@ def get_webdriver():
         # On Linux, install the driver with your regular package manager
         return webdriver.Chrome()
     else:
-        return webdriver.Chrome(service=Service('chromedriver.exe'))
+        return webdriver.Chrome(service=Service('./backend/chromedriver.exe'))
 
 
 # Click on the provided element. Retry 5 times, in case of ElementClickInterceptedException
