@@ -21,6 +21,29 @@ def base64_to_image(base64_data, output_filename):
     except Exception as e:
         print(f"Error decoding base64 image: {str(e)}")
 
+@app.route('/user', methods=['POST'])
+def handle_user_input():
+    # Attempt to get JSON data from the request
+    input_data = request.get_json()
+    if not input_data:
+        # If there's no data, or it's not JSON, return an error
+        return jsonify({'error': 'No data provided'}), 400
+
+    # Assuming the key for the input data is 'username', adjust as necessary
+    username = input_data.get('username')
+    if not username:
+        # If the expected key isn't found in the JSON, return an error
+        return jsonify({'error': 'Missing username'}), 400
+
+    print(f"Received username: {username}")
+    
+    # Here, add your logic to process the username, such as querying a database,
+    # calling an external API, or any other processing based on your application's needs.
+
+    # Return a response to indicate success
+    return jsonify({'message': 'Username received successfully', 'username': username}), 200
+
+
 @app.route('/upload', methods=['POST'])
 def upload_image():
     todo_data = request.get_json()
