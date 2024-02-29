@@ -3,3 +3,5 @@ Flask-Cors==4.0.0
 pillow==10.2.0
 opencv-python-headless==4.8.0.74
 roboflow==1.1.19
+selenium==4.18.1
+bs4==0.0.2

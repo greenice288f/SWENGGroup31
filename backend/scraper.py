@@ -222,7 +222,7 @@ def main():
     driver = get_webdriver()
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-    print(instagram_scrape_user(driver, 'almost_konstantin')) # will have to change to username supplied by the user
+    print(instagram_scrape_user(driver, 'definitelynottollasvonadam')) # will have to change to username supplied by the user
 
     driver.quit()
 
