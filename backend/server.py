@@ -22,7 +22,7 @@ def base64_to_image(base64_data, output_filename):
     except Exception as e:
         print(f"Error decoding base64 image: {str(e)}")
 
-@app.route('/user', methods=['POST'])
+@app.route('/api/user', methods=['POST'])
 def handle_user_input():
 
     input_data = request.get_json()
@@ -55,7 +55,7 @@ def handle_user_input():
     return jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList)}), 200
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/api/upload', methods=['POST'])
 def upload_image():
     todo_data = request.get_json()
     base64_to_image(todo_data['lmao'], 'output.jpg')
