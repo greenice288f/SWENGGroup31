@@ -6,6 +6,7 @@ import base64
 from roboflow import Roboflow
 import cv2
 import json
+from smokerAlgo import smokerALgo
 
 rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
@@ -40,7 +41,8 @@ def handle_user_input():
     print(f"Received username: {username}")
     counter=0
     tempList=[]
-    for i in range(1,4):
+    print(smokerALgo())
+    for i in range(1,2):
         file_name="image{0}.jpg".format(i)
         answer=model.predict(file_name, confidence=40, overlap=30).json()
         if(len(str(answer['predictions']))>2):
@@ -51,7 +53,6 @@ def handle_user_input():
                 tempList.append(encoded_string)
     #with open('encoded_string.txt', 'w') as file:
     #    file.write(encoded_string)
-    print(len(tempList))
     return jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList)}), 200
 
 
