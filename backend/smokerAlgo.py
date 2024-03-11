@@ -23,7 +23,7 @@ def normalize_distance(distance, face_size, image_width, image_height):
 def calculate_distance(coord1, coord2):
     return math.sqrt((coord2[0] - coord1[0])**2 + (coord2[1] - coord1[1])**2)
 def cigarette(picture):
-    model = YOLO("./backend/models/best.pt")
+    model = YOLO("./models/best.pt")
     results = model.predict(picture)
     result = results[0]
     answer=[]
@@ -94,14 +94,21 @@ def face(image):
             tempList=[middle_point, radius,detection.score[0]]
             result.append(tempList)
     return result
-def smokerALgo():
+def smokerALgo(input):
     finalResult=[]
     #confidence, type0=face type=1
     counter=0
     counterMax=0    
-    for i in range(1,5):
-        imageName="./backend/test1/test{0}.jpg".format(i)
-        img = cv2.imread(imageName)
+    for i in range(1,6):
+        imageName="./{0}/test{1}.jpg".format(input,i)
+        try:
+            img = cv2.imread(imageName)
+            if img is None:
+                raise FileNotFoundError(f"No such file or directory: '{imageName}'")
+            # Rest of your code that processes the image...
+        except FileNotFoundError:
+            print(f"File not found: {imageName}")
+            continue
         height, width, _ = img.shape
         faceRes=face(img)
         cigaretteRes=cigarette(imageName)
