@@ -23,7 +23,7 @@ def normalize_distance(distance, face_size, image_width, image_height):
 def calculate_distance(coord1, coord2):
     return math.sqrt((coord2[0] - coord1[0])**2 + (coord2[1] - coord1[1])**2)
 def cigarette(picture):
-    model = YOLO("./models/yolov8n.pt")
+    model = YOLO("./backend/models/best.pt")
     results = model.predict(picture)
     result = results[0]
     answer=[]
@@ -96,12 +96,11 @@ def face(image):
     return result
 def smokerALgo():
     finalResult=[]
-    weights=[0.0, 0.4, 0.6]
     #confidence, type0=face type=1
     counter=0
     counterMax=0    
     for i in range(1,5):
-        imageName="./test2/test{0}.jpg".format(i)
+        imageName="./backend/test1/test{0}.jpg".format(i)
         img = cv2.imread(imageName)
         height, width, _ = img.shape
         faceRes=face(img)
@@ -155,68 +154,7 @@ def smokerALgo():
     return [finalResult,res]
 if __name__ == "__main__":
     start_time = time.time()
-    finalResult=[]
-    weights=[0.0, 0.4, 0.6]
-    #confidence, type0=face type=1
-    counter=0
-    counterMax=0    
-    for i in range(1,5):
-        imageName="./backend/test2/test{0}.jpg".format(i)
-        img = cv2.imread(imageName)
-        height, width, _ = img.shape
-        faceRes=face(img)
-        cigaretteRes=cigarette(imageName)
-        handRes=hand(img)
-        catalogue=[]
-
-        if(len(cigaretteRes)==0):
-            catalogue.append([0,0,imageName])
-        else:
-            wentIn=False
-            for i in range(len(cigaretteRes)):
-                cigConfidence=cigaretteRes[i][2]
-                for j in range(len(faceRes)):
-                    distance=calculate_distance(cigaretteRes[i][0],faceRes[j][0])-cigaretteRes[i][1]-faceRes[j][1]
-                    normalization=normalize_distance(distance,cigaretteRes[i][2],height,width)
-                    if cigConfidence < 0.8:
-                        cigConfidence+=0.2
-                    faceConfidence=faceRes[j][2]
-                    res=normalization*cigConfidence*faceConfidence
-                    temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],faceRes[j][0],faceRes[j][1],1,imageName]
-                    catalogue.append(temp)
-                    wentIn=True
-                
-                for j in range(len(handRes)):
-                    distance=calculate_distance(cigaretteRes[i][0],handRes[j][0])-cigaretteRes[i][1]-handRes[j][1]
-                    normalization=normalize_distance(distance,cigaretteRes[i][2],height,width)
-                    if cigConfidence < 0.8:
-                        cigConfidence+=0.2
-                    res=normalization*cigConfidence
-                    temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],handRes[j][0],handRes[j][1],2,imageName]
-                    catalogue.append(temp)
-                    wentIn=True
-                if(wentIn==False):
-                    temp=[1*cigaretteRes[i][2],cigaretteRes[i][0],cigaretteRes[i][1],3,imageName]
-                    catalogue.append(temp)
-        catalogue = sorted(catalogue, key=lambda x: x[0], reverse=True)
-        if(catalogue[0][len(catalogue[0])-2]==0):
-            counter+=0
-            counterMax+=1
-        elif(catalogue[0][len(catalogue[0])-2]==1 or catalogue[0][len(catalogue[0])-2]==2):
-            counter+=(10*catalogue[0][0])
-            counterMax+=10
-        else:
-            counter+=(7*catalogue[0][0])
-            counterMax+=7
- 
-        finalResult.append(catalogue[0])
-    finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
-    #cv2.circle(img, catalogue[0][1], catalogue[0][2], (255, 0, 0), 2)
-    #cv2.circle(img, catalogue[0][3], catalogue[0][4], (255, 0, 0), 2)
-    #cv2.imshow('Image with circle', img)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-
+    print(smokerALgo())
     end_time = time.time()
     execution_time = end_time - start_time
     print(f"The script executed in {execution_time} seconds")

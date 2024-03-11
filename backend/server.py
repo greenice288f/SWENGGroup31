@@ -39,20 +39,19 @@ def handle_user_input():
         return jsonify({'error': 'Missing username'}), 400
 
     print(f"Received username: {username}")
+    resultSmoker=""
+    if username=="test1":
+        resultSmoker=smokerALgo()
+    else:
+        resultSmoker=smokerALgo()
     counter=0
     tempList=[]
     print(smokerALgo())
-    for i in range(1,2):
-        file_name="image{0}.jpg".format(i)
-        answer=model.predict(file_name, confidence=40, overlap=30).json()
-        if(len(str(answer['predictions']))>2):
-            print("#@")
-            model.predict("image{0}.jpg".format(i), confidence=30, overlap=30).save("answer{0}.jpg".format(counter))
-            with open("answer{0}.jpg".format(counter), "rb") as image_file:
-                encoded_string = base64.b64encode(image_file.read()).decode()
-                tempList.append(encoded_string)
-    #with open('encoded_string.txt', 'w') as file:
-    #    file.write(encoded_string)
+    for data in range(len(resultSmoker[0])):
+        file_name=data[2]
+        encoded_string = base64.b64encode(file_name.read()).decode()
+        tempList.append(encoded_string)
+
     return jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList)}), 200
 
 
