@@ -36,7 +36,7 @@ function Instagram() {
               <img
                 key={index}
                 src={`data:image/png;base64,${base64String}`}
-                alt={`Image ${index + 1}`}
+                alt={`Returned File ${index + 1}`}
               />
             ))}
           </div>
