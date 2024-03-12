@@ -3,7 +3,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AgreementPopup from '../components/AgreementPopup';
-import '../components/stylez.css';
 import Button from '../components/Button';
 
 function Image() {
@@ -117,7 +116,7 @@ function Image() {
                 setUploadedImage(event.target.files[0]);
               }}
             />
-            <div style={{'display': 'flex', 'justify-content': 'center'}}>
+            <div style={{'display': 'flex', 'justify-content': 'center', paddingBottom: "70px"}}>
               <Button theme='red' onClick={() => { setUploadedImage(null); setImageWindow(0); }}>Remove</Button>
               <Button onClick={() => { setImageWindow(2); handleUpload(); }}>Upload</Button>
             </div>

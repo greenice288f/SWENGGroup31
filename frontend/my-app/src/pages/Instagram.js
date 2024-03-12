@@ -53,11 +53,12 @@ function Instagram() {
             <Header />
             <AgreementPopup />
             <section>
-                <div class='about-col'
+                <div 
                     style={{
-                        display: 'inline-block',
+                        marginTop: "30px",
                         textAlign: "center",
                         width: "100%",
+                        padding: "120px 0px"
                     }}>
                     <h1>Enter an instagram username to determine smoker status</h1>
                     {page ===0?(

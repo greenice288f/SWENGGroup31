@@ -13,8 +13,8 @@ function Main () {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                paddingTop: 130, /* Remove later -> made for demo sake*/
-                paddingBottom: 250, /* Remove later -> made for demo sake*/
+                paddingTop: "130px", /* Remove later -> made for demo sake*/
+                paddingBottom: "300px", /* Remove later -> made for demo sake*/
                 justifyContent: 'center',
             }}>
                 <h1>Welcome!</h1>
