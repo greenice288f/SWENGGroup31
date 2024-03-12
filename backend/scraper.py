@@ -121,6 +121,12 @@ def instagram_scrape_comments(driver: webdriver.Chrome, url: str) -> list[str]:
         pass # No comment
     return comments
 
+# Write comments to a text file
+def write_comments_to_file(comments):
+    with open('comments.txt', 'w', encoding='utf-8') as file:
+        for comment in comments:
+            file.write(comment + '\n')
+
 
 # Get all images from the post with the given url
 def instagram_scrape_images(driver: webdriver.Chrome, url: str, tag: str) -> list:
@@ -151,11 +157,13 @@ def instagram_scrape_user(driver: webdriver.Chrome, username: str):
     comments = []
     images = []
 
-    # for post in posts:
-    #     comments.extend(instagram_scrape_comments(driver, post))
+    for post in posts:
+        comments.extend(instagram_scrape_comments(driver, post))
     #     images.extend(instagram_scrape_images(driver, post, 'smoking'))
-    
+
+    write_comments_to_file(comments)
     download_instagram_posts(posts)
+
 
     return comments, images
 
@@ -222,8 +230,7 @@ def main():
     driver = get_webdriver()
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-    print(instagram_scrape_user(driver, 'almost_konstantin')) # will have to change to username supplied by the user
-
+    print(instagram_scrape_user(driver, '')) # will have to change to username supplied by the user
     driver.quit()
 
 if __name__ == '__main__':
