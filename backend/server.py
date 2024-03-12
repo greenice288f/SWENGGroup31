@@ -3,13 +3,15 @@ from flask import Flask, jsonify,request
 from flask_cors import CORS  # Comment out for deployment
 from PIL import Image
 import base64
-from roboflow import Roboflow
+#from roboflow import Roboflow
 import cv2
 import json
+from smokerAlgo import smokerALgo
+import os
 
-rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
-project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
-model = project.version(3).model
+#rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
+#project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
+#model = project.version(3).model
 app = Flask(__name__)
 CORS(app)  # Comment out for deployment
 
@@ -38,35 +40,41 @@ def handle_user_input():
         return jsonify({'error': 'Missing username'}), 400
 
     print(f"Received username: {username}")
+    resultSmoker=""
+    if username=="test1":
+        resultSmoker=smokerALgo("test1")
+    elif(username=="test2"):
+        resultSmoker=smokerALgo("test2")
+    else:
+        resultSmoker=smokerALgo("test3")
     counter=0
     tempList=[]
-    for i in range(1,4):
-        file_name="image{0}.jpg".format(i)
-        answer=model.predict(file_name, confidence=40, overlap=30).json()
-        if(len(str(answer['predictions']))>2):
-            print("#@")
-            model.predict("image{0}.jpg".format(i), confidence=30, overlap=30).save("answer{0}.jpg".format(counter))
-            with open("answer{0}.jpg".format(counter), "rb") as image_file:
-                encoded_string = base64.b64encode(image_file.read()).decode()
-                tempList.append(encoded_string)
-    #with open('encoded_string.txt', 'w') as file:
-    #    file.write(encoded_string)
-    print(len(tempList))
-    return jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList)}), 200
+    for data in resultSmoker[0]:
+        print(data)
+        file_name = data[len(data)-1]
+        if not os.path.isfile(file_name):
+            print(f"File does not exist: {file_name}")
+            continue
+        encoded_string = ""
+        with open(file_name, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode()
+        tempList.append(encoded_string)
+
+    return jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
 
-@app.route('/api/upload', methods=['POST'])
-def upload_image():
-    todo_data = request.get_json()
-    base64_to_image(todo_data['lmao'], 'output.jpg')
-    answer=model.predict("output.jpg", confidence=40, overlap=30).json()
-    model.predict("output.jpg", confidence=30, overlap=30).save("answer.jpg")
-    with open("answer.jpg", "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode()
-    with open('encoded_string.txt', 'w') as file:
-        file.write(encoded_string)
-    print('sending reply all done')
-    return jsonify({'data':answer,'image':encoded_string}),201
+#@app.route('/api/upload', methods=['POST'])
+#def upload_image():
+#    todo_data = request.get_json()
+#    base64_to_image(todo_data['lmao'], 'output.jpg')
+#    answer=model.predict("output.jpg", confidence=40, overlap=30).json()
+#    model.predict("output.jpg", confidence=30, overlap=30).save("answer.jpg")
+#    with open("answer.jpg", "rb") as image_file:
+#        encoded_string = base64.b64encode(image_file.read()).decode()
+#    with open('encoded_string.txt', 'w') as file:
+#        file.write(encoded_string)
+#    print('sending reply all done')
+#    return jsonify({'data':answer,'image':encoded_string}),201
 
 def test_build():
     try:
