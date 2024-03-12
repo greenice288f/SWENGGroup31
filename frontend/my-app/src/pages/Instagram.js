@@ -66,6 +66,7 @@ function Instagram() {
                 </div>
               );
             })}
+
           </div>
           )
           setPage(1)
