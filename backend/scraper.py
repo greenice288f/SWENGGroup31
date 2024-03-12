@@ -20,7 +20,7 @@ def get_webdriver():
         # On Linux, install the driver with your regular package manager
         return webdriver.Chrome()
     else:
-        return webdriver.Chrome(service=Service('chromedriver.exe'))
+        return webdriver.Chrome(service=Service('./backend/chromedriver.exe'))
 
 
 # Click on the provided element. Retry 5 times, in case of ElementClickInterceptedException
@@ -230,7 +230,8 @@ def main():
     driver = get_webdriver()
     instagram_login(driver, "sweng_31", "WeLoveMacu1234?>")
 
-    print(instagram_scrape_user(driver, '')) # will have to change to username supplied by the user
+    print(instagram_scrape_user(driver, 'definitelynottollasvonadam')) # will have to change to username supplied by the user
+
     driver.quit()
 
 if __name__ == '__main__':
