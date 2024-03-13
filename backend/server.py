@@ -97,12 +97,13 @@ def test_build():
     except Exception as e:
         print(f"Build failed: {str(e)}")
         return False
+
 #epic comment
 #also epic comment
 #this is an epic comment
-
 def epic_comment():
     print("epic comment")
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--build-test', action='store_true')
