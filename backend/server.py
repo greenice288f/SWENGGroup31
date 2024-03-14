@@ -74,8 +74,8 @@ def instagram_redirect():
     return flask.redirect('/instagram')
 
 
-@app.route('/api/instagram-scrape')
-def instagram_scrape():
+@app.route('/api/instagram-analysis')
+def instagram_analysis():
     try:
         user_id = flask.session['instagram_user_id']
         access_token = flask.session['instagram_access_token']
@@ -85,6 +85,12 @@ def instagram_scrape():
 
     print(comments)
     instagram_api.download_images(assets, f'images{user_id}')
+
+    # TODO: Here you want to do something
+    # TODO: Analyse the images
+    # TODO: Analyse the comments
+    # TODO: Prepare a response for the front-end
+
     return flask.jsonify({'success': True})
 
 
