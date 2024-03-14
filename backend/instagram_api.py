@@ -13,13 +13,13 @@ _client_secret = 'a7746d46ad0cc8572acb1757e50d169f'
 # Obtains the user id and the access token from Instagram.
 # Arguments:
 #   - code: the authentication code we got from Instagram
-#   - host: the host header (to know if we're running on localhost)
+#   - host: the host header (to know if we're running on localhost or on the server)
 # Return value:
 #   - a tuple of two strings:
 #       1. the user id
 #       2. the access token
 def get_credentials(code: str, host: str) -> tuple[str, str]:
-    origin = 'http://localhost:5000' if 'localhost' in host else 'https://trinity.richardblazek.com'
+    origin = 'https://trinity.richardblazek.com' if 'trinity' in host else 'http://localhost:5000'
     result = requests.post('https://api.instagram.com/oauth/access_token', data = {
         'client_id': _client_id,
         'client_secret': _client_secret,
