@@ -81,6 +81,7 @@ def instagram_scrape():
     user_id = flask.session['instagram_user_id']
     access_token = flask.session['instagram_access_token']
     assets, comments = instagram_api.get_media(user_id, access_token)
+    print(comments)
     instagram_api.download_images(assets, f'images{user_id}')
     return 'All good'
 
