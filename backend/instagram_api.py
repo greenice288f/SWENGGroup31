@@ -22,16 +22,22 @@ def get_credentials(code: str) -> tuple[str, str]:
     }).json()
     return str(result['user_id']), result['access_token']
 
-def _get_media_by_id(media_id, access_token) -> list[tuple[str, str]]:
-    media = requests.get(f'https://graph.instagram.com/v19.0/{media_id}?fields=id,media_type,media_url&access_token={access_token}').json()
-    if media['media_type'] != 'CAROUSEL_ALBUM':
-        return [media]
-    
-    children = requests.get(f'https://graph.instagram.com/v19.0/{media_id}/children?fields=id,media_type,media_url&access_token={access_token}').json()
-    return children['data']
+def _get_media_by_id(media_id, access_token) -> tuple[list[str], str]:
+    media = requests.get(f'https://graph.instagram.com/v19.0/{media_id}?fields=id,media_type,caption,media_url&access_token={access_token}').json()
+    caption = media.get('caption') or ''
 
-def get_media(user_id, access_token):
+    if media['media_type'] == 'IMAGE':
+        return [media['media_url']], caption
+    elif media['media_type'] == 'VIDEO':
+        return [], caption
+
+    children = requests.get(f'https://graph.instagram.com/v19.0/{media_id}/children?fields=id,media_type,media_url&access_token={access_token}').json()
+    return [child['media_url'] for child in children['data'] if child['media_type'] == 'IMAGE'], caption
+
+def get_data(user_id, access_token):
     result = requests.get(f'https://graph.instagram.com/v19.0/{user_id}?fields=id,username,media&access_token={access_token}').json()
     media_ids = [m['id'] for m in result['media']['data']]
-    media = [m for media_id in media_ids for m in _get_media_by_id(media_id, access_token)]
-    return media
+    media = [_get_media_by_id(media_id, access_token) for media_id in media_ids]
+    comments = [comment for _, comment in media]
+    urls = [url for urllist, _ in media for url in urllist]
+    return urls, comments
