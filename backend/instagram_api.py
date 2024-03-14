@@ -1,5 +1,7 @@
 import requests
 import urllib.parse
+import urllib.request
+import os
 
 
 _client_id = '427613722975596'
@@ -22,22 +24,26 @@ def get_credentials(code: str) -> tuple[str, str]:
     }).json()
     return str(result['user_id']), result['access_token']
 
-def _get_media_by_id(media_id, access_token) -> tuple[list[str], str]:
+def _get_media_by_id(media_id, access_token) -> tuple[list[tuple[str, str]], str]:
     media = requests.get(f'https://graph.instagram.com/v19.0/{media_id}?fields=id,media_type,caption,media_url&access_token={access_token}').json()
     caption = media.get('caption') or ''
 
-    if media['media_type'] == 'IMAGE':
-        return [media['media_url']], caption
-    elif media['media_type'] == 'VIDEO':
-        return [], caption
+    if media['media_type'] in {'IMAGE', 'VIDEO'}:
+        return [(media['media_url'], media['media_type'])], caption
 
     children = requests.get(f'https://graph.instagram.com/v19.0/{media_id}/children?fields=id,media_type,media_url&access_token={access_token}').json()
-    return [child['media_url'] for child in children['data'] if child['media_type'] == 'IMAGE'], caption
+    return [(child['media_url'], media['media_type']) for child in children['data']], caption
 
-def get_data(user_id, access_token):
+def get_media(user_id, access_token) -> tuple[list[tuple[str, str]], list[str]]:
     result = requests.get(f'https://graph.instagram.com/v19.0/{user_id}?fields=id,username,media&access_token={access_token}').json()
     media_ids = [m['id'] for m in result['media']['data']]
     media = [_get_media_by_id(media_id, access_token) for media_id in media_ids]
     comments = [comment for _, comment in media]
-    urls = [url for urllist, _ in media for url in urllist]
-    return urls, comments
+    assets = [asset for lst, _ in media for asset in lst]
+    return assets, comments
+
+def download_images(assets, directory):
+    os.makedirs(directory, exist_ok=True)
+    for i, (media_url, media_type) in enumerate(assets):
+        if media_type == 'IMAGE':
+            urllib.request.urlretrieve(media_url, os.path.join(directory, f'img{i}.jpg'))

@@ -80,8 +80,9 @@ def instagram_redirect():
 def instagram_scrape():
     user_id = flask.session['instagram_user_id']
     access_token = flask.session['instagram_access_token']
-    urls, comments = instagram_api.get_data(user_id, access_token)
-    return flask.jsonify({'urls': urls, 'comments': comments})
+    assets, comments = instagram_api.get_media(user_id, access_token)
+    instagram_api.download_images(assets, f'images{user_id}')
+    return 'All good'
 
 #@app.route('/api/upload', methods=['POST'])
 #def upload_image():
