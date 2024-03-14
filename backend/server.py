@@ -68,7 +68,7 @@ def handle_user_input():
 
 @app.route('/api/instagram-redirect')
 def instagram_redirect():
-    user_id, access_token = instagram_api.get_credentials(request.args['code'])
+    user_id, access_token = instagram_api.get_credentials(request.args['code'], request.headers['Host'])
     flask.session['instagram_user_id'] = user_id
     flask.session['instagram_access_token'] = access_token
     return flask.redirect('/instagram')
@@ -79,12 +79,9 @@ def instagram_analysis():
     try:
         user_id = flask.session['instagram_user_id']
         access_token = flask.session['instagram_access_token']
-        assets, comments = instagram_api.get_media(user_id, access_token)
+        instagram_api.download_media(user_id, access_token, 'downloads')
     except:
         return flask.jsonify({'success': False})
-
-    print(comments)
-    instagram_api.download_images(assets, f'images{user_id}')
 
     # TODO: Here you want to do something
     # TODO: Analyse the images
