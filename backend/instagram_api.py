@@ -21,3 +21,17 @@ def get_credentials(code: str) -> tuple[str, str]:
         'grant_type': 'authorization_code'
     }).json()
     return str(result['user_id']), result['access_token']
+
+def _get_media_by_id(media_id, access_token) -> list[tuple[str, str]]:
+    media = requests.get(f'https://graph.instagram.com/v19.0/{media_id}?fields=id,media_type,media_url&access_token={access_token}').json()
+    if media['media_type'] != 'CAROUSEL_ALBUM':
+        return [media]
+    
+    children = requests.get(f'https://graph.instagram.com/v19.0/{media_id}/children?fields=id,media_type,media_url&access_token={access_token}').json()
+    return children['data']
+
+def get_media(user_id, access_token):
+    result = requests.get(f'https://graph.instagram.com/v19.0/{user_id}?fields=id,username,media&access_token={access_token}').json()
+    media_ids = [m['id'] for m in result['media']['data']]
+    media = [m for media_id in media_ids for m in _get_media_by_id(media_id, access_token)]
+    return media
