@@ -65,9 +65,6 @@ def handle_user_input():
 
     return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
-@app.route('/api/instagram-login')
-def instagram_login():
-    return flask.redirect(instagram_api.REDIRECT_URL)
 
 @app.route('/api/instagram-redirect')
 def instagram_redirect():
@@ -76,14 +73,20 @@ def instagram_redirect():
     flask.session['instagram_access_token'] = access_token
     return flask.redirect('/instagram')
 
+
 @app.route('/api/instagram-scrape')
 def instagram_scrape():
-    user_id = flask.session['instagram_user_id']
-    access_token = flask.session['instagram_access_token']
-    assets, comments = instagram_api.get_media(user_id, access_token)
+    try:
+        user_id = flask.session['instagram_user_id']
+        access_token = flask.session['instagram_access_token']
+        assets, comments = instagram_api.get_media(user_id, access_token)
+    except:
+        return flask.jsonify({'success': False})
+
     print(comments)
     instagram_api.download_images(assets, f'images{user_id}')
-    return 'All good'
+    return flask.jsonify({'success': True})
+
 
 #@app.route('/api/upload', methods=['POST'])
 #def upload_image():

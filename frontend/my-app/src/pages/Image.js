@@ -33,7 +33,8 @@ function Image() {
         const image = {
           lmao: base64Image
         };
-        const response = await fetch(`${window.location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : window.location.origin}/api/upload`, {
+        const origin = window.location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : window.location.origin;
+        const response = await fetch(`${origin}/api/upload`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
