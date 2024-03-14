@@ -3,9 +3,20 @@ import urllib.parse
 import urllib.request
 import os
 
+
+# Client ID and client secret for the Instagram API
 _client_id = '427613722975596'
 _client_secret = 'a7746d46ad0cc8572acb1757e50d169f'
 
+
+# Obtains the user id and the access token from Instagram.
+# Arguments:
+#   - code: the authentication code we got from Instagram
+#   - host: the host header (to know if we're running on localhost)
+# Return value:
+#   - a tuple of two strings:
+#       1. the user id
+#       2. the access token
 def get_credentials(code: str, host: str) -> tuple[str, str]:
     origin = 'http://localhost:5000' if 'localhost' in host else 'https://trinity.richardblazek.com'
     result = requests.post('https://api.instagram.com/oauth/access_token', data = {
@@ -17,6 +28,16 @@ def get_credentials(code: str, host: str) -> tuple[str, str]:
     }).json()
     return str(result['user_id']), result['access_token']
 
+
+# Fetches data about the specified media
+# Arguments:
+#   - media_id: the id of the media we're interested in
+#   - access_token: the access token (returned from get_credentials)
+# Return value:
+#   - a list of tuples of three strings:
+#       1. the url of the given image or video file
+#       2. the media type (IMAGE or VIDEO)
+#       3. the comment of the post's author
 def _get_media_by_id(media_id: str, access_token: str) -> list[tuple[str, str, str]]:
     media = requests.get(f'https://graph.instagram.com/v19.0/{media_id}?fields=media_type,caption,media_url&access_token={access_token}').json()
     caption = media.get('caption') or ''
@@ -27,10 +48,21 @@ def _get_media_by_id(media_id: str, access_token: str) -> list[tuple[str, str, s
     children = requests.get(f'https://graph.instagram.com/v19.0/{media_id}/children?fields=media_type,media_url&access_token={access_token}').json()
     return [(child['media_url'], media['media_type'], caption) for child in children['data']]
 
+
+# Fetches data about all media of the given user
+# Arguments:
+#   - user_id: the id of the user whose media we're interested in
+#   - access_token: the access token (returned from get_credentials)
+# Return value:
+#   - a list of tuples of three strings:
+#       1. the url of the given image or video file
+#       2. the media type (IMAGE or VIDEO)
+#       3. the comment of the post's author
 def _get_media(user_id: str, access_token: str) -> list[tuple[str, str, str]]:
     result = requests.get(f'https://graph.instagram.com/v19.0/{user_id}?fields=media&access_token={access_token}').json()
     ids = [str(m['id']) for m in result['media']['data']]
     return [media for media_id in ids for media in _get_media_by_id(media_id, access_token)]
+
 
 def _save_media_to(media: list[tuple[str, str, str]], directory: str):
     os.makedirs(directory, exist_ok=True)
@@ -40,6 +72,6 @@ def _save_media_to(media: list[tuple[str, str, str]], directory: str):
             with open(os.path.join(directory, f'post{i}.txt'), mode='w') as comment_file:
                 comment_file.write(comment)
 
+
 def download_media(user_id: str, access_token: str, directory: str):
-    media = _get_media(user_id, access_token)
-    _save_media_to(media, directory)
+    _save_media_to(_get_media(user_id, access_token), directory)

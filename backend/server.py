@@ -66,6 +66,9 @@ def handle_user_input():
     return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
 
+# After user agrees (on Instagram) to give us access, Instagram redirects them to this endpoint.
+# This endpoint obtains the user's id and the access token, stores them in the Flask session and
+# redirects them to the /instagram page.
 @app.route('/api/instagram-redirect')
 def instagram_redirect():
     user_id, access_token = instagram_api.get_credentials(request.args['code'], request.headers['Host'])
@@ -74,6 +77,9 @@ def instagram_redirect():
     return flask.redirect('/instagram')
 
 
+# Our Instagram Analysis sends a request to this endpoint to download user's images and comments,
+# analyse them and return the result of that analysis.
+# TODO: Actually analyse them and return the result of the analysis.
 @app.route('/api/instagram-analysis')
 def instagram_analysis():
     try:
@@ -83,7 +89,6 @@ def instagram_analysis():
     except:
         return flask.jsonify({'success': False})
 
-    # TODO: Here you want to do something
     # TODO: Analyse the images
     # TODO: Analyse the comments
     # TODO: Prepare a response for the front-end
