@@ -2,6 +2,7 @@ import requests
 import urllib.parse
 import urllib.request
 import os
+import shutil
 
 
 # Client ID and client secret for the Instagram API
@@ -64,7 +65,13 @@ def _get_media(user_id: str, access_token: str) -> list[tuple[str, str, str]]:
     return [media for media_id in ids for media in _get_media_by_id(media_id, access_token)]
 
 
+# Saves all images and comments to the given directory
+# Arguments:
+#   - media: a list of tuples of urls, media types and comments
+#   - directory: the destination directory where we want to save files
+# Return value: None
 def _save_media_to(media: list[tuple[str, str, str]], directory: str):
+    shutil.rmtree(directory, ignore_errors=True)
     os.makedirs(directory, exist_ok=True)
     for i, (media_url, media_type, comment) in enumerate(media):
         if media_type == 'IMAGE':
@@ -73,5 +80,10 @@ def _save_media_to(media: list[tuple[str, str, str]], directory: str):
                 comment_file.write(comment)
 
 
+# Downloads all media of the given user to the given directory.
+# Arguments:
+#   - user_id: the id of the user whose media we're interested in
+#   - access_token: the access token (returned from get_credentials)
+#   - directory: the destination directory where we want to save files
 def download_media(user_id: str, access_token: str, directory: str):
     _save_media_to(_get_media(user_id, access_token), directory)
