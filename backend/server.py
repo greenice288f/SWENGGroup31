@@ -1,5 +1,6 @@
 import argparse
-from flask import Flask, jsonify,request
+from flask import request
+import flask
 from flask_cors import CORS  # Comment out for deployment
 from PIL import Image
 import base64
@@ -8,11 +9,13 @@ import cv2
 import json
 from smokerAlgo import smokerALgo
 import os
+import instagram_api
 
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
-app = Flask(__name__)
+app = flask.Flask(__name__)
+app.secret_key = os.urandom(8)
 CORS(app)  # Comment out for deployment
 
 def base64_to_image(base64_data, output_filename):
@@ -31,13 +34,13 @@ def handle_user_input():
     print(input_data)
     if not input_data:
         # If there's no data, or it's not JSON, return an error
-        return jsonify({'error': 'No data provided'}), 400
+        return flask.jsonify({'error': 'No data provided'}), 400
 
     # Assuming the key for the input data is 'username', adjust as necessary
     username = input_data.get('username')
     if not username:
         # If the expected key isn't found in the JSON, return an error
-        return jsonify({'error': 'Missing username'}), 400
+        return flask.jsonify({'error': 'Missing username'}), 400
 
     print(f"Received username: {username}")
     resultSmoker=""
@@ -60,8 +63,27 @@ def handle_user_input():
             encoded_string = base64.b64encode(image_file.read()).decode()
         tempList.append(encoded_string)
 
-    return jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
+@app.route('/api/instagram-login')
+def instagram_login():
+    return flask.redirect(instagram_api.REDIRECT_URL)
+
+@app.route('/api/instagram-redirect')
+def instagram_redirect():
+    user_id, access_token = instagram_api.get_credentials(request.args['code'])
+    flask.session['instagram_user_id'] = user_id
+    flask.session['instagram_access_token'] = access_token
+    return flask.redirect('/instagram')
+
+@app.route('/api/instagram-scrape')
+def instagram_scrape():
+    user_id = flask.session['instagram_user_id']
+    access_token = flask.session['instagram_access_token']
+    assets, comments = instagram_api.get_media(user_id, access_token)
+    print(comments)
+    instagram_api.download_images(assets, f'images{user_id}')
+    return 'All good'
 
 #@app.route('/api/upload', methods=['POST'])
 #def upload_image():
@@ -74,7 +96,7 @@ def handle_user_input():
 #    with open('encoded_string.txt', 'w') as file:
 #        file.write(encoded_string)
 #    print('sending reply all done')
-#    return jsonify({'data':answer,'image':encoded_string}),201
+#    return flask.jsonify({'data':answer,'image':encoded_string}),201
 
 def test_build():
     try:
@@ -84,12 +106,13 @@ def test_build():
     except Exception as e:
         print(f"Build failed: {str(e)}")
         return False
+
 #epic comment
 #also epic comment
 #this is an epic comment
-
 def epic_comment():
     print("epic comment")
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--build-test', action='store_true')
