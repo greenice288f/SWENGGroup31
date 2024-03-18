@@ -19,7 +19,7 @@ _client_secret = 'a7746d46ad0cc8572acb1757e50d169f'
 #       1. the user id
 #       2. the access token
 def get_credentials(code: str, host: str) -> tuple[str, str]:
-    origin = 'https://trinity.richardblazek.com' if 'trinity' in host else 'http://localhost:5000'
+    origin = 'https://trinity.richardblazek.com' if 'trinity' in host else 'https://localhost:5000'
     result = requests.post('https://api.instagram.com/oauth/access_token', data = {
         'client_id': _client_id,
         'client_secret': _client_secret,

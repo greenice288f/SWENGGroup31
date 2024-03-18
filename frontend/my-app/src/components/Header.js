@@ -5,7 +5,7 @@ import logo from './logo.png';
 
 
 function Header() {
-  const origin = window.location.hostname === 'localhost' ? 'http://localhost:5000' : window.location.origin;
+  const origin = window.location.hostname === 'localhost' ? 'https://localhost:5000' : window.location.origin;
   const redirectUri = encodeURIComponent(`${origin}/api/instagram-redirect`)
   const instagramUrl = `https://api.instagram.com/oauth/authorize?client_id=427613722975596&redirect_uri=${redirectUri}&scope=user_profile,user_media&response_type=code`;
 
