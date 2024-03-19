@@ -1,0 +1,18 @@
+.title-container {
+    width: 60%;
+    padding: 25px;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    position: absolute;
+    left: 20%;
+}
+
+.title-card {
+    padding: 20px;
+    margin: 20px;
+    background-color: rgb(0, 0, 0, 0.05);
+    border-radius: 10px;
+    outline: rgb(0, 0, 0, 0.2) ridge 2px;
+}
