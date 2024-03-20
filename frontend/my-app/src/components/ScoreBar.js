@@ -2,7 +2,7 @@ import "./ScoreBar.css";
 
 function ScoreBar({ score }) {
   const score_percent = score + "%";
-  const score_colour = score < 30 ? "red" : score < 60 ? "orange" : "green";
+  const score_colour = score > 60 ? "red" : score > 20 ? "orange" : "green";
   return (
     <>
       <div class="score-bar">
