@@ -5,7 +5,7 @@ svg {
     place-items: center;
 }
 
-.container {
+.ring-container {
     display: flex;
     flex-direction: row;
     text-align: center;

@@ -5,7 +5,7 @@ function ScoreRing({ score }) {
   let ringColour = score > 60 ? "red" : score > 20 ? "orange" : "green";
   const dashOffset = 365 - adjustedScore * 0.01 * 255;
   return (
-    <div class="container">
+    <div class="ring-container">
       <svg>
         <circle class="bg" cx="50%" cy="50%" r="25%" />
         <circle
