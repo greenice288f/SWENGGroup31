@@ -85,7 +85,6 @@ function Image() {
           <div class="about-col">
             <h1>{PAGE_TITLE}</h1>
           </div>
-          <Button>LOGIN TO INSTAGRAM</Button>
         </div>
 
         {imageWindow === 0 ? (
