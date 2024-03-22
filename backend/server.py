@@ -71,10 +71,11 @@ def handle_user_input():
 # redirects them to the /instagram page.
 @app.route('/api/instagram-redirect')
 def instagram_redirect():
-    user_id, access_token = instagram_api.get_credentials(request.args['code'], request.headers['Host'])
+    on_server = 'trinity' in request.headers['Host']
+    user_id, access_token = instagram_api.get_credentials(code=request.args['code'], server=on_server)
     flask.session['instagram_user_id'] = user_id
     flask.session['instagram_access_token'] = access_token
-    return flask.redirect('/instagram')
+    return flask.redirect('/instagram' if on_server else 'http://localhost:3000/instagram')
 
 
 # Our Instagram Analysis sends a request to this endpoint to download user's images and comments,
