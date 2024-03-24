@@ -1,0 +1,33 @@
+svg {
+    width: 50%;
+    margin: 5%;
+    display: grid;
+    place-items: center;
+}
+
+.ring-container {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+h1 {
+    color: black;
+}
+
+.bg {
+    fill: none;
+    stroke-width: 10px;
+    stroke: rgba(0, 0, 0, 0.2);
+}
+
+.meter {
+    fill: none;
+    stroke-width: 10px;
+    stroke-linecap: round;
+    stroke-dasharray: 360;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}

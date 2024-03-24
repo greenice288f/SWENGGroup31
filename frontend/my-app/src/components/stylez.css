@@ -1,45 +1,49 @@
-
-*{
+* {
     margin: 0;
     padding: 0;
-    font-family: 'Lato', sans-serif;
+    font-family: "Lato", sans-serif;
 }
-.header{
+
+.header {
     min-height: 60vh;
     width: 100%;
-    background-image: linear-gradient(rgba(4,9,30,0.7), rgba(4,9,30,0.7));
+    background-image: linear-gradient(rgba(4, 9, 30, 1), rgba(4, 9, 30, 0));
     background-position: center;
     background-size: cover;
     position: relative;
 }
 
-
-nav{
+nav {
     display: flex;
     padding: 2% 6%;
     justify-content: space-between;
     align-items: center;
 }
-nav img{
+
+nav img {
     width: 200px;
 }
-.navlinks{
+
+.navlinks {
     flex: 1;
-    text-align: right; 
+    text-align: right;
 }
-.navlinks ul li{
+
+.navlinks ul li {
     list-style: none;
     display: inline-block;
     padding: 5px 10px;
     position: relative;
 }
-.navlinks ul li a{
+
+.navlinks ul li a {
     color: #fff;
     text-decoration: none;
     font-size: 20px;
 }
-.navlinks ul li::after{
-    content: '';
+
+.navlinks ul li::after {
+    content: "";
     width: 0%;
     height: 2px;
     background: #1b1a7c;
@@ -47,41 +51,46 @@ nav img{
     margin: auto;
     transition: 0.5s;
 }
-.navlinks ul li:hover::after{
+
+.navlinks ul li:hover::after {
     width: 100%;
 }
-.textbox{
+
+.textbox {
     width: 90%;
     color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     text-align: center;
 }
-.textbox h1{
+
+.textbox h1 {
     font-size: 62px;
 }
-.textbox{
+
+.textbox {
     margin: 10px 5 50px;
     font-size: 14px;
     color: #fff;
 }
-.addFile{
+
+.addFile {
     display: inline-block;
     text-decoration: none;
     color: black;
     border: 3px solid black;
-    padding: 9.5px 0px ;
+    padding: 9.5px 0px;
     font-size: 15px;
     background: transparent;
     position: center;
     cursor: pointer;
     border-radius: 10px;
-    padding: 10px
+    padding: 10px;
 }
 
-.submit-btn{
+.submit-btn {
     display: inline-block;
     text-decoration: none;
     color: black;
@@ -91,15 +100,15 @@ nav img{
     background: transparent;
     position: center;
     cursor: pointer;
-  
-
 }
-.submit-btn:hover{
+
+.submit-btn:hover {
     border: 4px solid #0cd289;
     background: #43f436;
     transition: 0.75s;
 }
-.remove-btn{
+
+.remove-btn {
     display: inline-block;
     text-decoration: none;
     color: black;
@@ -109,77 +118,88 @@ nav img{
     background: transparent;
     position: center;
     cursor: pointer;
-  
-
 }
-.remove-btn:hover{
+
+.remove-btn:hover {
     border: 4px solid #f44336;
     background: #f44336;
     transition: 0.75s;
 }
+
 /*about us page*/
-.sub-header{
+.sub-header {
     height: 12vh;
     width: 100%;
-    background-image: linear-gradient(rgba(133, 133, 143, 0.7),rgba(209, 212, 221, 0.7)),url(./clouds.jpg);
+    background-image: linear-gradient(
+            rgba(133, 133, 143, 0),
+            rgba(255, 255, 255, 1)
+        ),
+        url(./clouds.jpg);
     background-position: center;
     background-size: auto;
     text-align: center;
     color: #000000;
 }
-.about-us{
+
+.about-us {
     width: 80%;
     margin: auto;
     padding-top: 80px;
     padding-bottom: 50px;
     text-align: center;
 }
-.about-col{
+
+.about-col {
     flex-basis: 48%;
     padding: 30px 10px;
 }
-.about-col img{
+
+.about-col img {
     width: 100%;
 }
-.about-col h1{
+
+.about-col h1 {
     padding-top: 5;
 }
-.about-col p{
+
+.about-col p {
     padding: 15px 0 25px;
 }
-.red-btn{
+
+.red-btn {
     border: 1px solid #f44336;
     background: transparent;
     color: #f44336;
     position: relative;
 }
-.red-btn:hover{
+
+.red-btn:hover {
     color: #fff;
 }
-h2 {
+
+/* h2 {
     display: inline-block;
     text-decoration: none;
-    color:black;
+    color: black;
     border: 3px solid black;
     padding: 12px 34px;
     font-size: 15px;
-   
+
     position: relative;
     cursor: pointer;
-}
-h3{
+} */
+
+h3 {
     font-size: 20px;
     text-align: left;
-
 }
-.faq
- {
+
+.faq {
     text-align: left;
     color: #000000;
-    
 }
 
-.list{
+.list {
     display: inline-block;
     text-decoration: none;
     color: black;
@@ -188,20 +208,20 @@ h3{
     font-size: 15px;
     background: transparent;
     position: center;
-    cursor: pointer;}
-
-::placeholder{
-    color:black;
+    cursor: pointer;
 }
+
+::placeholder {
+    color: black;
+}
+
 /* Dropdown Button */
 
-  p{
-      text-align: left;
-  }
+p {
+    text-align: left;
+}
 
-.hover-btn 
-   
-body {
+.hover-btn body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -227,11 +247,22 @@ body {
 }
 
 .hover-btn:before {
-    content: '';
-    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    content: "";
+    background: linear-gradient(
+        45deg,
+        #ff0000,
+        #ff7300,
+        #fffb00,
+        #48ff00,
+        #00ffd5,
+        #002bff,
+        #7a00ff,
+        #ff00c8,
+        #ff0000
+    );
     position: absolute;
     top: -2px;
-    left:-2px;
+    left: -2px;
     background-size: 400%;
     z-index: -1;
     filter: blur(5px);
@@ -239,12 +270,12 @@ body {
     height: calc(100% + 4px);
     animation: glowing 20s linear infinite;
     opacity: 0;
-    transition: opacity .3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
     border-radius: 10px;
 }
 
 .hover-btn:active {
-    color: #000
+    color: #000;
 }
 
 .hover-btn:active:after {
@@ -257,7 +288,7 @@ body {
 
 .hover-btn:after {
     z-index: -1;
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 100%;
@@ -268,7 +299,15 @@ body {
 }
 
 @keyframes glowing {
-    0% { background-position: 0 0; }
-    50% { background-position: 400% 0; }
-    100% { background-position: 0 0; }
+    0% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 400% 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
 }

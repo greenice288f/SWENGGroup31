@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import AgreementPopup from '../components/AgreementPopup';
-import '../components/stylez.css';
 
 function Sentimental() {
     const [inputtedText, setInputtedText] = useState();
@@ -23,9 +22,7 @@ function Sentimental() {
                     textAlign: "center",
                     width: "100%",
                 }}>
-                <div class='about-col'>
-                    <h1>Sentiment Analysis</h1>
-                </div>
+                <h1>Sentiment Analysis</h1>
                 <InputForm inputFunction={setInputtedText} />
                 <div>
                     <button size='xl' onClick={handleAnalyze}>
@@ -37,13 +34,6 @@ function Sentimental() {
                 </div>
             </div>
             {/* temp links */}
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                'flex-wrap': 'wrap',
-                'padding-top': '20px'
-            }} />
             <Footer />
         </>
     );

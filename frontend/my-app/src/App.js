@@ -1,23 +1,16 @@
-import React from 'react';
-import Image from './pages/Image';
-import Sentimental from './pages/Sentimental';
-import Main from './pages/Main';
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-} from "react-router-dom";
-import Instagram from './pages/Instagram';
+import { Main, Image, Sentimental, Instagram, Report } from "./index";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <Router>
-        <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/image" element={<Image />} />
-            <Route path="/sentiment" element={<Sentimental />} />
-            <Route path="/instagram" element={<Instagram />} />
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/image" element={<Image />} />
+        <Route path="/sentiment" element={<Sentimental />} />
+        <Route path="/instagram" element={<Instagram />} />
+        <Route path="/report" element={<Report />} />
+      </Routes>
     </Router>
   );
 }
