@@ -1,11 +1,8 @@
 import argparse
 from flask import request
 import flask
-from flask_cors import CORS  # Comment out for deployment
-from PIL import Image
+from flask_cors import CORS
 import base64
-#from roboflow import Roboflow
-import cv2
 import json
 from smokerAlgo import smokerALgo
 import os
@@ -14,9 +11,14 @@ import instagram_api
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
+
+DEPLOYMENT = False # !!! REMEMBER TO CHANGE for deployment !!!
+
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(8)
-CORS(app)  # Comment out for deployment
+
+if not DEPLOYMENT:
+    CORS(app)
 
 def base64_to_image(base64_data, output_filename):
     try:
@@ -71,11 +73,10 @@ def handle_user_input():
 # redirects them to the /instagram page.
 @app.route('/api/instagram-redirect')
 def instagram_redirect():
-    on_server = 'trinity' in request.headers['Host']
-    user_id, access_token = instagram_api.get_credentials(code=request.args['code'], server=on_server)
+    user_id, access_token = instagram_api.get_credentials(code=request.args['code'], server=DEPLOYMENT)
     flask.session['instagram_user_id'] = user_id
     flask.session['instagram_access_token'] = access_token
-    return flask.redirect('/instagram' if on_server else 'http://localhost:3000/instagram')
+    return flask.redirect('/instagram' if DEPLOYMENT else 'http://localhost:3000/instagram')
 
 
 # Our Instagram Analysis sends a request to this endpoint to download user's images and comments,
@@ -136,4 +137,4 @@ if __name__ == '__main__':
         else:
             exit(1)
     else:
-        app.run(debug=True)
+        app.run(debug=True, ssl_context=('server.crt', 'server.key'))
