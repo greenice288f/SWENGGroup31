@@ -21,7 +21,7 @@ function Image() {
       };
       const origin =
         window.location.hostname === "localhost"
-          ? "http://127.0.0.1:5000"
+          ? "https://127.0.0.1:5000"
           : window.location.origin;
       const response = await fetch(`${origin}/api/upload`, {
         method: "POST",

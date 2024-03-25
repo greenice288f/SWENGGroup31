@@ -14,7 +14,7 @@ function Instagram() {
   const instagramAnalysis = async () => {
     console.log(inputtedText)
     try {
-      const origin = window.location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : window.location.origin;
+      const origin = window.location.hostname === 'localhost' ? 'https://127.0.0.1:5000' : window.location.origin;
       const response = await fetch(`${origin}/api/instagram-analysis`)
 
       if (response.ok) {
