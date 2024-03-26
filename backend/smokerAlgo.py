@@ -162,13 +162,19 @@ def smokerALgo(input):
             finalResult.append(catalogue[0])
 
             posts = []
-            with open(txt_name, "r") as file:
-                post = file.read()
-                posts.append(post)
-            text_score = text_analysis(posts)
+            posts_score = 0
+            for file in os.listdir(input):
+                with open(txt_name, "r") as file:
+                    post = file.read()
+                    posts.append(post)
 
-            if(text_score != 0):
-                counter *= text_score
+            if(len(posts) != 0):
+                text_analysis_results = text_analysis(posts)
+
+                avg_sent = text_analysis_results[1]
+                num_of_smoking_posts = text_analysis_results[0]
+
+                posts_score = avg_sent*(num_of_smoking_posts/len(posts))
         
         except FileNotFoundError as e:
             print(f"File not found: {e}")
@@ -177,7 +183,9 @@ def smokerALgo(input):
     finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
     res=counter/counterMax
 
-    return [finalResult,res]
+    smoking_score = res*posts_score
+
+    return [finalResult,smoking_score]
 if __name__ == "__main__":
     start_time = time.time()
     print(smokerALgo())
