@@ -3,57 +3,61 @@ import nltk
 #vader_lexicon is used for sentiment analysis and lemmatization
 nltk.download('vader_lexicon')
 #Used to preprocess text, a list of stop words e.g "and", "the", etc  
-nltk.download('stopwords')
-
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 #preloading stopwords to pass to the function
+nltk.download('stopwords')
+from nltk.corpus import stopwords
 stop_words = set(stopwords.words('english'))
-#Initialising the sentiment analyser
-sent_analyser = SentimentIntensityAnalyzer()
+stop_words.remove('not')  
+stop_words.remove('should')
+stop_words.remove('do')
+
 #Initialising the lemmatizer
 lemmatizer = WordNetLemmatizer()
 
-#Function which takes a list of of social media posts and returns a tuple of the smoking related posts with a postive sentiment and the ratio of said posts to the total posts
+class CustomSentimentAnalyzer(SentimentIntensityAnalyzer):
+    def polarities(self, text):
+        # Perform sentiment analysis
+        scores = self.polarity_scores(text)
+        anti_smoker_words = ["don't", "dont", "shouldn't", "shouldnt", "should not ","do not", "quit", "give up", "stop"]
+        # Adjust sentiment scores so that anti smoking phrases are counted as a negative sentiment
+        if any(word in text.lower() for word in anti_smoker_words):
+            scores['neg'] = max(scores['neg'], 0.5)  
+        return scores
+    
+#Initialising the sentiment analyser
+sent_analyser = CustomSentimentAnalyzer()
+
+#Function which takes a list of of social media posts and returns an ordered pair of 1. The rumber of posts about smoking and 2. The sentiment of the posts on a scale of -1(neg) to 1(pos) 
 def text_analysis (posts):
     #Opening the file of smoking related words and writing them to the set smoking_words
     smoking_words_file = 'smoking_related_words.txt'
     with open(smoking_words_file, 'r') as f:
         smoking_words = {word.strip() for word in f.readlines()}
 
-    #Iterating through each post and checking if it contains any smoking related words with the check_for_smoking words function, appending flagged posts to a list of flagged posts
-    smoking_flagged_posts = []
+    #Seeing if the posts is about smoking and if it is calculating the sentiment of said post
+    sentiment_scores = []
     for post in posts:
         if check_for_smoking_words(post, smoking_words):
-            smoking_flagged_posts.append(post)
+            post = pre_process_text(post)
+            sentiment_scores.append(sentiment_analyser(post))
 
-    #Cleaning up the smoking flagged posts for sentiment analysis using the pre_process_text function         
-    processed_smoking_posts = []
-    for post in smoking_flagged_posts:
-       processed_smoking_posts.append(pre_process_text(post))
+    #Averaging the sentiment of all posts about smoking 
+    if len(sentiment_scores) > 0:
+        avg_sentiment_score = sum(sentiment_scores) / len(sentiment_scores)
+    else:
+        avg_sentiment_score = 0
 
-    #Using the sentiment_analyser function to find the sentiment score of the posts, adding all post with a positive sentiment, i.e >0 to the list of postive sentiment posts
-    pos_sentiment_smoking_posts = []
-    for index, post in enumerate(processed_smoking_posts):
-        if sentiment_analyser(post) >=0:
-            pos_sentiment_smoking_posts.append(smoking_flagged_posts[index])
-
-    #Calculating the ratio of postive sentiment smoking related posts to the total amount of posts
-    ratio_of_pos_smoking_post = len(pos_sentiment_smoking_posts)/len(posts)
-    #Returning the ratio calculated above and the list of postive smoking related posts as a tuple 
-    return ratio_of_pos_smoking_post, pos_sentiment_smoking_posts
+    return avg_sentiment_score
 
 #Function takes a string as a parameter and returns a sentiment score for said post where 1= positive sentiment and 0 = neutral and -1 = negative
 def sentiment_analyser (post):
     #Using NLTKs sentiment analyser to get a sentiment score for the string parameter
-    scores = sent_analyser.polarity_scores(post)
+    scores = sent_analyser.polarities(post)
     #If the positive score is >0 then return 1 for a postive sentiment, el if  the neutral score  is >0 return 0; else return -1
-    print (post)
-    print(scores)
-    print("\n")
     if scores['pos'] > 0:
        return 1
     elif scores['neu'] > 0 and scores['neg'] == 0:
@@ -90,4 +94,6 @@ def pre_process_text(post):
     #Join the processed tokens into a single string and return said string
     processed_text = " ".join(lemmatized_tokens)
     return processed_text
-        
+
+
+
