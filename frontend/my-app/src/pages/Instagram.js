@@ -15,7 +15,7 @@ function Instagram() {
     console.log(inputtedText)
     try {
       const origin = window.location.hostname === 'localhost' ? 'https://127.0.0.1:5000' : window.location.origin;
-      const response = await fetch(`${origin}/api/instagram-analysis`)
+      const response = await fetch(`${origin}/api/instagram-analysis`,{mode: "cors"})
 
       if (response.ok) {
         const data = await response.json(); // Parse the response data

@@ -16,7 +16,8 @@ DEPLOYMENT = False # !!! REMEMBER TO CHANGE for deployment !!!
 
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(8)
-
+user_id=""
+access_token=""
 if not DEPLOYMENT:
     CORS(app)
 
@@ -73,9 +74,10 @@ def handle_user_input():
 # redirects them to the /instagram page.
 @app.route('/api/instagram-redirect')
 def instagram_redirect():
-    user_id, access_token = instagram_api.get_credentials(code=request.args['code'], server=DEPLOYMENT)
-    flask.session['instagram_user_id'] = user_id
-    flask.session['instagram_access_token'] = access_token
+    global user_id, access_token
+    localuser_id, localaccess_token = instagram_api.get_credentials(code=request.args['code'], server=DEPLOYMENT)
+    user_id=localuser_id
+    access_token=localaccess_token
     return flask.redirect('/instagram' if DEPLOYMENT else 'http://localhost:3000/instagram')
 
 
@@ -85,17 +87,26 @@ def instagram_redirect():
 @app.route('/api/instagram-analysis')
 def instagram_analysis():
     try:
-        user_id = flask.session['instagram_user_id']
-        access_token = flask.session['instagram_access_token']
         instagram_api.download_media(user_id, access_token, 'downloads')
-    except:
+    except Exception as e:
         return flask.jsonify({'success': False})
+    resultSmoker=smokerALgo("downloads")
+    tempList=[]
+    for data in resultSmoker[0]:
+        print(data)
+        file_name = data[len(data)-1]
+        if not os.path.isfile(file_name):
+            print(f"File does not exist: {file_name}")
+            continue
+        encoded_string = ""
+        with open(file_name, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode()
+        tempList.append(encoded_string)
 
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
     # TODO: Analyse the images
     # TODO: Analyse the comments
     # TODO: Prepare a response for the front-end
-
-    return flask.jsonify({'success': True})
 
 
 #@app.route('/api/upload', methods=['POST'])
