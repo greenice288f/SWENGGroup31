@@ -5,6 +5,8 @@ import numpy as np
 from ultralytics import YOLO
 import threading
 import math
+import os
+from  text_analysis import text_analysis
 
 def normalize_distance(distance, face_size, image_width, image_height):
     # Normalize the distance with respect to the face size
@@ -22,6 +24,8 @@ def normalize_distance(distance, face_size, image_width, image_height):
 
 def calculate_distance(coord1, coord2):
     return math.sqrt((coord2[0] - coord1[0])**2 + (coord2[1] - coord1[1])**2)
+
+
 def cigarette(picture):
     model = YOLO("./models/best.pt")
     results = model.predict(picture)
@@ -46,6 +50,7 @@ def cigarette(picture):
             temp=[middle_point, radius, conf]
             answer.append(temp)
     return answer
+
 
 def hand(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -94,6 +99,8 @@ def face(image):
             tempList=[middle_point, radius,detection.score[0]]
             result.append(tempList)
     return result
+
+
 def smokerALgo(input):
     finalResult=[]
     #confidence, type0=face type=1
@@ -101,63 +108,75 @@ def smokerALgo(input):
     counterMax=0    
     for i in range(1,6):
         imageName="./{0}/test{1}.jpg".format(input,i)
+        txt_name="./{0}/test{1}.txt".format(input,i)
         try:
             img = cv2.imread(imageName)
             if img is None:
                 raise FileNotFoundError(f"No such file or directory: '{imageName}'")
-            # Rest of your code that processes the image...
-        except FileNotFoundError:
-            print(f"File not found: {imageName}")
-            continue
-        height, width, _ = img.shape
-        faceRes=face(img)
-        cigaretteRes=cigarette(imageName)
-        handRes=hand(img)
-        catalogue=[]
+        
+            height, width, _ = img.shape
+            faceRes=face(img)
+            cigaretteRes=cigarette(imageName)
+            handRes=hand(img)
+            catalogue=[]
 
-        if(len(cigaretteRes)==0):
-            catalogue.append([0,0,imageName])
-        else:
-            wentIn=False
-            for i in range(len(cigaretteRes)):
-                cigConfidence=cigaretteRes[i][2]
-                for j in range(len(faceRes)):
-                    distance=calculate_distance(cigaretteRes[i][0],faceRes[j][0])-cigaretteRes[i][1]-faceRes[j][1]
-                    normalization=normalize_distance(distance,cigaretteRes[i][2],height,width)
-                    if cigConfidence < 0.8:
-                        cigConfidence+=0.2
-                    faceConfidence=faceRes[j][2]
-                    res=normalization*cigConfidence*faceConfidence
-                    temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],faceRes[j][0],faceRes[j][1],1,imageName]
-                    catalogue.append(temp)
-                    wentIn=True
-                
-                for j in range(len(handRes)):
-                    distance=calculate_distance(cigaretteRes[i][0],handRes[j][0])-cigaretteRes[i][1]-handRes[j][1]
-                    normalization=normalize_distance(distance,cigaretteRes[i][2],height,width)
-                    if cigConfidence < 0.8:
-                        cigConfidence+=0.2
-                    res=normalization*cigConfidence
-                    temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],handRes[j][0],handRes[j][1],2,imageName]
-                    catalogue.append(temp)
-                    wentIn=True
-                if(wentIn==False):
-                    temp=[1*cigaretteRes[i][2],cigaretteRes[i][0],cigaretteRes[i][1],3,imageName]
-                    catalogue.append(temp)
-        catalogue = sorted(catalogue, key=lambda x: x[0], reverse=True)
-        if(catalogue[0][len(catalogue[0])-2]==0):
-            counter+=0
-            counterMax+=1
-        elif(catalogue[0][len(catalogue[0])-2]==1 or catalogue[0][len(catalogue[0])-2]==2):
-            counter+=(10*catalogue[0][0])
-            counterMax+=10
-        else:
-            counter+=(7*catalogue[0][0])
-            counterMax+=7
- 
-        finalResult.append(catalogue[0])
+            if(len(cigaretteRes)==0):
+                catalogue.append([0,0,imageName])
+            else:
+                wentIn=False
+                for i in range(len(cigaretteRes)):
+                    cigConfidence=cigaretteRes[i][2]
+                    for j in range(len(faceRes)):
+                        distance=calculate_distance(cigaretteRes[i][0],faceRes[j][0])-cigaretteRes[i][1]-faceRes[j][1]
+                        normalization=normalize_distance(distance,cigaretteRes[i][2],height,width)
+                        if cigConfidence < 0.8:
+                            cigConfidence+=0.2
+                        faceConfidence=faceRes[j][2]
+                        res=normalization*cigConfidence*faceConfidence
+                        temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],faceRes[j][0],faceRes[j][1],1,imageName]
+                        catalogue.append(temp)
+                        wentIn=True
+                    
+                    for j in range(len(handRes)):
+                        distance=calculate_distance(cigaretteRes[i][0],handRes[j][0])-cigaretteRes[i][1]-handRes[j][1]
+                        normalization=normalize_distance(distance,cigaretteRes[i][2],height,width)
+                        if cigConfidence < 0.8:
+                            cigConfidence+=0.2
+                        res=normalization*cigConfidence
+                        temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],handRes[j][0],handRes[j][1],2,imageName]
+                        catalogue.append(temp)
+                        wentIn=True
+                    if(wentIn==False):
+                        temp=[1*cigaretteRes[i][2],cigaretteRes[i][0],cigaretteRes[i][1],3,imageName]
+                        catalogue.append(temp)
+            catalogue = sorted(catalogue, key=lambda x: x[0], reverse=True)
+            if(catalogue[0][len(catalogue[0])-2]==0):
+                counter+=0
+                counterMax+=1
+            elif(catalogue[0][len(catalogue[0])-2]==1 or catalogue[0][len(catalogue[0])-2]==2):
+                counter+=(10*catalogue[0][0])
+                counterMax+=10
+            else:
+                counter+=(7*catalogue[0][0])
+                counterMax+=7
+            finalResult.append(catalogue[0])
+
+            posts = []
+            with open(txt_name, "r") as file:
+                post = file.read()
+                posts.append(post)
+            text_score = text_analysis(posts)
+
+            if(text_score != 0):
+                counter *= text_score
+        
+        except FileNotFoundError as e:
+            print(f"File not found: {e}")
+            continue
+
     finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
     res=counter/counterMax
+
     return [finalResult,res]
 if __name__ == "__main__":
     start_time = time.time()
