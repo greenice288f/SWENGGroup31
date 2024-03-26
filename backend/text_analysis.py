@@ -31,6 +31,13 @@ class CustomSentimentAnalyzer(SentimentIntensityAnalyzer):
 #Initialising the sentiment analyser
 sent_analyser = CustomSentimentAnalyzer()
 
+#take a .txt file with comments and turn it into a list, run text analysis
+def start_text_analysis():
+    comments = open("comments.txt",'r')
+    comments_list = comments.readlines()
+    return text_analysis(comments_list)
+
+
 #Function which takes a list of of social media posts and returns an ordered pair of 1. The rumber of posts about smoking and 2. The sentiment of the posts on a scale of -1(neg) to 1(pos) 
 def text_analysis (posts):
     #Opening the file of smoking related words and writing them to the set smoking_words
