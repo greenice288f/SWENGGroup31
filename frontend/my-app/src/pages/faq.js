@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import Team from "../components/Team";
 import "./pages.css";
 import "./faq.css";
@@ -20,7 +18,6 @@ const Faq = () => {
 
   return (
    <body>
-      <Header/>
       <section id="faq">
         <br></br>
   <div className="faq-container">
@@ -67,7 +64,6 @@ const Faq = () => {
   </div>
 </section>
 <Team />
-<Footer/>
 </body>
   
     
