@@ -22,8 +22,7 @@ function Report() {
 
   return (
     <>
-      <Header />
-      <div class="report">
+      <div class="report page-container">
         <div class="title-container">
           <div class="title-cards">
             <div class="card" style={{ "margin-right": "1%" }}>

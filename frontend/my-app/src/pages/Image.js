@@ -71,9 +71,7 @@ function Image() {
   };
 
   return (
-    <>
-      <Header></Header>
-      <AgreementPopup></AgreementPopup>
+    <div class="page-container">
       <div>
         <div
           style={{
@@ -138,8 +136,7 @@ function Image() {
             <div
               style={{
                 display: "flex",
-                "justify-content": "center",
-                paddingBottom: "70px",
+                "justify-content": "center"
               }}
             >
               <Button
@@ -163,8 +160,7 @@ function Image() {
           </div>
         </div>
       </section>
-      <Footer />
-    </>
+    </div>
   );
 }
 

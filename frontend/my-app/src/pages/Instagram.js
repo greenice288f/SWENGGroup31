@@ -69,9 +69,7 @@ function Instagram() {
   };
   return (
     <>
-      <Header />
-      <AgreementPopup />
-      <section>
+      <section class="page-container">
         <div
           style={{
             marginTop: "30px",
@@ -97,7 +95,6 @@ function Instagram() {
 
         </div>
       </section>
-      <Footer />
     </>
   );
 }

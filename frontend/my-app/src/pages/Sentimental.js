@@ -14,9 +14,8 @@ function Sentimental() {
 
     return (
         <>
-            <Header />
-            <AgreementPopup />
             <div
+                class="page-container" 
                 style={{
                     display: 'inline-block',
                     textAlign: "center",
@@ -33,8 +32,6 @@ function Sentimental() {
                     {outputText}
                 </div>
             </div>
-            {/* temp links */}
-            <Footer />
         </>
     );
 }
