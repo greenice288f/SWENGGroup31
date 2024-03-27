@@ -15,8 +15,6 @@ function Main() {
 
   return (
     <div class="page-container">
-      <Header />
-      <AgreementPopup />
       <body>
         <div
           style={{
@@ -36,7 +34,6 @@ function Main() {
           </div>
         </div>
       </body>
-      <Footer />
     </div>
   );
 }
