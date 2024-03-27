@@ -12,12 +12,10 @@ function Instagram() {
   const [newPics, setPics] = useState(<></>);
 
   const instagramAnalysis = async () => {
-    console.log(inputtedText)
     try {
-      const origin = window.location.hostname === 'localhost' ? 'https://127.0.0.1:5000' : window.location.origin;
-      const response = await fetch(`${origin}/api/fake`,{mode: "cors"})
+      const response = await fetch("https://127.0.0.1:5000/api/fake")
 
-      if (response.ok) {
+      if (response.ok) {    
         const data = await response.json(); // Parse the response data
         console.log('data arived')
         console.log(data)

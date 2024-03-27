@@ -122,7 +122,7 @@ def fake():
         with open(file_name, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode()
         tempList.append(encoded_string)
-
+        print("done")
     return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
 #@app.route('/api/upload', methods=['POST'])
