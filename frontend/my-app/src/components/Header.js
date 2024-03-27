@@ -40,6 +40,11 @@ function Header() {
                   Instagram Analysis
                 </a>
               </li>
+    li>
+                <a type="button" className="headerlink" href="/faq">
+                  FAQ
+                </a>
+              </li>
             </ul>
           </div>
         </nav>
