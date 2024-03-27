@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import Button from "../components/Button";
 import AgreementPopup from "../components/AgreementPopup";
 import "./pages.css";
-
+import "./additional.css";
 function Main() {
   const origin =
     window.location.hostname === "localhost"
@@ -33,6 +33,37 @@ function Main() {
             </Button>
           </div>
         </div>
+           <section id="template">
+      <div className="template-container">
+        <div className="content">
+          <div className="flex">
+            <span className="topper">How to use the App</span>
+           
+          </div>
+          <ul className="ul">
+            <li className="li">
+              <span className="number">01</span>
+              <p className="li-text">
+                Log into your Instagram Account...
+              </p>
+            </li>
+            <li className="li">
+              <span className="number">02</span>
+              <p className="li-text">
+                Let our App determine your smoker status using cutting-edge technology
+              </p>
+            </li>
+            <li className="li">
+              <span className="number">03</span>
+              <p className="li-text">
+                Receive your smoker score and download the results in a handy PDF
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    
+    </section>
       </body>
     </div>
   );
