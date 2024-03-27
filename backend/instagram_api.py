@@ -67,9 +67,20 @@ def _get_media_by_id(media_id: str, access_token: str) -> list[tuple[str, str, s
 #       3. the comment of the post's author
 def _get_media(user_id: str, access_token: str) -> list[tuple[str, str, str]]:
     try:
-        result = requests.get(f'https://graph.instagram.com/v19.0/{user_id}?fields=media&access_token={access_token}').json()
-        ids = [str(m['id']) for m in result['media']['data']]
-        return [media for media_id in ids for media in _get_media_by_id(media_id, access_token)]
+        all_media = []
+        next_page =  f'https://graph.instagram.com/v19.0/{user_id}?fields=media&access_token={access_token}'
+        
+        while next_page:
+            result = requests.get(next_page).json()
+            ids = [str(m['id']) for m in result['media']['data']]
+            all_media.extend([media for media_id in ids for media in _get_media_by_id(media_id, access_token)])
+            
+            if 'paging' in result and 'next' in result['paging']:
+                next_page = result['paging']['next']
+            else:
+                next_page = None
+        return all_media
+
     except requests.RequestException as e:
         print(f"Error getting media: {e}")
         raise
