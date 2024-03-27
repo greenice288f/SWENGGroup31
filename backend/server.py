@@ -108,6 +108,22 @@ def instagram_analysis():
     # TODO: Analyse the comments
     # TODO: Prepare a response for the front-end
 
+@app.route('/api/fake')
+def fake():
+    resultSmoker=smokerALgo("downloads")
+    tempList=[]
+    for data in resultSmoker[0]:
+        print(data)
+        file_name = data[len(data)-1]
+        if not os.path.isfile(file_name):
+            print(f"File does not exist: {file_name}")
+            continue
+        encoded_string = ""
+        with open(file_name, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode()
+        tempList.append(encoded_string)
+
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
 #@app.route('/api/upload', methods=['POST'])
 #def upload_image():
