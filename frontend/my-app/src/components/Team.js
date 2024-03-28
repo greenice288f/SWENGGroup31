@@ -1,5 +1,5 @@
 import React from "react";
-import "./Team.css"; // Assuming this is where your CSS file is located
+//import "./Team.css"; // Assuming this is where your CSS file is located
 
 // Importing images
 
@@ -16,7 +16,6 @@ function Team() {
     <section id="team">
     <div class="team-container">
         <div class="team-content">
-           
             <h1 class="team-title">Meet Our Team</h1>
             <p class="team-text">
                 They have worked hard making sure lungs are kept safe!!
