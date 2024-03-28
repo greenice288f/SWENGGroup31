@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import AgreementPopup from "../components/AgreementPopup";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 

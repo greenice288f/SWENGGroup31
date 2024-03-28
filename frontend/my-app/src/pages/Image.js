@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import LoadingSpinner from "../components/LoadingSpinner";
-import AgreementPopup from "../components/AgreementPopup";
 import Button from "../components/Button";
 import convertImageToBase64 from "../tools/ImageTools";
 

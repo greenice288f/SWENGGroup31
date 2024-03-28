@@ -1,5 +1,5 @@
 import React from "react";
-//import "./Team.css"; // Assuming this is where your CSS file is located
+import "./Team.css"; // Assuming this is where your CSS file is located
 
 // Importing images
 
@@ -25,7 +25,6 @@ function Team() {
         <ul class="team-card-group">
         <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/james.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -36,7 +35,6 @@ function Team() {
             
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/mia.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -44,9 +42,9 @@ function Team() {
                     <span class="team-job">Head of Frontend</span>
                 </div>
             </li>
+    
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/balint.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -54,10 +52,10 @@ function Team() {
                     <span class="team-job">Head of Backend</span>
                 </div>
             </li>
+    
             <li class="team-item">
 
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/callum.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -65,9 +63,9 @@ function Team() {
                     <span class="team-job">Backend</span>
                 </div>
             </li>
+    
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/anna.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -75,9 +73,9 @@ function Team() {
                     <span class="team-job">backend</span>
                 </div>
             </li>
+    
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/flynn.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -85,9 +83,9 @@ function Team() {
                     <span class="team-job">Backend</span>
                 </div>
             </li>
+    
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/Screenshot 2024-03-27 at 18.14.56.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -95,9 +93,9 @@ function Team() {
                     <span class="team-job">Frontend</span>
                 </div>
             </li>
+    
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/andrew.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -108,7 +106,6 @@ function Team() {
            
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/daire.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -116,9 +113,9 @@ function Team() {
                     <span class="team-job">Frontend</span>
                 </div>
             </li>
+    
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/emma.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">
@@ -126,9 +123,9 @@ function Team() {
                     <span class="team-job">Backend</span>
                 </div>
             </li>
+    
             <li class="team-item">
                 <picture class="team-picture">
-                  
                     <img aria-hidden="true" loading="lazy" decoding="async" src="/photos/richard.png" alt="Frontend" width="105" height="135"></img>
                 </picture>
                 <div class="team-info">

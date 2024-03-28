@@ -21,3 +21,4 @@ export { default as Report } from "./pages/Report";
 export { default as Instagram } from "./pages/Instagram";
 export { default as Sentimental } from "./pages/Sentimental";
 export { default as Image } from "./pages/Image";
+export { default as Faq } from "./pages/faq";

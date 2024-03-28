@@ -1,4 +1,4 @@
-import { Main, Image, Sentimental, Instagram, Report } from "./index";
+import { Main, Image, Sentimental, Instagram, Report, Faq } from "./index";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -17,6 +17,8 @@ function App() {
           <Route path="/sentiment" element={<Sentimental />} />
           <Route path="/instagram" element={<Instagram />} />
           <Route path="/report" element={<Report />} />
+           <Route path="/faq" element={<Faq />} />
+  
         </Routes>
       </Router>
       <Footer />

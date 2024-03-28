@@ -1,0 +1,65 @@
+/* Faq.css */
+
+#faq {
+    background-color: #f5f5f5; /* Light beige background */
+    padding: 3.125rem; /* 50px */
+}
+
+.faq-container {
+    max-width: 95%; /* 800px */
+    margin: 0 auto;
+}
+
+.faq-content {
+    background-color: #ffffff; /* White background for content */
+    padding: 2.5rem; /* 40px */
+    border-radius: 1.25rem; /* 20px */
+    box-shadow: 0 0.5rem 0.75rem rgba(0, 0, 0, 0.1); /* Classic box shadow */
+}
+
+.title {
+    background-color: #f7f3ea; /* Slightly beige background for title */
+    padding: 1.875rem; /* 30px */
+    border-radius: 0.938rem; /* 15px */
+    margin-bottom: 3.125rem; /* 50px */
+    text-align: left; /* Align title text to the left */
+}
+
+.faq-group {
+    margin-bottom: 3.125rem; /* 50px */
+}
+
+.faq-group-title {
+    font-size: 2.5rem; /* 40px */
+    margin-bottom: 1.875rem; /* 30px */
+}
+
+.faq-list {
+    list-style-type: none; /* Remove default list styles */
+    padding: 0;
+}
+
+.faq-item {
+    margin-bottom: 2.5rem; /* 40px */
+}
+
+.faq-question {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.875rem; /* 30px */
+    color: #333; /* Classic text color */
+}
+
+.faq-answer {
+    display: none;
+    margin-top: 1.875rem; /* 30px */
+    font-size: 1.5rem; /* 24px */
+    color: #666; /* Lighter text color */
+}
+
+/* Show answer when question is clicked */
+.faq-question:focus + .faq-answer,
+.faq-question:active + .faq-answer {
+    display: block;
+}
