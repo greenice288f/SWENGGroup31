@@ -107,8 +107,9 @@ def smokerALgo(input):
     counter=0
     counterMax=0    
     for i in range(1,6):
-        imageName="./{0}/test{1}.jpg".format(input,i)
-        txt_name="./{0}/test{1}.txt".format(input,i)
+        txt_name="./{0}/post{1}.txt".format(input,i)
+        imageName="./{0}/post{1}.jpg".format(input,i)
+
         try:
             img = cv2.imread(imageName)
             if img is None:
