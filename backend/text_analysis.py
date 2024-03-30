@@ -40,11 +40,11 @@ def start_text_analysis():
 
 
 #Function which takes a list of of social media posts and returns an ordered pair of 1. The ratio of posts about smoking to all posts and 2. The sentiment of the posts on a scale of -1(neg) to 1(pos) 
-def text_analysis (input):
+def text_analysis (directory):
     posts = []
-    for file in os.listdir(input):
+    for file in os.listdir(directory):
         if file.endswith('.txt'):
-            file_path = os.path.join(directory, filename)
+            file_path = os.path.join(directory, file)
             with open(file_path, 'r') as file:
                 post = file.read()
                 posts.append(post)
