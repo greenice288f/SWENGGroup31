@@ -9,21 +9,14 @@ function Report({ smoker_report }) {
   const [name, setName] = useState("James Gray");
   const [username, setUsername] = useState("undefined");
   const [images, setImages] = useState(JSON.parse(smoker_report.images));
-  const [score, setScore] = useState(70);
   const [date, setDate] = useState("1/1/0000");
 
   const base64images = JSON.parse(smoker_report.images);
   const imageDescriptions = JSON.parse(smoker_report.info);
 
-  let scoreDescription =
-    score > 60
-      ? "Based on this Instagram account's score, they are likely a smoker!"
-      : score > 20
-        ? "Based on this Instagram account's score, they may be a smoker!"
-        : "Based on this Instagram account's score, they are unlikely to be a smoker!";
-
   let descriptions = [];
   let certainties = [];
+  let sum = 0;
   for (let i = 0; i < base64images.length; i++) {
     let description = "";
     let descriptiveValue = 0;
@@ -43,7 +36,16 @@ function Report({ smoker_report }) {
     }
     descriptions.push(description);
     certainties.push(descriptiveValue);
+    sum += descriptiveValue;
   }
+  const score = (sum * 100) / certainties.length;
+
+  let scoreDescription =
+    score > 60
+      ? "Based on this Instagram account's score, they are likely a smoker!"
+      : score > 20
+        ? "Based on this Instagram account's score, they may be a smoker!"
+        : "Based on this Instagram account's score, they are unlikely to be a smoker!";
 
   return (
     <>
