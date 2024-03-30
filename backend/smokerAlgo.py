@@ -182,8 +182,10 @@ def smokerALgo(input):
 
     finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
     res=counter/counterMax
-
-    smoking_score = res*posts_score
+    if(res != 0 or posts_score != 0):
+        smoking_score = res*posts_score
+    else:
+        smoking_score = res+posts_score
 
     return [finalResult,smoking_score]
 if __name__ == "__main__":
