@@ -47,9 +47,11 @@ def text_analysis (posts):
 
     #Seeing if the posts is about smoking and if it is calculating the sentiment of said post
     sentiment_scores = []
+    num_of_smoking_posts = 0
     for post in posts:
         if check_for_smoking_words(post, smoking_words):
             post = pre_process_text(post)
+            num_of_smoking_posts += 1
             sentiment_scores.append(sentiment_analyser(post))
 
     #Averaging the sentiment of all posts about smoking 
@@ -58,7 +60,7 @@ def text_analysis (posts):
     else:
         avg_sentiment_score = 0
 
-    return avg_sentiment_score
+    return  num_of_smoking_posts, avg_sentiment_score
 
 #Function takes a string as a parameter and returns a sentiment score for said post where 1= positive sentiment and 0 = neutral and -1 = negative
 def sentiment_analyser (post):
