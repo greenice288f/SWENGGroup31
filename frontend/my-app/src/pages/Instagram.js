@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import AgreementPopup from "../components/AgreementPopup";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -14,8 +11,8 @@ function Instagram() {
   const instagramAnalysis = async () => {
     console.log(inputtedText)
     try {
-      const origin = window.location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : window.location.origin;
-      const response = await fetch(`${origin}/api/instagram-analysis`)
+      const origin = window.location.hostname === 'localhost' ? 'https://127.0.0.1:5000' : window.location.origin;
+      const response = await fetch(`${origin}/api/instagram-analysis`,{mode: "cors"})
 
       if (response.ok) {
         const data = await response.json(); // Parse the response data
@@ -69,9 +66,7 @@ function Instagram() {
   };
   return (
     <>
-      <Header />
-      <AgreementPopup />
-      <section>
+      <section class="page-container">
         <div
           style={{
             marginTop: "30px",
@@ -97,7 +92,6 @@ function Instagram() {
 
         </div>
       </section>
-      <Footer />
     </>
   );
 }

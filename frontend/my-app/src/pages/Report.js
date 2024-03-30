@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Header from "../components/Header";
 import ScoreBar from "../components/ScoreBar";
 import ScoreRing from "../components/ScoreRing";
 import "./report.css";
@@ -22,8 +21,7 @@ function Report() {
 
   return (
     <>
-      <Header />
-      <div class="report">
+      <div class="report page-container">
         <div class="title-container">
           <div class="title-cards">
             <div class="card" style={{ "margin-right": "1%" }}>

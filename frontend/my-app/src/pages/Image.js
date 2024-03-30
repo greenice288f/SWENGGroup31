@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import LoadingSpinner from "../components/LoadingSpinner";
-import AgreementPopup from "../components/AgreementPopup";
 import Button from "../components/Button";
 import convertImageToBase64 from "../tools/ImageTools";
 
@@ -21,7 +18,7 @@ function Image() {
       };
       const origin =
         window.location.hostname === "localhost"
-          ? "http://127.0.0.1:5000"
+          ? "https://127.0.0.1:5000"
           : window.location.origin;
       const response = await fetch(`${origin}/api/upload`, {
         method: "POST",
@@ -71,9 +68,7 @@ function Image() {
   };
 
   return (
-    <>
-      <Header></Header>
-      <AgreementPopup></AgreementPopup>
+    <div class="page-container">
       <div>
         <div
           style={{
@@ -138,8 +133,7 @@ function Image() {
             <div
               style={{
                 display: "flex",
-                "justify-content": "center",
-                paddingBottom: "70px",
+                "justify-content": "center"
               }}
             >
               <Button
@@ -163,8 +157,7 @@ function Image() {
           </div>
         </div>
       </section>
-      <Footer />
-    </>
+    </div>
   );
 }
 

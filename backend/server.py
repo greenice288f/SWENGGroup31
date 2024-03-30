@@ -1,11 +1,8 @@
 import argparse
 from flask import request
 import flask
-from flask_cors import CORS  # Comment out for deployment
-from PIL import Image
+from flask_cors import CORS
 import base64
-#from roboflow import Roboflow
-import cv2
 import json
 from smokerAlgo import smokerALgo
 import os
@@ -14,9 +11,15 @@ import instagram_api
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
+
+DEPLOYMENT = False # !!! REMEMBER TO CHANGE for deployment !!!
+
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(8)
-CORS(app)  # Comment out for deployment
+user_id=""
+access_token=""
+if not DEPLOYMENT:
+    CORS(app)
 
 def base64_to_image(base64_data, output_filename):
     try:
@@ -71,11 +74,11 @@ def handle_user_input():
 # redirects them to the /instagram page.
 @app.route('/api/instagram-redirect')
 def instagram_redirect():
-    on_server = 'trinity' in request.headers['Host']
-    user_id, access_token = instagram_api.get_credentials(code=request.args['code'], server=on_server)
-    flask.session['instagram_user_id'] = user_id
-    flask.session['instagram_access_token'] = access_token
-    return flask.redirect('/instagram' if on_server else 'http://localhost:3000/instagram')
+    global user_id, access_token
+    localuser_id, localaccess_token = instagram_api.get_credentials(code=request.args['code'], server=DEPLOYMENT)
+    user_id=localuser_id
+    access_token=localaccess_token
+    return flask.redirect('/instagram' if DEPLOYMENT else 'http://localhost:3000/instagram')
 
 
 # Our Instagram Analysis sends a request to this endpoint to download user's images and comments,
@@ -84,17 +87,26 @@ def instagram_redirect():
 @app.route('/api/instagram-analysis')
 def instagram_analysis():
     try:
-        user_id = flask.session['instagram_user_id']
-        access_token = flask.session['instagram_access_token']
         instagram_api.download_media(user_id, access_token, 'downloads')
-    except:
+    except Exception as e:
         return flask.jsonify({'success': False})
+    resultSmoker=smokerALgo("downloads")
+    tempList=[]
+    for data in resultSmoker[0]:
+        print(data)
+        file_name = data[len(data)-1]
+        if not os.path.isfile(file_name):
+            print(f"File does not exist: {file_name}")
+            continue
+        encoded_string = ""
+        with open(file_name, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode()
+        tempList.append(encoded_string)
 
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
     # TODO: Analyse the images
     # TODO: Analyse the comments
     # TODO: Prepare a response for the front-end
-
-    return flask.jsonify({'success': True})
 
 
 #@app.route('/api/upload', methods=['POST'])
@@ -136,4 +148,4 @@ if __name__ == '__main__':
         else:
             exit(1)
     else:
-        app.run(debug=True)
+        app.run(debug=True, ssl_context=('server.crt', 'server.key'))

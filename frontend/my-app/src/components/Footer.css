@@ -10,9 +10,9 @@
 
 .button-group-1 a {
     color: white;
-    font-size: 30px;
+    font-size: 45px;
     border: none;
-    margin: 5px;
+    margin-bottom: 2px;
     cursor: pointer;
     appearance: auto;
     background-color: inherit; 

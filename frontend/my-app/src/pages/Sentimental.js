@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import AgreementPopup from '../components/AgreementPopup';
 
 function Sentimental() {
     const [inputtedText, setInputtedText] = useState();
@@ -14,9 +11,8 @@ function Sentimental() {
 
     return (
         <>
-            <Header />
-            <AgreementPopup />
             <div
+                class="page-container" 
                 style={{
                     display: 'inline-block',
                     textAlign: "center",
@@ -33,8 +29,6 @@ function Sentimental() {
                     {outputText}
                 </div>
             </div>
-            {/* temp links */}
-            <Footer />
         </>
     );
 }
