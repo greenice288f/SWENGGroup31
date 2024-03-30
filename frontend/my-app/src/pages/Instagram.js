@@ -26,49 +26,6 @@ function Instagram() {
         console.log("data arrived");
         console.log(data);
         setReportData(data);
-        const base64images = JSON.parse(data.images);
-        const imageDataas = JSON.parse(data.info);
-        setPics(
-          <div
-            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
-          >
-            <h1>Total Score: {imageDataas[1]}</h1>
-
-            {base64images.map((base64String, index) => {
-              // You can write JavaScript code here
-              console.log("Rendering image", index);
-              let string = "";
-              let value = 0;
-              let len = imageDataas[0][index].length;
-              if (imageDataas[0][index][len - 2] === 0) {
-                string = "no evidence of smoking";
-                value = 0;
-              } else if (imageDataas[0][index][len - 2] === 1) {
-                string = "evidence of smoking, cigarette near face";
-                value = imageDataas[0][index][0];
-              } else if (imageDataas[0][index][len - 2] === 2) {
-                string = "evidence of smoking, cigarette near hand";
-                value = imageDataas[0][index][0];
-              } else {
-                string = "evidence of smoking, only cigarette detected";
-                value = imageDataas[0][index][0];
-              }
-              return (
-                <div style={{ width: "200px", margin: "10px" }}>
-                  <img
-                    key={index}
-                    src={`data:image/png;base64,${base64String}`}
-                    alt={`Image ${index + 1}`}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                  <h3>
-                    {string} confidence of smoking: {value}
-                  </h3>
-                </div>
-              );
-            })}
-          </div>,
-        );
         setPage(1);
       }
     } catch (error) {
@@ -109,6 +66,7 @@ function Instagram() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                marginTop: "5%",
               }}
             >
               <LoadingSpinner />

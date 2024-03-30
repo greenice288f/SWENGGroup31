@@ -4,12 +4,10 @@ import ScoreRing from "../components/ScoreRing";
 import "./report.css";
 
 function Report({ smoker_report }) {
-  const img_src = require("../components/CigarMan.png");
-
-  const [name, setName] = useState("James Gray");
+  const name = "James Gray";
   const [username, setUsername] = useState("undefined");
   const [images, setImages] = useState(JSON.parse(smoker_report.images));
-  const [date, setDate] = useState("1/1/0000");
+  const date = new Date().toLocaleDateString();
 
   const base64images = JSON.parse(smoker_report.images);
   const imageDescriptions = JSON.parse(smoker_report.info);
