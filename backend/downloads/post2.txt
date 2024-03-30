@@ -1,1 +1,1 @@
-An example of how our algorithm can detect how close cigarettes are to a target’s face
+An example of how our algorithm can detect how close cigarettes are to a targetâ€™s face
