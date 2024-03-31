@@ -7,7 +7,8 @@ import json
 from smokerAlgo import smokerALgo
 import os
 import instagram_api
-
+import cv2
+import numpy as np
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
@@ -61,10 +62,26 @@ def handle_user_input():
         if not os.path.isfile(file_name):
             print(f"File does not exist: {file_name}")
             continue
-        encoded_string = ""
-        with open(file_name, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read()).decode()
-        tempList.append(encoded_string)
+        image=cv2.imread(file_name)
+        if(data[len(data)-2]==1 or data[len(data)-2]==1):
+            center=data[1]
+            radius=data[2]
+            color = (0, 255, 0)  # RGB color of the circle
+            thickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, thickness)
+            center=data[3]
+            radius=data[4]
+            image = cv2.circle(image, center, radius, color, thickness)
+        elif(data[len(data)-2]==3):
+            center=data[1]
+            radius=data[2]
+            color = (0, 255, 0)  # RGB color of the circle
+            thickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, thickness)
+        retval, buffer = cv2.imencode('.jpg', image)
+        jpg_as_text = base64.b64encode(buffer).decode()
+        print("done")
+        tempList.append(jpg_as_text)
 
     return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
@@ -92,18 +109,35 @@ def instagram_analysis():
         return flask.jsonify({'success': False})
     resultSmoker=smokerALgo("downloads")
     tempList=[]
+
     for data in resultSmoker[0]:
         print(data)
         file_name = data[len(data)-1]
         if not os.path.isfile(file_name):
             print(f"File does not exist: {file_name}")
             continue
-        encoded_string = ""
-        with open(file_name, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read()).decode()
-        tempList.append(encoded_string)
+        image=cv2.imread(file_name)
+        if(data[len(data)-2]==1 or data[len(data)-2]==1):
+            center=data[1]
+            radius=data[2]
+            color = (255, 0, 0)  # RGB color of the circle
+            thickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, thickness)
+            center=data[3]
+            radius=data[4]
+            image = cv2.circle(image, center, radius, color, thickness)
+        elif(data[len(data)-2]==3):
+            center=data[1]
+            radius=data[2]
+            color = (255, 0, 0)  # RGB color of the circle
+            thickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, thickness)
+        retval, buffer = cv2.imencode('.jpg', image)
+        jpg_as_text = base64.b64encode(buffer).decode()
+        print("done")
+        tempList.append(jpg_as_text)
 
-    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), }), 200
     # TODO: Analyse the images
     # TODO: Analyse the comments
     # TODO: Prepare a response for the front-end

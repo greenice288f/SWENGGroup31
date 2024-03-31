@@ -17,7 +17,7 @@ function Instagram() {
       if (response.ok) {
         const data = await response.json(); // Parse the response data
         console.log('data arived')
-        console.log(data)
+        console.log(data.info)
         const base64images = JSON.parse(data.images);
         const imageDataas = JSON.parse(data.info)
         setPics(
