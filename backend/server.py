@@ -14,8 +14,8 @@ import numpy as np
 #model = project.version(3).model
 
 DEPLOYMENT = False # !!! REMEMBER TO CHANGE for deployment !!!
-text_size=2
-text_thickness=3
+text_size=1
+text_thickness=1
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(8)
 user_id=""
@@ -67,7 +67,7 @@ def handle_user_input():
         if(data[len(data)-2]==1 or data[len(data)-2]==1):
             center=data[1]
             radius=data[2]
-            color = (0, 255, 0)  # RGB color of the circle
+            color = (0, 0, 0)  # RGB color of the circle
             thickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, thickness)
             center=data[3]
@@ -122,38 +122,44 @@ def instagram_analysis():
         if(data[len(data)-2]==1 ):
             center=data[1]
             radius=data[2]
-            color = (255, 0, 0)  # RGB color of the circle
+            color = (0, 0, 255)  # RGB color of the circle
             cThickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, cThickness)
             font = cv2.FONT_HERSHEY_SIMPLEX
-            image = cv2.putText(image, 'Cigarette', center, font, text_size, color, text_thickness, cv2.LINE_AA)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, color, text_thickness, cv2.LINE_AA)
 
             center=data[3]
             radius=data[4]
             image = cv2.circle(image, center, radius, color, cThickness)
-            image = cv2.putText(image, 'Face', center, font, text_size, color, text_thickness, cv2.LINE_AA)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Face', center_text, font, text_size, color, text_thickness, cv2.LINE_AA)
 
         elif(data[len(data)-2]==2):
             center=data[1]
             radius=data[2]
-            color = (255, 0, 0)  # RGB color of the circle
+            color = (255, 0, 255)  # RGB color of the circle
             cThickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, cThickness)
             font = cv2.FONT_HERSHEY_SIMPLEX
-            image = cv2.putText(image, 'Cigarette', center, font, text_size, color, text_thickness, cv2.LINE_AA)
+            center_text = (center[0], center[1] - int(radius/2))
+
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, color, text_thickness, cv2.LINE_AA)
             center=data[3]
             radius=data[4]
             image = cv2.circle(image, center, radius, color, cThickness)
-            image = cv2.putText(image, 'Hand', center, font, text_size, color, text_thickness, cv2.LINE_AA)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Hand', center_text, font, text_size, color, text_thickness, cv2.LINE_AA)
 
         elif(data[len(data)-2]==3):
             center=data[1]
             radius=data[2]
-            color = (255, 0, 0)  # RGB color of the circle
+            color = (0, 0, 255)  # RGB color of the circle
             cThickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, cThickness)
             font = cv2.FONT_HERSHEY_SIMPLEX
-            image = cv2.putText(image, 'Cigarette', center, font, text_size, color, text_thickness, cv2.LINE_AA)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, color, text_thickness, cv2.LINE_AA)
         retval, buffer = cv2.imencode('.jpg', image)
         jpg_as_text = base64.b64encode(buffer).decode()
         print("done")
