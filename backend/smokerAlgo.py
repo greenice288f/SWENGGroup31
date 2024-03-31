@@ -107,7 +107,6 @@ def smokerALgo(input):
     counter=0
     counterMax=0    
     for i in range(1,6):
-        txt_name="./{0}/post{1}.txt".format(input,i)
         imageName="./{0}/post{1}.jpg".format(input,i)
 
         try:
@@ -164,7 +163,6 @@ def smokerALgo(input):
 
             
             text_analysis_results = text_analysis(input)
-
             avg_sent = text_analysis_results[1]
             ratio_of_smoking_posts = text_analysis_results[0]
 
