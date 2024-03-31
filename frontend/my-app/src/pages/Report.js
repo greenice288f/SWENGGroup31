@@ -3,42 +3,14 @@ import ScoreBar from "../components/ScoreBar";
 import ScoreRing from "../components/ScoreRing";
 import "./report.css";
 
-function Report({ smoker_report }) {
+function Report() {
   const img_src = require("../components/CigarMan.png");
 
   const [name, setName] = useState("James Gray");
   const [username, setUsername] = useState("undefined");
-  const [images, setImages] = useState(JSON.parse(smoker_report.images));
+  const [images, setImages] = useState(Array(3).fill(img_src));
+  const [score, setScore] = useState(70);
   const [date, setDate] = useState("1/1/0000");
-
-  const base64images = JSON.parse(smoker_report.images);
-  const imageDescriptions = JSON.parse(smoker_report.info);
-
-  let descriptions = [];
-  let certainties = [];
-  let sum = 0;
-  for (let i = 0; i < base64images.length; i++) {
-    let description = "";
-    let descriptiveValue = 0;
-    let len = imageDescriptions[0][i].length;
-    if (imageDescriptions[0][i][len - 2] === 0) {
-      description = "no evidence of smoking";
-      descriptiveValue = 0;
-    } else if (imageDescriptions[0][i][len - 2] === 1) {
-      description = "evidence of smoking, cigarette near face";
-      descriptiveValue = imageDescriptions[0][i][0];
-    } else if (imageDescriptions[0][i][len - 2] === 2) {
-      description = "evidence of smoking, cigarette near hand";
-      descriptiveValue = imageDescriptions[0][i][0];
-    } else {
-      description = "evidence of smoking, only cigarette detected";
-      descriptiveValue = imageDescriptions[0][i][0];
-    }
-    descriptions.push(description);
-    certainties.push(descriptiveValue);
-    sum += descriptiveValue;
-  }
-  const score = (sum * 100) / certainties.length;
 
   let scoreDescription =
     score > 60
@@ -68,18 +40,15 @@ function Report({ smoker_report }) {
         </div>
         <div class="image-container">
           <div class="image-cards">
-            {images.map((base64String, index) => (
+            {images.map((image) => (
               <div class="card image-card">
-                <img
-                  key={index}
-                  src={`data:image/png;base64,${base64String}`}
-                  alt=""
-                  style={{ width: "50%" }}
-                />
+                <img src={image} alt="" style={{ width: "50%" }} />
                 <div class="image-desc">
-                  <ScoreRing score={certainties[index] * 100} />
+                  <ScoreRing score={score} />
                   <h4>Notes:</h4>
-                  <div>{descriptions[index]}</div>
+                  <div>
+                    Three cigarettes detected. Cigarette detected near face...
+                  </div>
                 </div>
               </div>
             ))}

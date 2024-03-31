@@ -42,39 +42,43 @@ def start_text_analysis():
 
 #Function which takes a list of of social media posts and returns an ordered pair of 1. The ratio of posts about smoking to all posts and 2. The sentiment of the posts on a scale of -1(neg) to 1(pos)
 def text_analysis (input):
-    posts = []
-    for file in os.listdir(input):
-        if file.endswith('.txt'):
-            file_path = os.path.join(input, file)
-            with open(file_path, 'r') as opened_file:
-                post = opened_file.read()
-                posts.append(post)
-    if(len(posts) != 0):
-        #Opening the file of smoking related words and writing them to the set smoking_words
-        smoking_words_file = 'smoking_related_words.txt'
-        with open(smoking_words_file, 'r') as f:
-            smoking_words = {word.strip() for word in f.readlines()}
+    try:
+        posts = []
+        for file in os.listdir(input):
+            if file.endswith('.txt'):
+                file_path = os.path.join(input, file)
+                with open(file_path, 'r') as opened_file:
+                    post = opened_file.read()
+                    posts.append(post)
+        if(len(posts) != 0):
+            #Opening the file of smoking related words and writing them to the set smoking_words
+            smoking_words_file = 'smoking_related_words.txt'
+            with open(smoking_words_file, 'r') as f:
+                smoking_words = {word.strip() for word in f.readlines()}
 
-        #Seeing if the posts is about smoking and if it is calculating the sentiment of said post
-        sentiment_scores = []
-        num_of_smoking_posts = 0
-        for post in posts:
-            if check_for_smoking_words(post, smoking_words):
-                post = pre_process_text(post)
-                num_of_smoking_posts += 1
-                sentiment_scores.append(sentiment_analyser(post))
+            #Seeing if the posts is about smoking and if it is calculating the sentiment of said post
+            sentiment_scores = []
+            num_of_smoking_posts = 0
+            for post in posts:
+                if check_for_smoking_words(post, smoking_words):
+                    post = pre_process_text(post)
+                    num_of_smoking_posts += 1
+                    sentiment_scores.append(sentiment_analyser(post))
 
-        #Averaging the sentiment of all posts about smoking
-        if len(sentiment_scores) > 0:
-            avg_sentiment_score = sum(sentiment_scores) / len(sentiment_scores)
+            #Averaging the sentiment of all posts about smoking
+            if len(sentiment_scores) > 0:
+                avg_sentiment_score = sum(sentiment_scores) / len(sentiment_scores)
+            else:
+                avg_sentiment_score = 0
+
+            ratio_of_smoking_posts = num_of_smoking_posts/len(posts)
+
+            return  ratio_of_smoking_posts, avg_sentiment_score
         else:
-            avg_sentiment_score = 0
-
-        ratio_of_smoking_posts = num_of_smoking_posts/len(posts)
-
-        return  ratio_of_smoking_posts, avg_sentiment_score
-    else:
-        return 0, 0
+            return 0, 0
+    except FileNotFoundError as e:
+            print(f"File not found: {e}")
+            return 0,0
 
 #Function takes a string as a parameter and returns a sentiment score for said post where 1= positive sentiment and 0 = neutral and -1 = negative
 def sentiment_analyser (post):

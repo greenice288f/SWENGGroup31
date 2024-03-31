@@ -160,17 +160,14 @@ def smokerALgo(input):
                 counter+=(7*catalogue[0][0])
                 counterMax+=7
             finalResult.append(catalogue[0])
-
-            
-            text_analysis_results = text_analysis(input)
-            avg_sent = text_analysis_results[1]
-            ratio_of_smoking_posts = text_analysis_results[0]
-
-            posts_score = avg_sent*ratio_of_smoking_posts
-        
         except FileNotFoundError as e:
             print(f"File not found: {e}")
             continue
+
+    text_analysis_results = text_analysis(input)
+    avg_sent = text_analysis_results[1]
+    ratio_of_smoking_posts = text_analysis_results[0]
+    posts_score = avg_sent*ratio_of_smoking_posts
 
     finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
     res=counter/counterMax
