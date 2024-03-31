@@ -14,7 +14,8 @@ import numpy as np
 #model = project.version(3).model
 
 DEPLOYMENT = False # !!! REMEMBER TO CHANGE for deployment !!!
-
+text_size=2
+text_thickness=3
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(8)
 user_id=""
@@ -103,6 +104,7 @@ def instagram_redirect():
 # TODO: Actually analyse them and return the result of the analysis.
 @app.route('/api/instagram-analysis')
 def instagram_analysis():
+    global text_size, text_thickness
     try:
         instagram_api.download_media(user_id, access_token, 'downloads')
     except Exception as e:
@@ -124,14 +126,12 @@ def instagram_analysis():
             cThickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, cThickness)
             font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 3
-            tThickness = 4  
-            image = cv2.putText(image, 'Cigarette', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center, font, text_size, color, text_thickness, cv2.LINE_AA)
 
             center=data[3]
             radius=data[4]
             image = cv2.circle(image, center, radius, color, cThickness)
-            image = cv2.putText(image, 'Face', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+            image = cv2.putText(image, 'Face', center, font, text_size, color, text_thickness, cv2.LINE_AA)
 
         elif(data[len(data)-2]==2):
             center=data[1]
@@ -140,13 +140,11 @@ def instagram_analysis():
             cThickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, cThickness)
             font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 3
-            tThickness = 4  
-            image = cv2.putText(image, 'Cigarette', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center, font, text_size, color, text_thickness, cv2.LINE_AA)
             center=data[3]
             radius=data[4]
             image = cv2.circle(image, center, radius, color, cThickness)
-            image = cv2.putText(image, 'Hand', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+            image = cv2.putText(image, 'Hand', center, font, text_size, color, text_thickness, cv2.LINE_AA)
 
         elif(data[len(data)-2]==3):
             center=data[1]
@@ -155,9 +153,7 @@ def instagram_analysis():
             cThickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, cThickness)
             font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 3
-            tThickness = 4  
-            image = cv2.putText(image, 'Cigarette', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center, font, text_size, color, text_thickness, cv2.LINE_AA)
         retval, buffer = cv2.imencode('.jpg', image)
         jpg_as_text = base64.b64encode(buffer).decode()
         print("done")
