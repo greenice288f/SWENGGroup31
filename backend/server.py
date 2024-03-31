@@ -117,21 +117,47 @@ def instagram_analysis():
             print(f"File does not exist: {file_name}")
             continue
         image=cv2.imread(file_name)
-        if(data[len(data)-2]==1 or data[len(data)-2]==1):
+        if(data[len(data)-2]==1 ):
             center=data[1]
             radius=data[2]
             color = (255, 0, 0)  # RGB color of the circle
-            thickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, thickness)
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 3
+            tThickness = 4  
+            image = cv2.putText(image, 'Cigarette', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+
             center=data[3]
             radius=data[4]
-            image = cv2.circle(image, center, radius, color, thickness)
+            image = cv2.circle(image, center, radius, color, cThickness)
+            image = cv2.putText(image, 'Face', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+
+        elif(data[len(data)-2]==2):
+            center=data[1]
+            radius=data[2]
+            color = (255, 0, 0)  # RGB color of the circle
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 3
+            tThickness = 4  
+            image = cv2.putText(image, 'Cigarette', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+            center=data[3]
+            radius=data[4]
+            image = cv2.circle(image, center, radius, color, cThickness)
+            image = cv2.putText(image, 'Hand', center, font, font_scale, color, tThickness, cv2.LINE_AA)
+
         elif(data[len(data)-2]==3):
             center=data[1]
             radius=data[2]
             color = (255, 0, 0)  # RGB color of the circle
-            thickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, thickness)
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 3
+            tThickness = 4  
+            image = cv2.putText(image, 'Cigarette', center, font, font_scale, color, tThickness, cv2.LINE_AA)
         retval, buffer = cv2.imencode('.jpg', image)
         jpg_as_text = base64.b64encode(buffer).decode()
         print("done")
