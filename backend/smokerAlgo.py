@@ -174,6 +174,7 @@ def smokerALgo(input):
 
                 avg_sent = text_analysis_results[1]
                 num_of_smoking_posts = text_analysis_results[0]
+                smoking_posts_sorted = text_analysis_results[2]
 
                 posts_score = avg_sent*(num_of_smoking_posts/len(posts))
         
@@ -183,12 +184,9 @@ def smokerALgo(input):
 
     finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
     res=counter/counterMax
-    if(res != 0 or posts_score != 0):
-        smoking_score = res*posts_score
-    else:
-        smoking_score = res+posts_score
+    smoking_score = (res+posts_score)/2
 
-    return [finalResult,smoking_score]
+    return [finalResult,smoking_score,posts_score,smoking_posts_sorted]
 if __name__ == "__main__":
     start_time = time.time()
     print(smokerALgo())
