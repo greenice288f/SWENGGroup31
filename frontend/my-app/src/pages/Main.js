@@ -2,7 +2,6 @@ import { React, useState } from "react";
 import Button from "../components/Button";
 import "./pages.css";
 import "./additional.css";
-import { ReactComponent as InstagramSvg } from '../assets/instagram.svg';
 function Main() {
   const origin =
     window.location.hostname === "localhost"
