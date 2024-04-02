@@ -99,6 +99,10 @@ def _save_media_to(media: list[tuple[str, str, str]], directory: str):
                 urllib.request.urlretrieve(media_url, os.path.join(directory, f'post{i}.jpg'))
                 with open(os.path.join(directory, f'post{i}.txt'), mode='w') as comment_file:
                     comment_file.write(comment)
+            if media_type == 'VIDEO':
+                urllib.request.urlretrieve(media_url, os.path.join(directory, f'post{i}.mp4'))
+                with open(os.path.join(directory, f'post{i}.txt'), mode='w') as comment_file:
+                    comment_file.write(comment)
     except requests.RequestException as e:
         print(f"Error downloading media: {e}")
         raise
