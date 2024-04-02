@@ -5,15 +5,16 @@
 }
 
 .insta-logo {
-    height: 10%;
-    width: 10%;
-    transform: translate(-50%, 30%);
+    height: 12%;
+    width: 12%;
+    transform: translate(-70%, 33%);
 }
 
 .button-div {
     display: inline-block;
     text-align: center;
-    margin: -20px -20px;
+    margin-left: -30px;
+    margin-right: -50px;
 }
 
 
