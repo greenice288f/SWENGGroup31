@@ -12,7 +12,7 @@ import numpy as np
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
-TextColor = (255, 255, 255) 
+TextColor = (255, 255, 255)
 outlineColor = (0, 0, 0)  # RGB color for black
 DEPLOYMENT = False # !!! REMEMBER TO CHANGE for deployment !!!
 text_size=1
@@ -113,6 +113,8 @@ def instagram_analysis():
     resultSmoker=smokerALgo("downloads")
     tempList=[]
 
+    u_name = instagram_api.get_username(user_id, access_token)
+
     for data in resultSmoker[0]:
         print(data)
         file_name = data[len(data)-1]
@@ -173,7 +175,7 @@ def instagram_analysis():
         print("done")
         tempList.append(jpg_as_text)
 
-    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), }), 200
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
     # TODO: Analyse the images
     # TODO: Analyse the comments
     # TODO: Prepare a response for the front-end

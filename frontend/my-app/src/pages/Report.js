@@ -6,8 +6,8 @@ import "./report.css";
 function Report(props) {
   const smoker_report = props.smoker_report;
   const name = props.report_name;
+  const username = props.smoker_report.username;
 
-  const [username, setUsername] = useState("undefined");
   const [images, setImages] = useState(JSON.parse(smoker_report.images));
   const date = new Date().toLocaleDateString();
 
