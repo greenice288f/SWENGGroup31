@@ -30,8 +30,7 @@ sent_analyser = CustomSentimentAnalyzer()
 
 
 #Function which takes a list of of social media posts and returns 1. The rumber of posts about smoking, 2. The average sentiment of the posts on a scale of -1(neg) to 1(pos), 3. The list of posts about smoking and their score sorted by their polarity 
-def text_analysis (posts):
-    #Opening the file of smoking related words and writing them to the set smoking_words
+def text_analysis (input):
     try:
         posts = []
         for file in os.listdir(input):
