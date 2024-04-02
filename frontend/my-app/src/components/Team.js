@@ -7,10 +7,6 @@ import "./Team.css"; // Assuming this is where your CSS file is located
 
 
 function Team() {
-    const origin =
-    window.location.hostname === "localhost"
-      ? "https://localhost:5000"
-      : window.location.origin;
 
   return (
     <section id="team">
