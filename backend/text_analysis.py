@@ -6,7 +6,7 @@ nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-
+import os
 #preloading stopwords to pass to the function
 nltk.download('stopwords')
 from nltk.corpus import stopwords
