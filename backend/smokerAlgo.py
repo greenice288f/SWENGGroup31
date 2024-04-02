@@ -174,7 +174,7 @@ def smokerALgo(input):
     res=counter/counterMax
     smoking_score = (res+posts_score)/2
 
-    return [finalResult,smoking_score,posts_score,text_analysis_results]
+    return [finalResult,smoking_score,posts_score,smoking_posts_sorted]
 if __name__ == "__main__":
     start_time = time.time()
     print(smokerALgo())
