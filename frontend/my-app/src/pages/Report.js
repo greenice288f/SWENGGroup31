@@ -38,12 +38,23 @@ function Report(props) {
     certainties.push(descriptiveValue);
     sum += descriptiveValue;
   }
-  const score = (sum * 100) / certainties.length;
+  const imageScore = (sum * 100) / certainties.length;
+
+  const sentimentList = JSON.parse(smoker_report.info)[3];
+  let commentList = [];
+  let sentScoresList = [];
+  for (let i = 0; i < sentimentList.length; i++) {
+    commentList.push(sentimentList[i][0]);
+    sentScoresList.push(sentimentList[i][1]);
+  }
+
+  const sentimentScore = 100 * JSON.parse(smoker_report.info)[2];
+  const overallScore = 0.7 * imageScore + 0.3 * sentimentScore;
 
   let scoreDescription =
-    score > 60
+    overallScore > 60
       ? "Based on this Instagram account's score, they are likely a smoker!"
-      : score > 20
+      : overallScore > 20
         ? "Based on this Instagram account's score, they may be a smoker!"
         : "Based on this Instagram account's score, they are unlikely to be a smoker!";
 
@@ -58,9 +69,9 @@ function Report(props) {
               <h3>Generated on {date}</h3>
             </div>
             <div class="card" style={{ "margin-left": "1%" }}>
-              <ScoreBar score={score} />
+              <ScoreBar score={overallScore} />
               <h3 style={{ "padding-left": "8px" }}>
-                Smoker risk score: {score}
+                Smoker risk score: {overallScore}
               </h3>
             </div>
           </div>
@@ -68,6 +79,7 @@ function Report(props) {
         </div>
         <div class="image-container">
           <div class="image-cards">
+            <h1 style={{ paddingLeft: "10%" }}>Posts:</h1>
             {images.map((base64String, index) => (
               <div class="card image-card">
                 <img
@@ -80,6 +92,18 @@ function Report(props) {
                   <ScoreRing score={certainties[index] * 100} />
                   <h4>Notes:</h4>
                   <div>{descriptions[index]}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="image-cards">
+            <h1 style={{ paddingLeft: "10%" }}>Comments:</h1>
+            {commentList.map((comment, index) => (
+              <div class="card comment-card">
+                <div class="image-desc">
+                  <ScoreRing score={sentScoresList[index] * 100} />
+                  <h4>Comment:</h4>
+                  <div>{comment}</div>
                 </div>
               </div>
             ))}

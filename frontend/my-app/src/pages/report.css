@@ -48,6 +48,12 @@
     justify-content: space-evenly;
 }
 
+.comment-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
 .image-desc {
     display: flex;
     flex-direction: column;
