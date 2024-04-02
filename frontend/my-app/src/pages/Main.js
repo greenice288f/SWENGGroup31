@@ -2,6 +2,7 @@ import { React, useState } from "react";
 import Button from "../components/Button";
 import "./pages.css";
 import "./additional.css";
+import { ReactComponent as InstagramSvg } from '../assets/instagram.svg';
 function Main() {
   const origin =
     window.location.hostname === "localhost"
@@ -20,13 +21,18 @@ function Main() {
             alignItems: "center",
             justifyContent: "center",
             margin: "2%",
+            paddingTop: "2%",
+            paddingBottom: "2%"
           }}
         >
           <h2>Welcome!</h2>
-          <h2>Log-in to your instagram below to generate a report.</h2>
+          <h2 style={{ paddingBottom: "2%" }}>Log-in to your instagram below to generate a report.</h2>
           <div style={{ margin: "2%" }}>
             <Button as="a" href={instagramUrl}>
+            <div className="button-div">
+              <img src={require('../assets/instagram.svg').default} alt='Instagram' className="insta-logo"/>
               LOGIN TO INSTAGRAM
+            </div>
             </Button>
           </div>
         </div>

@@ -4,6 +4,19 @@
     min-height: 65vh;
 }
 
+.insta-logo {
+    height: 10%;
+    width: 10%;
+    transform: translate(-50%, 30%);
+}
+
+.button-div {
+    display: inline-block;
+    text-align: center;
+    margin: -20px -20px;
+}
+
+
 body {
     flex: 1;
 }
