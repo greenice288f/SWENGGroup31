@@ -4,7 +4,10 @@ import "../components/stylez.css";
 import logo from "./logo.png";
 
 function Header() {
-  const origin = window.location.port === "3000" ? "https://localhost:5000" : window.location.origin;
+  const origin =
+    window.location.port === "3000"
+      ? "https://localhost:5000"
+      : window.location.origin;
   const redirectUri = encodeURIComponent(`${origin}/api/instagram-redirect`);
 
   const instagramUrl = `https://api.instagram.com/oauth/authorize?client_id=427613722975596&redirect_uri=${redirectUri}&scope=user_profile,user_media&response_type=code`;
@@ -23,7 +26,7 @@ function Header() {
                   Main
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a type="button" className="headerlink" href="/sentiment">
                   Sentiment Analysis
                 </a>
@@ -37,7 +40,7 @@ function Header() {
                 <a type="button" className="headerlink" href={instagramUrl}>
                   Instagram Analysis
                 </a>
-              </li>
+              </li> */}
               <li>
                 <a type="button" className="headerlink" href="/faq">
                   FAQ
