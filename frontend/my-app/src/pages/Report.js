@@ -3,8 +3,10 @@ import ScoreBar from "../components/ScoreBar";
 import ScoreRing from "../components/ScoreRing";
 import "./report.css";
 
-function Report({ smoker_report }) {
-  const name = "James Gray";
+function Report(props) {
+  const smoker_report = props.smoker_report;
+  const name = props.report_name;
+
   const [username, setUsername] = useState("undefined");
   const [images, setImages] = useState(JSON.parse(smoker_report.images));
   const date = new Date().toLocaleDateString();

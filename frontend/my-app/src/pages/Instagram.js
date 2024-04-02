@@ -4,26 +4,28 @@ import Report from "../pages/Report";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 function Instagram() {
-  const [page, setPage] = useState(0);
-  const [newPics, setPics] = useState(<></>);
+  const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState(null);
+  const [name, setName] = useState("");
+  const test = "test";
 
   const instagramAnalysis = async () => {
     try {
-      const origin = window.location.port === "3000" ? "https://localhost:5000" : window.location.origin;
+      const origin =
+        window.location.port === "3000"
+          ? "https://localhost:5000"
+          : window.location.origin;
 
-      const response = await fetch(`${origin}/api/instagram-analysis`,
-        {
-          mode: "cors",
-        },
-      );
+      const response = await fetch(`${origin}/api/instagram-analysis`, {
+        mode: "cors",
+      });
 
       if (response.ok) {
         const data = await response.json(); // Parse the response data
         console.log("data arrived");
         console.log(data);
         setReportData(data);
-        setPage(1);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -41,22 +43,33 @@ function Instagram() {
             padding: "120px 0px",
           }}
         >
-          <h1>Click the button to determine smoker status</h1>
-          {page === 0 ? (
+          <h1>Instagram verified successfully!</h1>
+          <h2>Please enter your details below to generate report {name}</h2>
+          {!loading ? (
             <>
               <div>
+                <form style={{ padding: "1%" }}>
+                  <label>
+                    {"Enter your full name:\t"}
+                    <input
+                      style={{ fontSize: "14px" }}
+                      type="text"
+                      onInput={(e) => setName(e.target.value)}
+                    />
+                  </label>
+                </form>
                 <Button
                   onClick={() => {
-                    instagramAnalysis();
-                    setPage(2);
+                    if (name != "") {
+                      setLoading(true);
+                      instagramAnalysis();
+                    }
                   }}
                 >
                   Analyse
                 </Button>
               </div>
             </>
-          ) : page === 1 ? (
-            <>{newPics}</>
           ) : (
             <div
               style={{
@@ -73,7 +86,7 @@ function Instagram() {
       </section>
     </>
   ) : (
-    <Report smoker_report={reportData} />
+    <Report smoker_report={reportData} report_name={name} />
   );
 }
 
