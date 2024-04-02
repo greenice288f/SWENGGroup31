@@ -44,7 +44,7 @@ function Instagram() {
           }}
         >
           <h1>Instagram verified successfully!</h1>
-          <h2>Please enter your details below to generate report {name}</h2>
+          <h2>Please enter your details below to generate report</h2>
           {!loading ? (
             <>
               <div>
