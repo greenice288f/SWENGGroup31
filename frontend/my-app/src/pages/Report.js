@@ -49,13 +49,13 @@ function Report(props) {
   }
 
   const sentimentScore = 100 * JSON.parse(smoker_report.info)[2];
-  const overallScore = Math.ceil(0.7 * imageScore + 0.3 * sentimentScore);
+  const overallScore = Math.round(0.7 * imageScore + 0.3 * sentimentScore);
   let scoreDescription =
     overallScore > 60
-      ? "Based on this Instagram account's score, they are likely a smoker!"
+      ? "Based on this Instagram user's score, they are likely a smoker!"
       : overallScore > 20
-        ? "Based on this Instagram account's score, they may be a smoker!"
-        : "Based on this Instagram account's score, they are unlikely to be a smoker!";
+        ? "Based on this Instagram user's score, they may be a smoker!"
+        : "Based on this Instagram user's score, they are unlikely to be a smoker!";
 
   return (
     <>
@@ -88,7 +88,7 @@ function Report(props) {
                   style={{ width: "50%" }}
                 />
                 <div class="image-desc">
-                  <ScoreRing score={certainties[index] * 100} />
+                  <ScoreRing score={Math.round(certainties[index] * 100)} />
                   <h4>Notes:</h4>
                   <div>{descriptions[index]}</div>
                 </div>
@@ -100,7 +100,7 @@ function Report(props) {
             {commentList.map((comment, index) => (
               <div class="card comment-card">
                 <div class="image-desc">
-                  <ScoreRing score={sentScoresList[index] * 100} />
+                  <ScoreRing score={Math.round(sentScoresList[index] * 100)} />
                   <h4>Comment:</h4>
                   <div>{comment}</div>
                 </div>
