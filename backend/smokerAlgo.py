@@ -36,7 +36,7 @@ def cigarette(picture):
         cords = box.xyxy[0].tolist()
         cords = [round(x) for x in cords]
         conf = round(box.conf[0].item(), 2)
-
+        conf = math.ceil(conf * 10) / 10  
         # If the detected object is a cigarette, draw a rectangle around it
         if class_id == 'cigarette':
             start_point = (cords[0], cords[1])
@@ -147,6 +147,7 @@ def analyseFunction(imageName, img, counter, counterMax, finalResult):
                     cigConfidence+=0.2
                 faceConfidence=faceRes[j][2]
                 res=normalization*cigConfidence*faceConfidence
+                res = math.ceil(res * 10) / 10
                 temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],faceRes[j][0],faceRes[j][1],1,imageName]
                 catalogue.append(temp)
                 wentIn=True
@@ -157,6 +158,7 @@ def analyseFunction(imageName, img, counter, counterMax, finalResult):
                 if cigConfidence < 0.8:
                     cigConfidence+=0.2
                 res=normalization*cigConfidence
+                res = math.ceil(res * 10) / 10
                 temp=[res,cigaretteRes[i][0],cigaretteRes[i][1],handRes[j][0],handRes[j][1],2,imageName]
                 catalogue.append(temp)
                 wentIn=True
@@ -223,7 +225,8 @@ def smokerALgo(input):
     finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
     res=counter/counterMax
     smoking_score = (res+posts_score)/2
-
+    #rounding
+    smoking_score = math.ceil(smoking_score * 10) / 10
     return [finalResult,smoking_score,posts_score,smoking_posts_sorted]
 if __name__ == "__main__":
     start_time = time.time()

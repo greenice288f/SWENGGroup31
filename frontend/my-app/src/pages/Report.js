@@ -49,8 +49,7 @@ function Report(props) {
   }
 
   const sentimentScore = 100 * JSON.parse(smoker_report.info)[2];
-  const overallScore = 0.7 * imageScore + 0.3 * sentimentScore;
-
+  const overallScore = Math.ceil(0.7 * imageScore + 0.3 * sentimentScore);
   let scoreDescription =
     overallScore > 60
       ? "Based on this Instagram account's score, they are likely a smoker!"
@@ -71,7 +70,7 @@ function Report(props) {
             <div class="card" style={{ "margin-left": "1%" }}>
               <ScoreBar score={overallScore} />
               <h3 style={{ "padding-left": "8px" }}>
-                Smoker risk score: {overallScore}
+                Smoker risk score: {overallScore}%
               </h3>
             </div>
           </div>
