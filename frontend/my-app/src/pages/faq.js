@@ -4,10 +4,7 @@ import "./pages.css";
 import "./faq.css";
 const Faq = () => {
   const [answersVisible, setAnswersVisible] = useState({});
-  const origin =
-  window.location.hostname === "localhost"
-    ? "https://localhost:5000"
-    : window.location.origin;
+
   // Function to toggle answer visibility
   const toggleAnswer = (category, index) => {
     setAnswersVisible((prevAnswersVisible) => {

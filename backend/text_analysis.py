@@ -2,15 +2,17 @@
 import nltk
 #vader_lexicon is used for sentiment analysis and lemmatization
 nltk.download('vader_lexicon')
-#Used to preprocess text, a list of stop words e.g "and", "the", etc  
+#Used to preprocess text, a list of stop words e.g "and", "the", etc
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import os
+
 #preloading stopwords to pass to the function
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 stop_words = set(stopwords.words('english'))
+
 
 #Initialising the lemmatizer
 lemmatizer = WordNetLemmatizer()
@@ -21,15 +23,19 @@ class CustomSentimentAnalyzer(SentimentIntensityAnalyzer):
         scores = self.polarity_scores(text)
         #anti_smoker_words = ["don't", "dont", "shouldn't", "shouldnt", "should not ","do not", "quit", "give up", "stop"]
         # Adjust sentiment scores so that anti smoking phrases are counted as a negative sentiment
+
         #if any(word in text.lower() for word in anti_smoker_words):
             #scores['neg'] = max(scores['neg'], 0.5)  
+
         return scores
-    
+
 #Initialising the sentiment analyser
 sent_analyser = CustomSentimentAnalyzer()
 
 
+
 #Function which takes a list of of social media posts and returns 1. The rumber of posts about smoking, 2. The average sentiment of the posts on a scale of -1(neg) to 1(pos), 3. The list of posts about smoking and their score sorted by their polarity 
+
 def text_analysis (input):
     try:
         posts = []
@@ -44,6 +50,7 @@ def text_analysis (input):
             smoking_words_file = 'smoking_related_words.txt'
             with open(smoking_words_file, 'r') as f:
                 smoking_words = {word.strip() for word in f.readlines()}
+
 
     #Seeing if the posts is about smoking and if it is calculating the sentiment of said post
             smoking_posts_scored = []
@@ -62,10 +69,12 @@ def text_analysis (input):
                 avg_sentiment_score = sum/len(smoking_posts_scored)
         #Sorting the posts about smoking by the polarity score
                 smoking_posts_scored.sort(key=lambda x: abs(x[1]),reverse=True)
+
             else:
                 avg_sentiment_score = 0
 
             ratio_of_smoking_posts = num_of_smoking_posts/len(posts)
+
 
             return  ratio_of_smoking_posts, avg_sentiment_score, smoking_posts_scored
         
@@ -74,6 +83,7 @@ def text_analysis (input):
     except FileNotFoundError as e:
             print(f"File not found: {e}")
             return 0,0,[]
+
 
 #Function takes a string as a parameter and returns a sentiment score for said post where 1= positive sentiment and 0 = neutral and -1 = negative
 def sentiment_analyser (post):
@@ -111,6 +121,3 @@ def pre_process_text(post):
     #Join the processed tokens into a single string and return said string
     processed_text = " ".join(lemmatized_tokens)
     return processed_text
-
-
-

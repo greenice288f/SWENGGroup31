@@ -165,7 +165,9 @@ def smokerALgo(input):
             continue
 
     text_analysis_results = text_analysis(input)
+
     smoking_posts_sorted = text_analysis_results[2]
+
     avg_sent = text_analysis_results[1]
     ratio_of_smoking_posts = text_analysis_results[0]
     posts_score = avg_sent*ratio_of_smoking_posts
