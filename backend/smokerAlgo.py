@@ -107,7 +107,6 @@ def smokerALgo(input):
     counter=0
     counterMax=0    
     for i in range(1,6):
-        txt_name="./{0}/post{1}.txt".format(input,i)
         imageName="./{0}/post{1}.jpg".format(input,i)
 
         try:
@@ -161,32 +160,21 @@ def smokerALgo(input):
                 counter+=(7*catalogue[0][0])
                 counterMax+=7
             finalResult.append(catalogue[0])
-
-            posts = []
-            posts_score = 0
-            for file in os.listdir(input):
-                with open(txt_name, "r") as file:
-                    post = file.read()
-                    posts.append(post)
-
-            if(len(posts) != 0):
-                text_analysis_results = text_analysis(posts)
-
-                avg_sent = text_analysis_results[1]
-                num_of_smoking_posts = text_analysis_results[0]
-                smoking_posts_sorted = text_analysis_results[2]
-
-                posts_score = avg_sent*(num_of_smoking_posts/len(posts))
-        
         except FileNotFoundError as e:
             print(f"File not found: {e}")
             continue
+
+    text_analysis_results = text_analysis(input)
+    smoking_posts_sorted = text_analysis_results[2]
+    avg_sent = text_analysis_results[1]
+    ratio_of_smoking_posts = text_analysis_results[0]
+    posts_score = avg_sent*ratio_of_smoking_posts
 
     finalResult = sorted(finalResult, key=lambda x: x[0], reverse=True)
     res=counter/counterMax
     smoking_score = (res+posts_score)/2
 
-    return [finalResult,smoking_score,posts_score,smoking_posts_sorted]
+    return [finalResult,smoking_score,posts_score,text_analysis_results]
 if __name__ == "__main__":
     start_time = time.time()
     print(smokerALgo())
