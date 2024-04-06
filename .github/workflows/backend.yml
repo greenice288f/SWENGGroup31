@@ -48,4 +48,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Stop server
-        run: pkill -f "python backend/server.py"
+        run: pkill -f "python backend/server.py" || true
