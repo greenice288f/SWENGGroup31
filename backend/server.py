@@ -11,7 +11,6 @@ import cv2
 import numpy as np
 import atexit
 import unittest
-from serverTest import TestServer
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
@@ -199,13 +198,16 @@ def test_build():
         print(f"Build failed: {str(e)}")
         return False
 
-def run_tests():
-    unittest.main(module='serverTest', exit=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--build-test', action='store_true')
     args = parser.parse_args()
 
-
-    app.run(debug=True, ssl_context=('server.crt', 'server.key'))
+    if args.build_test:
+        if test_build():
+            exit(0)
+        else:
+            exit(1)
+    else:
+        app.run(debug=True, ssl_context=('server.crt', 'server.key'))
