@@ -18,10 +18,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
       - name: Start server
         run: |
-          python server.py &
+          python backend/server.py &
           echo "Server started"
           sleep 10  # Give server some time to start
 
@@ -37,13 +37,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
       - name: Run Tests
-        run: python -m unittest serverTest.py
+        run: python -m unittest backend/serverTest.py
 
   stop-server:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Stop server
-        run: pkill -f "python server.py"
+        run: pkill -f "python backend/server.py"
