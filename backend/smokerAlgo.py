@@ -8,6 +8,13 @@ import math
 import os
 from  text_analysis import text_analysis
 
+import os
+
+# Get the directory of the current Python script
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
+# Construct the absolute path of the file
+
 def normalize_distance(distance, face_size, image_width, image_height):
     # Normalize the distance with respect to the face size
     if(distance<=0):
@@ -27,7 +34,8 @@ def calculate_distance(coord1, coord2):
 
 
 def cigarette(picture):
-    model = YOLO("./models/best.pt")
+    file_path = os.path.join(script_dir, 'models', 'best.pt')
+    model = YOLO(file_path)
     results = model.predict(picture)
     result = results[0]
     answer=[]

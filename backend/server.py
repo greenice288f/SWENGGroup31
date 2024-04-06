@@ -9,6 +9,8 @@ import os
 import instagram_api
 import cv2
 import numpy as np
+import atexit
+import unittest
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
@@ -19,8 +21,9 @@ text_size=1
 text_thickness=1
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(8)
-user_id=""
-access_token=""
+#basic values
+user_id="25490918193826715"
+access_token="IGQWRQMkFEVXNLYUtpcVJEMkVkczJyZAzliSU5pUVMtcU5SVkd0eFkxRGxJOUdwRVZAQaVlyWDkxMzJsdzVPU0thWVk2bmszaWdKV25nYm5PakttLWlEb0xhMi1GbE1pVFN3SHF2WWFhT05XMk5fU2Y2cFJWYnBkOEFVVHFDYjRoQTF5dwZDZD"
 if not DEPLOYMENT:
     CORS(app)
 
@@ -87,6 +90,9 @@ def handle_user_input():
 
     return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
+@app.route('/api/hello')
+def hello():
+    return "Hello, World!"
 
 # After user agrees (on Instagram) to give us access, Instagram redirects them to this endpoint.
 # This endpoint obtains the user's id and the access token, stores them in the Flask session and
@@ -105,6 +111,8 @@ def instagram_redirect():
 # TODO: Actually analyse them and return the result of the analysis.
 @app.route('/api/instagram-analysis')
 def instagram_analysis():
+    print(user_id)
+    print(access_token)
     global text_size, text_thickness, TextColor, outlineColor
     try:
         instagram_api.download_media(user_id, access_token, 'downloads')
@@ -176,23 +184,10 @@ def instagram_analysis():
         tempList.append(jpg_as_text)
 
     return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
-    # TODO: Analyse the images
-    # TODO: Analyse the comments
-    # TODO: Prepare a response for the front-end
 
 
-#@app.route('/api/upload', methods=['POST'])
-#def upload_image():
-#    todo_data = request.get_json()
-#    base64_to_image(todo_data['lmao'], 'output.jpg')
-#    answer=model.predict("output.jpg", confidence=40, overlap=30).json()
-#    model.predict("output.jpg", confidence=30, overlap=30).save("answer.jpg")
-#    with open("answer.jpg", "rb") as image_file:
-#        encoded_string = base64.b64encode(image_file.read()).decode()
-#    with open('encoded_string.txt', 'w') as file:
-#        file.write(encoded_string)
-#    print('sending reply all done')
-#    return flask.jsonify({'data':answer,'image':encoded_string}),201
+
+
 
 def test_build():
     try:
@@ -203,11 +198,6 @@ def test_build():
         print(f"Build failed: {str(e)}")
         return False
 
-#epic comment
-#also epic comment
-#this is an epic comment
-def epic_comment():
-    print("epic comment")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
