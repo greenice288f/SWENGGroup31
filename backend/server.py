@@ -207,11 +207,5 @@ if __name__ == '__main__':
     parser.add_argument('--build-test', action='store_true')
     args = parser.parse_args()
 
-    if args.build_test:
-        if test_build():
-            run_tests()
-            exit(0)
-        else:
-            exit(1)
-    else:
-        app.run(debug=True, ssl_context=('server.crt', 'server.key'))
+
+    app.run(debug=True, ssl_context=('server.crt', 'server.key'))
