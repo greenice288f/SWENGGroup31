@@ -209,7 +209,7 @@ if __name__ == '__main__':
 
     if args.build_test:
         if test_build():
-            atexit.register(run_tests)
+            run_tests()
             exit(0)
         else:
             exit(1)
