@@ -1,24 +1,30 @@
-#Import natural language tool kit(nltk) which perfroms the sentiment analysis and tokenization
 import nltk
-#vader_lexicon is used for sentiment analysis and lemmatization
-nltk.download('vader_lexicon')
-#Used to preprocess text, a list of stop words e.g "and", "the", etc
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
 import os
 
-#preloading stopwords to pass to the function
+
+#Download vadar_lexicon and list of stopwords
+nltk.download('vader_lexicon')
 nltk.download('stopwords')
-from nltk.corpus import stopwords
+
+
+#Initialising NLTK tools for sentiment analysis
 stop_words = set(stopwords.words('english'))
+lemmatizer = WordNetLemmatizer()
+#Removing these words from stopwords
 stop_words.remove('not')
 stop_words.remove('should')
 stop_words.remove('do')
 
-#Initialising the lemmatizer
-lemmatizer = WordNetLemmatizer()
 
+"""
+@brief A custom sentiment analyzer that extends the SentimentIntensityAnalyzer 
+
+Used to adjust how the sentiment analyser treats words that appear in common anti smoking phrases
+"""
 class CustomSentimentAnalyzer(SentimentIntensityAnalyzer):
     def polarities(self, text):
         # Perform sentiment analysis
@@ -29,18 +35,30 @@ class CustomSentimentAnalyzer(SentimentIntensityAnalyzer):
             scores['neg'] = max(scores['neg'], 0.5)
         return scores
 
-#Initialising the sentiment analyser
+
+#Initialising the custom sentiment analyser
 sent_analyser = CustomSentimentAnalyzer()
 
-#take a .txt file with comments and turn it into a list, run text analysis
+
+"""
+@brief Take a .txt file with comments and turn it into a list, run text analysis
+
+@return The results of text_analysis with the comments list as a parameter
+"""
 def start_text_analysis():
     comments = open("comments.txt",'r')
     comments_list = comments.readlines()
     return text_analysis(comments_list)
 
 
-
-#Function which takes a list of of social media posts and returns an ordered pair of 1. The ratio of posts about smoking to all posts and 2. The sentiment of the posts on a scale of -1(neg) to 1(pos)
+"""
+@brief This function analyses a list of posts to find posts about smoking and perfroms sentiment analysis on such posts
+   
+@param input A list of strings to be analysed
+@return A tuple
+    - The first element is the ratio of posts about smoking to all the posts
+    - The second element is the average sentiment score for all the posts about smoking
+"""
 def text_analysis (input):
     try:
         posts = []
@@ -74,13 +92,21 @@ def text_analysis (input):
             ratio_of_smoking_posts = num_of_smoking_posts/len(posts)
 
             return  ratio_of_smoking_posts, avg_sentiment_score
+        #If there were no posts return 0,0
         else:
             return 0, 0
+        #If the file could not open return 0,0
     except FileNotFoundError as e:
             print(f"File not found: {e}")
             return 0,0
 
-#Function takes a string as a parameter and returns a sentiment score for said post where 1= positive sentiment and 0 = neutral and -1 = negative
+
+"""
+@brief take a string and perform sentiment analysis on it
+
+@param post A string to perfrom sentiment analysis on
+@return the sentiment score which is a value between -1 and 1
+"""
 def sentiment_analyser (post):
     #Using NLTKs sentiment analyser to get a sentiment score for the string parameter
     scores = sent_analyser.polarities(post)
@@ -92,7 +118,14 @@ def sentiment_analyser (post):
     else:
         return -1
 
-#Function takes a string and a list of smoking related words as a parameter and checks if any of the smoking related words are in the string, returns boolean values True if they are, False if they aren't
+
+"""
+@brief A function that checks if a string contains any smoking related words
+
+@param post A string to check if it contains any smoking related words
+@param smoking_words A list of smoking related words
+@return a boolean value true if post contains smoking words, false if it doesn't
+"""
 def check_for_smoking_words(post, smoking_words):
     #Make the string all lowercase
     post_lower = post.lower()
@@ -102,7 +135,13 @@ def check_for_smoking_words(post, smoking_words):
             return True
     return False
 
-#Function that takes a string as a parameter and returns a clean up string for sentiment analysis by the NLTK sentiment analyser
+
+"""
+@brief a function to clean up a string to use it for sentiment analysis
+
+@param post a string to be cleaned up for sentiment analysis
+@return the input string that has been tokenized, had stopwords removed and lemmatized
+"""
 def pre_process_text(post):
     #Tokenise the string
     tokenized_post = word_tokenize(post)
