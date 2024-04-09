@@ -27,15 +27,6 @@ access_token="IGQWRQMkFEVXNLYUtpcVJEMkVkczJyZAzliSU5pUVMtcU5SVkd0eFkxRGxJOUdwRVZ
 if not DEPLOYMENT:
     CORS(app)
 
-def base64_to_image(base64_data, output_filename):
-    try:
-        decoded_img_data = base64.b64decode(base64_data)
-        with open(output_filename, 'wb') as img_file:
-            img_file.write(decoded_img_data)
-        print(f"Image saved as {output_filename}")
-    except Exception as e:
-        print(f"Error decoding base64 image: {str(e)}")
-
 @app.route('/api/user', methods=['POST'])
 def handle_user_input():
 
@@ -187,7 +178,7 @@ def instagram_analysis():
 
 
 @app.route('/api/smokerscore')
-def instagram_analysis():
+def smokerscore():
 
     input_data = request.get_json()
     user_id = input_data.get('user_id')
