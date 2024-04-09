@@ -56,6 +56,10 @@ def _get_media_by_id(media_id: str, access_token: str) -> list[tuple[str, str, s
         print(f"Error getting media by id: {e}")
         raise
 
+def get_username(user_id: str, access_token: str) -> str:
+    result = requests.get(f'https://graph.instagram.com/v19.0/{user_id}?fields=username&access_token={access_token}')
+    return result.json()['username']
+
 # Fetches data about all media of the given user
 # Arguments:
 #   - user_id: the id of the user whose media we're interested in
@@ -97,6 +101,10 @@ def _save_media_to(media: list[tuple[str, str, str]], directory: str):
         for i, (media_url, media_type, comment) in enumerate(media):
             if media_type == 'IMAGE':
                 urllib.request.urlretrieve(media_url, os.path.join(directory, f'post{i}.jpg'))
+                with open(os.path.join(directory, f'post{i}.txt'), mode='w') as comment_file:
+                    comment_file.write(comment)
+            if media_type == 'VIDEO':
+                urllib.request.urlretrieve(media_url, os.path.join(directory, f'post{i}.mp4'))
                 with open(os.path.join(directory, f'post{i}.txt'), mode='w') as comment_file:
                     comment_file.write(comment)
     except requests.RequestException as e:

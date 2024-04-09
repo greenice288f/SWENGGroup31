@@ -5,16 +5,47 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
+
 jobs:
-  build-and-test:
+  start-server:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: '3.9'
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
       - name: Start server
-        run: python backend/server.py --build-test
+        run: |
+          python backend/server.py &
+          echo "Server started"
+          sleep 10  # Give server some time to start
+
+  test:
+    needs: start-server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+      - name: Run Tests
+        env:
+          PYTHONPATH: ./backend
+        run: python -m unittest backend/serverTest.py
+
+  stop-server:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop server
+        run: pkill -f "python backend/server.py" || true

@@ -23,16 +23,13 @@ stop_words.remove('do')
 """
 @brief A custom sentiment analyzer that extends the SentimentIntensityAnalyzer 
 
-Used to adjust how the sentiment analyser treats words that appear in common anti smoking phrases
+Used to give more control over the sentiment of certain words if necessary
+@return the sentiment analysis scores 
 """
 class CustomSentimentAnalyzer(SentimentIntensityAnalyzer):
     def polarities(self, text):
         # Perform sentiment analysis
         scores = self.polarity_scores(text)
-        anti_smoker_words = ["don't", "dont", "shouldn't", "shouldnt", "should not ","do not", "quit", "give up", "stop"]
-        # Adjust sentiment scores so that anti smoking phrases are counted as a negative sentiment
-        if any(word in text.lower() for word in anti_smoker_words):
-            scores['neg'] = max(scores['neg'], 0.5)
         return scores
 
 
@@ -58,6 +55,7 @@ def start_text_analysis():
 @return A tuple
     - The first element is the ratio of posts about smoking to all the posts
     - The second element is the average sentiment score for all the posts about smoking
+    - The third element is a sorted list of posts about smoking based on sentiment scores
 """
 def text_analysis (input):
     try:
@@ -74,31 +72,35 @@ def text_analysis (input):
             with open(smoking_words_file, 'r') as f:
                 smoking_words = {word.strip() for word in f.readlines()}
 
+
             #Seeing if the posts is about smoking and if it is calculating the sentiment of said post
-            sentiment_scores = []
+            smoking_posts_scored = []
             num_of_smoking_posts = 0
             for post in posts:
                 if check_for_smoking_words(post, smoking_words):
-                    post = pre_process_text(post)
+                    post_processed = pre_process_text(post)
                     num_of_smoking_posts += 1
-                    sentiment_scores.append(sentiment_analyser(post))
+                    smoking_posts_scored.append((post, sentiment_analyser(post_processed)))
 
-            #Averaging the sentiment of all posts about smoking
-            if len(sentiment_scores) > 0:
-                avg_sentiment_score = sum(sentiment_scores) / len(sentiment_scores)
+            #Averaging the sentiment of all posts about smoking 
+            if len(smoking_posts_scored) > 0:
+                sum = 0
+                for pair in smoking_posts_scored:
+                    sum+=pair[1]
+                avg_sentiment_score = sum/len(smoking_posts_scored)
+                #Sorting the posts about smoking by the polarity score
+                smoking_posts_scored.sort(key=lambda x: abs(x[1]),reverse=True)
+
             else:
                 avg_sentiment_score = 0
 
             ratio_of_smoking_posts = num_of_smoking_posts/len(posts)
-
-            return  ratio_of_smoking_posts, avg_sentiment_score
-        #If there were no posts return 0,0
+            return  ratio_of_smoking_posts, avg_sentiment_score, smoking_posts_scored
         else:
-            return 0, 0
-        #If the file could not open return 0,0
+            return 0, 0,[]
     except FileNotFoundError as e:
             print(f"File not found: {e}")
-            return 0,0
+            return 0,0,[]
 
 
 """
@@ -110,13 +112,8 @@ def text_analysis (input):
 def sentiment_analyser (post):
     #Using NLTKs sentiment analyser to get a sentiment score for the string parameter
     scores = sent_analyser.polarities(post)
-    #If the positive score is >0 then return 1 for a postive sentiment, el if  the neutral score  is >0 return 0; else return -1
-    if scores['pos'] > 0:
-       return 1
-    elif scores['neu'] > 0 and scores['neg'] == 0:
-        return 0
-    else:
-        return -1
+    #Return the 'compound' value from the scores
+    return scores['compound']
 
 
 """

@@ -9,27 +9,23 @@ import os
 import instagram_api
 import cv2
 import numpy as np
+import atexit
+import unittest
 #rf = Roboflow(api_key="Tao36WXLMwnYXJt3uFaj")
 #project = rf.workspace("cigarette-c6554").project("cigarette-ghnlk")
 #model = project.version(3).model
-
+TextColor = (255, 255, 255)
+outlineColor = (0, 0, 0)  # RGB color for black
 DEPLOYMENT = False # !!! REMEMBER TO CHANGE for deployment !!!
-
+text_size=1
+text_thickness=1
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(8)
-user_id=""
-access_token=""
+#basic values
+user_id="25490918193826715"
+access_token="IGQWRQMkFEVXNLYUtpcVJEMkVkczJyZAzliSU5pUVMtcU5SVkd0eFkxRGxJOUdwRVZAQaVlyWDkxMzJsdzVPU0thWVk2bmszaWdKV25nYm5PakttLWlEb0xhMi1GbE1pVFN3SHF2WWFhT05XMk5fU2Y2cFJWYnBkOEFVVHFDYjRoQTF5dwZDZD"
 if not DEPLOYMENT:
     CORS(app)
-
-def base64_to_image(base64_data, output_filename):
-    try:
-        decoded_img_data = base64.b64decode(base64_data)
-        with open(output_filename, 'wb') as img_file:
-            img_file.write(decoded_img_data)
-        print(f"Image saved as {output_filename}")
-    except Exception as e:
-        print(f"Error decoding base64 image: {str(e)}")
 
 @app.route('/api/user', methods=['POST'])
 def handle_user_input():
@@ -66,7 +62,7 @@ def handle_user_input():
         if(data[len(data)-2]==1 or data[len(data)-2]==1):
             center=data[1]
             radius=data[2]
-            color = (0, 255, 0)  # RGB color of the circle
+            color = (0, 0, 0)  # RGB color of the circle
             thickness = 2  # Thickness of the circle outline, in pixels
             image = cv2.circle(image, center, radius, color, thickness)
             center=data[3]
@@ -85,6 +81,9 @@ def handle_user_input():
 
     return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker)}), 200
 
+@app.route('/api/hello')
+def hello():
+    return "Hello, World!"
 
 # After user agrees (on Instagram) to give us access, Instagram redirects them to this endpoint.
 # This endpoint obtains the user's id and the access token, stores them in the Flask session and
@@ -103,12 +102,17 @@ def instagram_redirect():
 # TODO: Actually analyse them and return the result of the analysis.
 @app.route('/api/instagram-analysis')
 def instagram_analysis():
+    print(user_id)
+    print(access_token)
+    global text_size, text_thickness, TextColor, outlineColor
     try:
         instagram_api.download_media(user_id, access_token, 'downloads')
     except Exception as e:
         return flask.jsonify({'success': False})
     resultSmoker=smokerALgo("downloads")
     tempList=[]
+
+    u_name = instagram_api.get_username(user_id, access_token)
 
     for data in resultSmoker[0]:
         print(data)
@@ -117,44 +121,142 @@ def instagram_analysis():
             print(f"File does not exist: {file_name}")
             continue
         image=cv2.imread(file_name)
-        if(data[len(data)-2]==1 or data[len(data)-2]==1):
+        if(data[len(data)-2]==1 ):
             center=data[1]
             radius=data[2]
-            color = (255, 0, 0)  # RGB color of the circle
-            thickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, thickness)
+            color = (0, 0, 255)  # RGB color of the circle
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
             center=data[3]
             radius=data[4]
-            image = cv2.circle(image, center, radius, color, thickness)
+            color = (0, 255, 0)  # RGB color of the circle
+
+            image = cv2.circle(image, center, radius, color, cThickness)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Face', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Face', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+        elif(data[len(data)-2]==2):
+            center=data[1]
+            radius=data[2]
+            color = (0, 0, 255)  # RGB color of the circle
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+            center=data[3]
+            radius=data[4]
+            color = (255, 0, 0)  # RGB color of the circle
+            image = cv2.circle(image, center, radius, color, cThickness)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Hand', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Hand', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
         elif(data[len(data)-2]==3):
             center=data[1]
             radius=data[2]
-            color = (255, 0, 0)  # RGB color of the circle
-            thickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, thickness)
+            color = (0, 0, 255)  # RGB color of the circle
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
         retval, buffer = cv2.imencode('.jpg', image)
         jpg_as_text = base64.b64encode(buffer).decode()
         print("done")
         tempList.append(jpg_as_text)
 
-    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), }), 200
-    # TODO: Analyse the images
-    # TODO: Analyse the comments
-    # TODO: Prepare a response for the front-end
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
 
 
-#@app.route('/api/upload', methods=['POST'])
-#def upload_image():
-#    todo_data = request.get_json()
-#    base64_to_image(todo_data['lmao'], 'output.jpg')
-#    answer=model.predict("output.jpg", confidence=40, overlap=30).json()
-#    model.predict("output.jpg", confidence=30, overlap=30).save("answer.jpg")
-#    with open("answer.jpg", "rb") as image_file:
-#        encoded_string = base64.b64encode(image_file.read()).decode()
-#    with open('encoded_string.txt', 'w') as file:
-#        file.write(encoded_string)
-#    print('sending reply all done')
-#    return flask.jsonify({'data':answer,'image':encoded_string}),201
+@app.route('/api/smokerscore')
+def smokerscore():
+
+    input_data = request.get_json()
+    user_id = input_data.get('user_id')
+    access_token = input_data.get('acces_token')
+    global text_size, text_thickness, TextColor, outlineColor
+    try:
+        instagram_api.download_media(user_id, access_token, 'downloads')
+    except Exception as e:
+        return flask.jsonify({'success': False})
+    resultSmoker=smokerALgo("downloads")
+    tempList=[]
+
+    u_name = instagram_api.get_username(user_id, access_token)
+
+    for data in resultSmoker[0]:
+        print(data)
+        file_name = data[len(data)-1]
+        if not os.path.isfile(file_name):
+            print(f"File does not exist: {file_name}")
+            continue
+        image=cv2.imread(file_name)
+        if(data[len(data)-2]==1 ):
+            center=data[1]
+            radius=data[2]
+            color = (0, 0, 255)  # RGB color of the circle
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+            center=data[3]
+            radius=data[4]
+            color = (0, 255, 0)  # RGB color of the circle
+
+            image = cv2.circle(image, center, radius, color, cThickness)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Face', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Face', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+        elif(data[len(data)-2]==2):
+            center=data[1]
+            radius=data[2]
+            color = (0, 0, 255)  # RGB color of the circle
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+            center=data[3]
+            radius=data[4]
+            color = (255, 0, 0)  # RGB color of the circle
+            image = cv2.circle(image, center, radius, color, cThickness)
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Hand', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Hand', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+        elif(data[len(data)-2]==3):
+            center=data[1]
+            radius=data[2]
+            color = (0, 0, 255)  # RGB color of the circle
+            cThickness = 2  # Thickness of the circle outline, in pixels
+            image = cv2.circle(image, center, radius, color, cThickness)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            center_text = (center[0], center[1] - int(radius/2))
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+        retval, buffer = cv2.imencode('.jpg', image)
+        jpg_as_text = base64.b64encode(buffer).decode()
+        print("done")
+        tempList.append(jpg_as_text)
+
+    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
+
+
+
 
 def test_build():
     try:
@@ -165,11 +267,6 @@ def test_build():
         print(f"Build failed: {str(e)}")
         return False
 
-#epic comment
-#also epic comment
-#this is an epic comment
-def epic_comment():
-    print("epic comment")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
