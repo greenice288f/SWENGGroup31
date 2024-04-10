@@ -102,158 +102,165 @@ def instagram_redirect():
 # TODO: Actually analyse them and return the result of the analysis.
 @app.route('/api/instagram-analysis')
 def instagram_analysis():
-    print(user_id)
-    print(access_token)
-    global text_size, text_thickness, TextColor, outlineColor
     try:
-        instagram_api.download_media(user_id, access_token, 'downloads')
+        print(user_id)
+        print(access_token)
+        global text_size, text_thickness, TextColor, outlineColor
+        try:
+            instagram_api.download_media(user_id, access_token, 'downloads')
+        except Exception as e:
+            return flask.jsonify({'success': False})
+        resultSmoker=smokerALgo("downloads")
+        tempList=[]
+
+        u_name = instagram_api.get_username(user_id, access_token)
+
+        for data in resultSmoker[0]:
+            print(data)
+            file_name = data[len(data)-1]
+            if not os.path.isfile(file_name):
+                print(f"File does not exist: {file_name}")
+                continue
+            image=cv2.imread(file_name)
+            if(data[len(data)-2]==1 ):
+                center=data[1]
+                radius=data[2]
+                color = (0, 0, 255)  # RGB color of the circle
+                cThickness = 2  # Thickness of the circle outline, in pixels
+                image = cv2.circle(image, center, radius, color, cThickness)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+                center=data[3]
+                radius=data[4]
+                color = (0, 255, 0)  # RGB color of the circle
+
+                image = cv2.circle(image, center, radius, color, cThickness)
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Face', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Face', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+            elif(data[len(data)-2]==2):
+                center=data[1]
+                radius=data[2]
+                color = (0, 0, 255)  # RGB color of the circle
+                cThickness = 2  # Thickness of the circle outline, in pixels
+                image = cv2.circle(image, center, radius, color, cThickness)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+                center=data[3]
+                radius=data[4]
+                color = (255, 0, 0)  # RGB color of the circle
+                image = cv2.circle(image, center, radius, color, cThickness)
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Hand', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Hand', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+            elif(data[len(data)-2]==3):
+                center=data[1]
+                radius=data[2]
+                color = (0, 0, 255)  # RGB color of the circle
+                cThickness = 2  # Thickness of the circle outline, in pixels
+                image = cv2.circle(image, center, radius, color, cThickness)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+            retval, buffer = cv2.imencode('.jpg', image)
+            jpg_as_text = base64.b64encode(buffer).decode()
+            print("done")
+            tempList.append(jpg_as_text)
+        return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
     except Exception as e:
-        return flask.jsonify({'success': False})
-    resultSmoker=smokerALgo("downloads")
-    tempList=[]
+        return flask.jsonify({'message': 'Legit error message' }, 400)
 
-    u_name = instagram_api.get_username(user_id, access_token)
 
-    for data in resultSmoker[0]:
-        print(data)
-        file_name = data[len(data)-1]
-        if not os.path.isfile(file_name):
-            print(f"File does not exist: {file_name}")
-            continue
-        image=cv2.imread(file_name)
-        if(data[len(data)-2]==1 ):
-            center=data[1]
-            radius=data[2]
-            color = (0, 0, 255)  # RGB color of the circle
-            cThickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, cThickness)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-
-            center=data[3]
-            radius=data[4]
-            color = (0, 255, 0)  # RGB color of the circle
-
-            image = cv2.circle(image, center, radius, color, cThickness)
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Face', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Face', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-
-        elif(data[len(data)-2]==2):
-            center=data[1]
-            radius=data[2]
-            color = (0, 0, 255)  # RGB color of the circle
-            cThickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, cThickness)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-            center=data[3]
-            radius=data[4]
-            color = (255, 0, 0)  # RGB color of the circle
-            image = cv2.circle(image, center, radius, color, cThickness)
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Hand', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Hand', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-
-        elif(data[len(data)-2]==3):
-            center=data[1]
-            radius=data[2]
-            color = (0, 0, 255)  # RGB color of the circle
-            cThickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, cThickness)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-        retval, buffer = cv2.imencode('.jpg', image)
-        jpg_as_text = base64.b64encode(buffer).decode()
-        print("done")
-        tempList.append(jpg_as_text)
-
-    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
 
 
 @app.route('/api/smokerscore')
 def smokerscore():
-
-    input_data = request.get_json()
-    user_id = input_data.get('user_id')
-    access_token = input_data.get('acces_token')
-    global text_size, text_thickness, TextColor, outlineColor
     try:
-        instagram_api.download_media(user_id, access_token, 'downloads')
+        input_data = request.get_json()
+        user_id = input_data.get('user_id')
+        access_token = input_data.get('acces_token')
+        global text_size, text_thickness, TextColor, outlineColor
+        try:
+            instagram_api.download_media(user_id, access_token, 'downloads')
+        except Exception as e:
+            return flask.jsonify({'success': False})
+        resultSmoker=smokerALgo("downloads")
+        tempList=[]
+
+        u_name = instagram_api.get_username(user_id, access_token)
+
+        for data in resultSmoker[0]:
+            print(data)
+            file_name = data[len(data)-1]
+            if not os.path.isfile(file_name):
+                print(f"File does not exist: {file_name}")
+                continue
+            image=cv2.imread(file_name)
+            if(data[len(data)-2]==1 ):
+                center=data[1]
+                radius=data[2]
+                color = (0, 0, 255)  # RGB color of the circle
+                cThickness = 2  # Thickness of the circle outline, in pixels
+                image = cv2.circle(image, center, radius, color, cThickness)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+                center=data[3]
+                radius=data[4]
+                color = (0, 255, 0)  # RGB color of the circle
+
+                image = cv2.circle(image, center, radius, color, cThickness)
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Face', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Face', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+            elif(data[len(data)-2]==2):
+                center=data[1]
+                radius=data[2]
+                color = (0, 0, 255)  # RGB color of the circle
+                cThickness = 2  # Thickness of the circle outline, in pixels
+                image = cv2.circle(image, center, radius, color, cThickness)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+                center=data[3]
+                radius=data[4]
+                color = (255, 0, 0)  # RGB color of the circle
+                image = cv2.circle(image, center, radius, color, cThickness)
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Hand', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Hand', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+
+            elif(data[len(data)-2]==3):
+                center=data[1]
+                radius=data[2]
+                color = (0, 0, 255)  # RGB color of the circle
+                cThickness = 2  # Thickness of the circle outline, in pixels
+                image = cv2.circle(image, center, radius, color, cThickness)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                center_text = (center[0], center[1] - int(radius/2))
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
+                image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
+            retval, buffer = cv2.imencode('.jpg', image)
+            jpg_as_text = base64.b64encode(buffer).decode()
+            print("done")
+            tempList.append(jpg_as_text)
+        return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
     except Exception as e:
-        return flask.jsonify({'success': False})
-    resultSmoker=smokerALgo("downloads")
-    tempList=[]
+        return flask.jsonify({'message': 'Legit error message' }, 400)
 
-    u_name = instagram_api.get_username(user_id, access_token)
 
-    for data in resultSmoker[0]:
-        print(data)
-        file_name = data[len(data)-1]
-        if not os.path.isfile(file_name):
-            print(f"File does not exist: {file_name}")
-            continue
-        image=cv2.imread(file_name)
-        if(data[len(data)-2]==1 ):
-            center=data[1]
-            radius=data[2]
-            color = (0, 0, 255)  # RGB color of the circle
-            cThickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, cThickness)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-
-            center=data[3]
-            radius=data[4]
-            color = (0, 255, 0)  # RGB color of the circle
-
-            image = cv2.circle(image, center, radius, color, cThickness)
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Face', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Face', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-
-        elif(data[len(data)-2]==2):
-            center=data[1]
-            radius=data[2]
-            color = (0, 0, 255)  # RGB color of the circle
-            cThickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, cThickness)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-            center=data[3]
-            radius=data[4]
-            color = (255, 0, 0)  # RGB color of the circle
-            image = cv2.circle(image, center, radius, color, cThickness)
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Hand', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Hand', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-
-        elif(data[len(data)-2]==3):
-            center=data[1]
-            radius=data[2]
-            color = (0, 0, 255)  # RGB color of the circle
-            cThickness = 2  # Thickness of the circle outline, in pixels
-            image = cv2.circle(image, center, radius, color, cThickness)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            center_text = (center[0], center[1] - int(radius/2))
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, outlineColor, text_thickness + 2, cv2.LINE_AA)
-            image = cv2.putText(image, 'Cigarette', center_text, font, text_size, TextColor, text_thickness, cv2.LINE_AA)
-        retval, buffer = cv2.imencode('.jpg', image)
-        jpg_as_text = base64.b64encode(buffer).decode()
-        print("done")
-        tempList.append(jpg_as_text)
-
-    return flask.jsonify({'message': 'Username received successfully', 'images':json.dumps(tempList), 'info':json.dumps(resultSmoker), 'username':u_name}), 200
 
 
 
