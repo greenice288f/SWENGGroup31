@@ -2,6 +2,8 @@ import { useState } from "react";
 import ScoreBar from "../components/ScoreBar";
 import ScoreRing from "../components/ScoreRing";
 import "./report.css";
+import Button from "../components/Button"
+import { usePDF } from "react-to-pdf";
 
 function Report(props) {
   const smoker_report = props.smoker_report;
@@ -57,9 +59,12 @@ function Report(props) {
         ? "Based on this Instagram user's score, they may be a smoker!"
         : "Based on this Instagram user's score, they are unlikely to be a smoker!";
 
+        const { toPDF, targetRef } = usePDF({filename: 'report.pdf'});
+
   return (
     <>
-      <div class="report page-container">
+      <div class="report page-container" ref={targetRef}>
+        <Button onClick={() => toPDF()} style={{marginLeft: "20%", marginRight: "20%"}}>DOWNLOAD PDF</Button>
         <div class="title-container">
           <div class="title-cards">
             <div class="card" style={{ "margin-right": "1%" }}>

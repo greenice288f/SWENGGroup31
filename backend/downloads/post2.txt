@@ -1,1 +1,1 @@
-ev I like smoking cigarettes,
+Another example of scores generate by our algorithm
