@@ -6,6 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 function Instagram() {
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const [name, setName] = useState("");
   const test = "test";
 
@@ -29,6 +30,8 @@ function Instagram() {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      loading = false;
+      setErrorMessage("Error fetching data... please reload and try again.");
     }
   };
 
@@ -48,6 +51,10 @@ function Instagram() {
           {!loading ? (
             <>
               <div>
+                {errorMessage !== "" &&
+                <div style={{color: "red"}}>
+                  {errorMessage}
+                </div>}
                 <form style={{ padding: "1%" }}>
                   <label>
                     {"Enter your full name:\t"}
