@@ -7,6 +7,12 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import os
+from keras.datasets import imdb
+from keras.preprocessing import sequence
+import keras
+
+#path to the current script
+script_dir = os.path.dirname(os.path.realpath(__file__))
 
 #preloading stopwords to pass to the function
 nltk.download('stopwords')
@@ -32,25 +38,41 @@ class CustomSentimentAnalyzer(SentimentIntensityAnalyzer):
 #Initialising the sentiment analyser
 sent_analyser = CustomSentimentAnalyzer()
 
+#Function processing the input files with captions
+def process_captions(input):
+    posts = []
+    for file in os.listdir(input):
+        if file.endswith('.txt'):
+            file_path = os.path.join(input, file)
+            with open(file_path, 'r') as opened_file:
+                post = opened_file.read()
+                posts.append(post)
+    
+    return posts
+
+#Function calculating the average sentiment of the posts
+def calculate_avg_sentiment(smoking_posts_scored):
+    if len(smoking_posts_scored) > 0:
+        sum = 0
+        for pair in smoking_posts_scored:
+            sum+=pair[1]
+        avg_sentiment_score = sum/len(smoking_posts_scored)
+    else:
+        avg_sentiment_score = 0
+    return avg_sentiment_score
+
 
 
 #Function which takes a list of of social media posts and returns 1. The rumber of posts about smoking, 2. The average sentiment of the posts on a scale of -1(neg) to 1(pos), 3. The list of posts about smoking and their score sorted by their polarity 
 
 def text_analysis (input):
     try:
-        posts = []
-        for file in os.listdir(input):
-            if file.endswith('.txt'):
-                file_path = os.path.join(input, file)
-                with open(file_path, 'r') as opened_file:
-                    post = opened_file.read()
-                    posts.append(post)
+        posts = process_captions(input)
         if(len(posts) != 0):
-            #Opening the file of smoking related words and writing them to the set smoking_words
+    #Opening the file of smoking related words and writing them to the set smoking_words
             smoking_words_file = 'smoking_related_words.txt'
             with open(smoking_words_file, 'r') as f:
                 smoking_words = {word.strip() for word in f.readlines()}
-
 
     #Seeing if the posts is about smoking and if it is calculating the sentiment of said post
             smoking_posts_scored = []
@@ -62,17 +84,9 @@ def text_analysis (input):
                     smoking_posts_scored.append((post, sentiment_analyser(post_processed)))
 
     #Averaging the sentiment of all posts about smoking 
-            if len(smoking_posts_scored) > 0:
-                sum = 0
-                for pair in smoking_posts_scored:
-                    sum+=pair[1]
-                avg_sentiment_score = sum/len(smoking_posts_scored)
-        #Sorting the posts about smoking by the polarity score
-                smoking_posts_scored.sort(key=lambda x: abs(x[1]),reverse=True)
-
-            else:
-                avg_sentiment_score = 0
-
+            avg_sentiment_score = calculate_avg_sentiment(posts)
+            #Sorting the posts about smoking by the polarity score
+            smoking_posts_scored.sort(key=lambda x: abs(x[1]),reverse=True)
             ratio_of_smoking_posts = num_of_smoking_posts/len(posts)
 
 
@@ -121,3 +135,39 @@ def pre_process_text(post):
     #Join the processed tokens into a single string and return said string
     processed_text = " ".join(lemmatized_tokens)
     return processed_text
+
+#Function performing sentiment analysis using a simple RNN
+def sentiment_rnn(input):
+    try:
+        posts = process_captions(input)
+        if(len(posts)!=0):
+            smoking_posts_scored = []
+            num_of_smoking_posts = 0
+            model = keras.models.load_model(os.path.join(script_dir, 'models', 'sequential.keras'))
+            word2index = imdb.get_word_index()
+            smoking_words_file = 'smoking_related_words.txt'
+            with open(smoking_words_file, 'r') as f:
+                smoking_words = {word.strip() for word in f.readlines()}
+            for post in posts:
+                if check_for_smoking_words(post, smoking_words):
+                    num_of_smoking_posts+=1
+                    words = []
+                    for word in word_tokenize(post):
+                        if word in word2index:
+                            words.append(word2index[word])
+                    words=sequence.pad_sequences([words],maxlen=500)
+                    smoking_posts_scored.append((post, model.predict(words)))
+            
+            avg_sentiment_score = calculate_avg_sentiment(posts)
+            #Sorting the posts about smoking by the polarity score
+            smoking_posts_scored.sort(key=lambda x: abs(x[1]),reverse=True)
+            ratio_of_smoking_posts = num_of_smoking_posts/len(posts)
+
+
+            return  ratio_of_smoking_posts, avg_sentiment_score, smoking_posts_scored
+        
+        else:
+            return 0, 0,[]
+    except FileNotFoundError as e:
+            print(f"File not found: {e}")
+            return 0,0,[]
