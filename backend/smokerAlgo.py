@@ -1,3 +1,8 @@
+#We are displaying with circles, since it was easier to store midpoint and radius, 
+#rather than storing the point of a rectangle.
+#the midpoint is still the same, and the circle would still cover most of the object
+
+
 import time
 import cv2
 import mediapipe as mp
@@ -13,8 +18,10 @@ import os
 # Get the directory of the current Python script
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
-# Construct the absolute path of the file
-
+##
+# @brief returns a number between 0 and 1 accordingly of the size of the picture and the object
+#
+# @input all the inputs are doubles
 def normalize_distance(distance, face_size, image_width, image_height):
     # Normalize the distance with respect to the face size
     if(distance<=0):
@@ -29,10 +36,22 @@ def normalize_distance(distance, face_size, image_width, image_height):
         distance_normalized_to_image = distance_normalized_to_face / image_diagonal
     return 1-distance_normalized_to_image
 
+
+##
+# @brief Calculates the distance of two points
+#
+# @input 2 coordinates
+# @output the distance of two coordinates
 def calculate_distance(coord1, coord2):
     return math.sqrt((coord2[0] - coord1[0])**2 + (coord2[1] - coord1[1])**2)
 
-
+##
+# @brief Gathers all the cigarettes on a picture
+#
+# @input filename
+# @output a list of cigarette informations
+# note: midpoint is a tuple of coordinates, (x,y)
+# [[midpoint of the cigarette1, radius of cig1, confidence of cig 1],[midpoint of the cigarette2, radius of cig2, confidence of cig 2]]
 def cigarette(picture):
     file_path = os.path.join(script_dir, 'models', 'best.pt')
     model = YOLO(file_path)
@@ -59,7 +78,13 @@ def cigarette(picture):
             answer.append(temp)
     return answer
 
-
+##
+# @brief Gathers all the hands on a picture
+#
+# @input img read by cv2
+# @output a list of hand informations
+# note: midpoint is a tuple of coordinates, (x,y)
+# [[midpoint of the hand1, radius of hand1, confidence of hand 1],[midpoint of the hand2, radius of hand2, confidence of hand 2]]
 def hand(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     mp_hands = mp.solutions.hands
@@ -80,10 +105,15 @@ def hand(image):
             middle_point=(avg_x_pixel,avg_y_pixel)
             tempList=[middle_point, max_distance_pixel,1]
             result.append(tempList)
-            # Draw a circle at the average coordinates with the calculated radius.
     return result
 
-
+##
+# @brief Gathers all the faces on a picture
+#
+# @input img read by cv2
+# @output a list of face informations
+# note: midpoint is a tuple of coordinates, (x,y)
+# [[midpoint of the face1, radius of face1, confidence of face 1],[midpoint of the face2, radius of face2, confidence of face 2]]
 def face(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     mp_face_detection = mp.solutions.face_detection
@@ -187,7 +217,13 @@ def analyseFunction(imageName, img, counter, counterMax, finalResult):
     finalResult.append(catalogue[0])
     return finalResult, counter, counterMax
 
-
+#@brief: the main part of the program, which gets called by the server
+#@ input: the folder that contains all the data
+#@ output: the final result, including the the sentiment analysys score and the smoking score
+#    return [finalResult,smoking_score,posts_score,smoking_posts_sorted]
+#final result stores all the information regarding pictures, 
+#smoking score contains the weighted scores of hte pictures
+#everything else is related to sentiment analysys
 def smokerALgo(input):
     finalResult=[]
     #confidence, type0=face type=1
