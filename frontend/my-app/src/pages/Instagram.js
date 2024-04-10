@@ -30,8 +30,8 @@ function Instagram() {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      loading = false;
-      setErrorMessage("Error fetching data... please reload and try again.");
+      setLoading(false);
+      setErrorMessage("Error fetching data... please try again.");
     }
   };
 
