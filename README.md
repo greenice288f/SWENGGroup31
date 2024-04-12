@@ -7,8 +7,9 @@
 Download NPM here : https://nodejs.org/en/download
 </h6>
 <h6>
-To download Flask, just run this command in terminal
-<pre>pip install -U Flask</pre>
+To download all the dependencies:
+<pre>pip install -r ./backend/requirements.txt</pre>
+
 </h6>
 
 <h3>Running the program</h3>
@@ -23,3 +24,4 @@ To download Flask, just run this command in terminal
 <pre>cd  .\backend </pre>
 <h6>Then start the backend server by running:</h6>
 <pre>python server.py</pre>
+<h4>Sometimes the server is booting up slow, if it takes an awful lot  of time, try to kill the run with ctrl-c and then run the command again</h4>
